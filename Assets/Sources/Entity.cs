@@ -1,0 +1,53 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Entity : MonoBehaviour {
+
+    private static List<Entity> EntityList = new List<Entity>();
+    private static int lastID = 0;
+
+    public int ID { get; private set; }
+    public Vector3 Pos { get; private set; }
+    public Quaternion Rot { get; private set; }
+    public string Name { get; private set; }
+
+
+    public Entity(Vector3 pos, Quaternion rot, string name)
+    {
+        Pos = pos;
+        Rot = rot;
+        Name = name;
+        ID = lastID;
+        lastID++;
+        EntityList.Add(this);
+    }
+
+    // Use this for initialization
+    void Start () {
+    }
+	
+	// Update is called once per frame
+	void Update () {
+    }
+
+    public void Die()
+    {
+        EntityList.Remove(this);
+    }
+
+    public static Entity[] GetAllEntities()
+    {
+        Entity[] allEntities = new Entity[EntityList.Count];
+        for (int i = 0; i < EntityList.Count; i++)
+            allEntities[i] = EntityList[i];
+
+        return allEntities;
+    }
+
+    public virtual void UpdateEntity ()
+    {
+        Debug.Log("Je m'update, mdr.");
+    }
+
+}
