@@ -25,6 +25,5 @@ public class DrawableEntity : Entity {
 
     public override void UpdateEntity()
     {
-        Debug.Log("Moi aussi lol.");
     }
 }

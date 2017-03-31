@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Entity : MonoBehaviour {
+public class Entity  {
 
     private static List<Entity> EntityList = new List<Entity>();
     private static int lastID = 0;
@@ -38,16 +38,11 @@ public class Entity : MonoBehaviour {
 
     public static Entity[] GetAllEntities()
     {
-        Entity[] allEntities = new Entity[EntityList.Count];
-        for (int i = 0; i < EntityList.Count; i++)
-            allEntities[i] = EntityList[i];
-
-        return allEntities;
+        return EntityList.ToArray();
     }
 
     public virtual void UpdateEntity ()
     {
-        Debug.Log("Je m'update, mdr.");
     }
 
 }
