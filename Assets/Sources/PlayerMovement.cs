@@ -1,37 +1,19 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Animations;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour {
 
-    public Animator animations;
-
 
 	void Start () {
-        animations = gameObject.GetComponent<Animator>();
+        
 	}
 	
 	void Update () {
 
-        if (Input.GetKey(KeyCode.Z))
-        {
-            animations.CrossFade("MoveForward", 0.1f);
-        }
-
-        if (Input.GetKey(KeyCode.S))
-        {
-            animations.CrossFade("MoveBack", 0.1f);
-        }
-
-        if (Input.GetKey(KeyCode.Q))
-        {
-            animations.CrossFade("MoveLeft", 0.1f);
-        }
-
-        if (Input.GetKey(KeyCode.D))
-        {
-            animations.CrossFade("MoveRight", 0.1f);
-        }
+        transform.GetComponent<Animator>().SetFloat("ForwardBackward", Input.GetAxis("Vertical"));
+        transform.GetComponent<Animator>().SetFloat("LeftRight", Input.GetAxis("Horizontal"));
 
 
 	}
