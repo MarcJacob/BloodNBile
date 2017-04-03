@@ -1,7 +1,7 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BloodNBile", "Assembly-CSharp.csproj", "{B4428B16-1A49-CD95-55B3-25162574A27C}"
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2015
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BloodNBile", "BloodNBile.csproj", "{F91A14FC-8AF2-E83A-59DF-09345C358F59}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,15 +9,12 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B4428B16-1A49-CD95-55B3-25162574A27C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B4428B16-1A49-CD95-55B3-25162574A27C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B4428B16-1A49-CD95-55B3-25162574A27C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B4428B16-1A49-CD95-55B3-25162574A27C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F91A14FC-8AF2-E83A-59DF-09345C358F59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F91A14FC-8AF2-E83A-59DF-09345C358F59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F91A14FC-8AF2-E83A-59DF-09345C358F59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F91A14FC-8AF2-E83A-59DF-09345C358F59}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = Assembly-CSharp.csproj
 	EndGlobalSection
 EndGlobal
