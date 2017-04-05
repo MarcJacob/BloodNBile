@@ -8,12 +8,10 @@ using UnityEngine;
 public class EntityRenderer : MonoBehaviour {
 
     DrawableEntity[] Entities; // Ensemble des entités que le Renderer "connait". Est mit à jour par le serveur.
+    Camera Cam; // Caméra relié au client actuel.
 	void Start () {
-        Entities = new DrawableEntity[]
-        {
-            new DrawableEntity(new Vector3(0f, 0f, 0f), Quaternion.identity, "Test Entity", 0, 2f),
-            new DrawableEntity(new Vector3(10f, 0f, 0f), Quaternion.identity, "Test Entity 2", 0, 2f)
-        };
+        Cam = Camera.main;
+        Entities = new DrawableEntity[] { new DrawableEntity(Vector3.zero, Quaternion.identity, "Test", 0, 1f) };
 	}
 
     public void UpdateEntities(DrawableEntity[] entities) // Mise à jour des entités.
@@ -23,10 +21,13 @@ public class EntityRenderer : MonoBehaviour {
 
 	void Update () {
         // Afficher les entités.
-        foreach (DrawableEntity entity in Entities)
+        if (Entities != null)
         {
-            CurrentlyRendered = entity;
-            RenderMesh();
+            foreach (DrawableEntity entity in Entities)
+            {
+                CurrentlyRendered = entity;
+                RenderMesh();
+            }
         }
 	}
 
@@ -35,22 +36,15 @@ public class EntityRenderer : MonoBehaviour {
     private void RenderMesh()
     {
         if (CurrentlyRendered == null) return; // S'il n'y a pas d'entité dans CurrentlyRenderer, alors on n'exécute pas le corps de cette méthode.
-
-        Graphics.DrawMesh(Model.GetModels()[CurrentlyRendered.MeshID].ModelMesh, CurrentlyRendered.Pos, CurrentlyRendered.Rot, Model.GetModels()[CurrentlyRendered.MeshID].ModelMaterial, 0);
-
+        int LODLevel = DetermineLOD();
+        if (LODLevel >= Model.GetModels()[CurrentlyRendered.MeshID].ModelMeshs.Length) return; // Si il n'y a pas assez de niveaux de détails pour une telle distance alors on n'affiche pas l'entité.
+        Graphics.DrawMesh(Model.GetModels()[CurrentlyRendered.MeshID].ModelMeshs[DetermineLOD()], CurrentlyRendered.Pos, CurrentlyRendered.Rot, Model.GetModels()[CurrentlyRendered.MeshID].ModelMaterial, 0);
     }
-
-    private void OnGUI()
+    public int DistPerLOD = 50*50; // Distance séparant chaque changement de LOD. La distance maximale d'affichage est donc nombre de LOD * DistPerLOD.
+    private int DetermineLOD()
     {
-        Camera cam = Camera.main;
-
-        foreach (DrawableEntity entity in Entities)
-        {
-            Vector2 screenPos = cam.WorldToScreenPoint(entity.Pos + new Vector3(0f, entity.Size, 0f));
-            // Correction de la position sur l'axe vertical
-            screenPos = new Vector2(screenPos.x, Mathf.Abs(screenPos.y - Screen.height));
-            if (screenPos.y < Screen.height / 2 + 50 && screenPos.x < Screen.width / 2 + 50 && screenPos.y > Screen.height / 2 - 50 && screenPos.x > Screen.width / 2 - 50)
-                GUI.TextArea(new Rect(screenPos + new Vector2(-entity.Name.Length*5, entity.Size), new Vector2(100f, 50f)), entity.Name);
-        }
+        float dist = (CurrentlyRendered.Pos - Cam.transform.position).sqrMagnitude;
+        int LODLevel = (int)dist / DistPerLOD;
+        return LODLevel;
     }
 }

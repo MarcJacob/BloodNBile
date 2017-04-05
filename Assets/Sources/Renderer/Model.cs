@@ -8,7 +8,7 @@ using UnityEngine;
 public class Model  {
 
     private int ID; // Identifiant de ce modèle.
-    public Mesh ModelMesh { get; private set; } // Mesh associé à ce modèle.
+    public Mesh[] ModelMeshs { get; private set; } // Mesh associé à ce modèle. ModelMeshs[0] = modèle normal. Au dessus de ça chaque nouveau mesh représente un LOD tous les 50 mètres * la taille de l'entité.
     public Material ModelMaterial { get; private set; } // Material associé à ce modèle.
     /// <summary>
     /// Animations associées à ce modèle.
@@ -36,6 +36,7 @@ public class Model  {
         {
             // Tous les objets "Models" sont crées ici.
             CreateModel(0, "Model_Test","Tex_Test", new string[0]),
+            CreateModel(1, "Model_Test2", "Tex_Test", new string[0]),
         };
     }
 
@@ -46,9 +47,24 @@ public class Model  {
     /// <param name="animations"> Nom des animations dans les Assets </param>
     private static Model CreateModel(int ID, string modelMesh, string material, string[] animations)
     {
-        GameObject go = GameObject.Instantiate(Resources.Load("Models/" + modelMesh + "/" + modelMesh) as GameObject);
-        Mesh mesh = go.GetComponent<MeshFilter>().mesh;
-        GameObject.Destroy(go);
+        // Trouver combien de niveaux de LOD il existe pour ce modèle.
+        int nbrLOD = 0;
+        while(Resources.Load("Models/" + modelMesh + "/" + modelMesh + "_LOD_" + (nbrLOD+1)) as GameObject != null)
+        {
+            nbrLOD++;
+        }
+        Mesh[] meshes = new Mesh[1 + nbrLOD];
+        // Chargement des modèles : on instancie un GameObject avec le modèle, on extrait son Mesh et on le détruit.
+        for(int i = 0; i < meshes.Length; i++)
+        {
+            GameObject go;
+            if (i > 0)
+                go = GameObject.Instantiate(Resources.Load("Models/" + modelMesh + "/" + modelMesh + "_LOD_" + i) as GameObject);
+            else
+                go = GameObject.Instantiate(Resources.Load("Models/" + modelMesh + "/" + modelMesh) as GameObject);
+            meshes[i] = go.GetComponent<MeshFilter>().mesh;
+            GameObject.Destroy(go);
+        }
         List<AnimationClip> modelAnimations = new List<AnimationClip>();
         foreach(string name in animations)
         {
@@ -56,13 +72,13 @@ public class Model  {
         }
         Material mat = Resources.Load("Models/" + modelMesh + "/Materials/" + material) as Material;
 
-        return new Model(ID, mesh, mat, modelAnimations.ToArray());
+        return new Model(ID, meshes, mat, modelAnimations.ToArray());
     }
 
-    private Model(int id, Mesh modelMesh, Material mat, AnimationClip[] animations)
+    private Model(int id, Mesh[] modelMeshs, Material mat, AnimationClip[] animations)
     {
         this.ID = id;
-        this.ModelMesh = modelMesh;
+        this.ModelMeshs = modelMeshs;
         this.Animations = animations;
         this.ModelMaterial = mat;
     }
