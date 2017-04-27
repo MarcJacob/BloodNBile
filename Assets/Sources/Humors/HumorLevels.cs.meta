@@ -1,6 +1,11 @@
 fileFormatVersion: 2
+<<<<<<< HEAD:Assets/Sources/Humors/HumorLevels.cs.meta
 guid: a3ea1c0a3ff126e4ebaf72442cb6e273
 timeCreated: 1491143186
+=======
+guid: 940f669fb7c8b6141a13b9f7770b9760
+timeCreated: 1493324819
+>>>>>>> Trunk-Marc:Assets/Sources/Humors/HumorLevels.cs.meta
 licenseType: Free
 MonoImporter:
   serializedVersion: 2

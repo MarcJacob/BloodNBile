@@ -1,6 +1,11 @@
 fileFormatVersion: 2
+<<<<<<< HEAD:Assets/Sources/Entities/DrawableEntity.cs.meta
 guid: 9dcfd5fe61666ee489b70d8b1da027c9
 timeCreated: 1491143186
+=======
+guid: 3abca6fa63b547846b234c9d848cb05d
+timeCreated: 1493324819
+>>>>>>> Trunk-Marc:Assets/Sources/Entities/DrawableEntity.cs.meta
 licenseType: Free
 MonoImporter:
   serializedVersion: 2

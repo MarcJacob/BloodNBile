@@ -1,6 +1,11 @@
 fileFormatVersion: 2
+<<<<<<< HEAD:Assets/Sources/PlayerControl/CameraControl.cs.meta
 guid: 5ab490534c7dc914eaadfb003d385013
 timeCreated: 1491143186
+=======
+guid: 7c8487155b2c9394b95ea052d48e6936
+timeCreated: 1493324819
+>>>>>>> Trunk-Marc:Assets/Sources/PlayerControl/CameraControl.cs.meta
 licenseType: Free
 MonoImporter:
   serializedVersion: 2

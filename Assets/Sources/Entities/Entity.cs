@@ -1,26 +1,23 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
+[Serializable]
 public class Entity  {
 
-    private static List<Entity> EntityList = new List<Entity>();
-    private static int lastID = 0;
-
     public int ID { get; private set; }
-    public Vector3 Pos { get; private set; }
-    public Quaternion Rot { get; private set; }
+    public SerializableVector3 Pos { get; private set; }
+    public SerializableQuaternion Rot { get; private set; }
     public string Name { get; private set; }
 
 
-    public Entity(Vector3 pos, Quaternion rot, string name)
+    public Entity(int ID, Vector3 pos, Quaternion rot, string name)
     {
+        this.ID = ID;
         Pos = pos;
         Rot = rot;
         Name = name;
-        ID = lastID;
-        lastID++;
-        EntityList.Add(this);
     }
 
     // Use this for initialization
@@ -31,18 +28,15 @@ public class Entity  {
 	void Update () {
     }
 
+    public bool Alive = true;
     public void Die()
     {
-        EntityList.Remove(this);
-    }
-
-    public static Entity[] GetAllEntities()
-    {
-        return EntityList.ToArray();
+        Alive = false;
     }
 
     public virtual void UpdateEntity ()
     {
+
     }
 
 }

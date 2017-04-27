@@ -3,27 +3,34 @@ using System.Collections.Generic;
 using UnityEditor.Animations;
 using UnityEngine;
 
-public class PlayerMovement : MonoBehaviour
-{
+public class PlayerMovement : MonoBehaviour {
 
-    public bool RootMotion = false;
-    public float Speed = 10f;
-    void Start()
+
+	void Start () {
+        
+	}
+	
+
+	void Update () {
+
+        if (Input.GetAxis("Vertical") != 0)
+        {
+            MoveForwardBackward(Input.GetAxis("Vertical"));
+        }
+
+        if (Input.GetAxis("Horizontal") != 0)
+        {
+            MoveLeftRight(Input.GetAxis("Horizontal"));
+        }
+    }
+
+    void MoveForwardBackward(float axis)
     {
 
     }
 
-    void Update()
+    void MoveLeftRight(float axis)
     {
-        if (RootMotion == true)
-        {
-            transform.GetComponent<Animator>().SetFloat("ForwardBackward", Input.GetAxis("Vertical"));
-            transform.GetComponent<Animator>().SetFloat("LeftRight", Input.GetAxis("Horizontal"));
-        }
-        else
-        {
-            transform.Translate(Input.GetAxis("Horizontal") * Time.deltaTime * Speed, 0f, Input.GetAxis("Vertical") * Time.deltaTime * Speed, Space.Self);
-        }
 
     }
 }

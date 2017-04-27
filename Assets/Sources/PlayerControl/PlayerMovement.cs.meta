@@ -1,6 +1,11 @@
 fileFormatVersion: 2
+<<<<<<< HEAD:Assets/Sources/PlayerControl/PlayerMovement.cs.meta
 guid: d40860ace6421af4896d48275c175993
 timeCreated: 1491167753
+=======
+guid: 20fd5f645dec50144aba5443d3d608d2
+timeCreated: 1493324819
+>>>>>>> Trunk-Marc:Assets/Sources/PlayerControl/PlayerMovement.cs.meta
 licenseType: Free
 MonoImporter:
   serializedVersion: 2

@@ -1,7 +1,13 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
 guid: 179a4f1ed92bd324f878f9028c68630a
 folderAsset: yes
 timeCreated: 1491143185
+=======
+guid: 9cb36f42fa8f9e5498ab677a059a2bc0
+folderAsset: yes
+timeCreated: 1493324819
+>>>>>>> Trunk-Marc
 licenseType: Free
 DefaultImporter:
   userData: 

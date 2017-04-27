@@ -1,6 +1,11 @@
 fileFormatVersion: 2
+<<<<<<< HEAD:Assets/Sources/Humors/IHumorEntity.cs.meta
 guid: a065fee4f7c82154f831a523a59f10be
 timeCreated: 1491143186
+=======
+guid: f298350085784bf4bb4ff2c783a1ffec
+timeCreated: 1493324819
+>>>>>>> Trunk-Marc:Assets/Sources/Humors/IHumorEntity.cs.meta
 licenseType: Free
 MonoImporter:
   serializedVersion: 2
