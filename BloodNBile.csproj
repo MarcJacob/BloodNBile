@@ -82,10 +82,13 @@
     <Compile Include="Assets\Sources\Humors\IHumorEntity.cs" />
     <Compile Include="Assets\Sources\Misc\SerializableQuaternion.cs" />
     <Compile Include="Assets\Sources\Misc\SerializableVector3.cs" />
+    <Compile Include="Assets\Sources\Networking\BnBClient.cs" />
+    <Compile Include="Assets\Sources\Networking\NetworkSocketInfo.cs" />
     <Compile Include="Assets\Sources\PlayerControl\CameraControl.cs" />
     <Compile Include="Assets\Sources\PlayerControl\PlayerMovement.cs" />
     <Compile Include="Assets\Sources\Renderer\EntityRenderer.cs" />
     <Compile Include="Assets\Sources\Renderer\Model.cs" />
+    <Compile Include="Assets\Sources\UI\ClientUIManager.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />

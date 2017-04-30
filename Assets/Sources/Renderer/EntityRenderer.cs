@@ -11,7 +11,6 @@ public class EntityRenderer : MonoBehaviour {
     Camera Cam; // Caméra relié au client actuel.
 	void Start () {
         Cam = Camera.main;
-        Entities = new DrawableEntity[] { new DrawableEntity(Vector3.zero, Quaternion.identity, "Test", 0, 1f) };
 	}
 
     public void UpdateEntities(DrawableEntity[] entities) // Mise à jour des entités.
