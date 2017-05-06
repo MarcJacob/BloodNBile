@@ -1,0 +1,137 @@
+Initialize engine version: 5.5.0f3 (38b4efef76f0)
+GfxDevice: creating device client; threaded=1
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.0]
+    Renderer: NVIDIA GeForce GTX 1070 (ID=0x1b81)
+    Vendor:   NVIDIA
+    VRAM:     3072 MB
+    Driver:   21.21.13.7892
+Begin MonoManager ReloadAssembly
+Platform assembly: C:\Users\march\Documents\GitHub\BloodNBile\Client_Data\Managed\UnityEngine.dll (this message is harmless)
+Loading C:\Users\march\Documents\GitHub\BloodNBile\Client_Data\Managed\UnityEngine.dll into Unity Child Domain
+Platform assembly: C:\Users\march\Documents\GitHub\BloodNBile\Client_Data\Managed\Assembly-CSharp.dll (this message is harmless)
+Loading C:\Users\march\Documents\GitHub\BloodNBile\Client_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
+Platform assembly: C:\Users\march\Documents\GitHub\BloodNBile\Client_Data\Managed\UnityEngine.UI.dll (this message is harmless)
+Loading C:\Users\march\Documents\GitHub\BloodNBile\Client_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
+Platform assembly: C:\Users\march\Documents\GitHub\BloodNBile\Client_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
+Loading C:\Users\march\Documents\GitHub\BloodNBile\Client_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
+Platform assembly: C:\Users\march\Documents\GitHub\BloodNBile\Client_Data\Managed\UnityEngine.PlaymodeTestsRunner.dll (this message is harmless)
+Loading C:\Users\march\Documents\GitHub\BloodNBile\Client_Data\Managed\UnityEngine.PlaymodeTestsRunner.dll into Unity Child Domain
+- Completed reload, in  0.028 seconds
+Platform assembly: C:\Users\march\Documents\GitHub\BloodNBile\Client_Data\Managed\System.Core.dll (this message is harmless)
+Platform assembly: C:\Users\march\Documents\GitHub\BloodNBile\Client_Data\Managed\System.dll (this message is harmless)
+desktop: 2560x1440 59Hz; virtual: 2560x1440 at 0,0
+<RI> Initializing input.
+<RI> Input initialized.
+<RI> Initialized touch support.
+Initialize engine version: 5.5.0f3 (38b4efef76f0)
+GfxDevice: creating device client; threaded=1
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.0]
+    Renderer: NVIDIA GeForce GTX 1070 (ID=0x1b81)
+    Vendor:   NVIDIA
+    VRAM:     3072 MB
+    Driver:   21.21.13.7892
+Begin MonoManager ReloadAssembly
+Platform assembly: C:\Users\march\Documents\GitHub\BloodNBile\Client_Data\Managed\UnityEngine.dll (this message is harmless)
+Loading C:\Users\march\Documents\GitHub\BloodNBile\Client_Data\Managed\UnityEngine.dll into Unity Child Domain
+Platform assembly: C:\Users\march\Documents\GitHub\BloodNBile\Client_Data\Managed\Assembly-CSharp.dll (this message is harmless)
+Loading C:\Users\march\Documents\GitHub\BloodNBile\Client_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
+Platform assembly: C:\Users\march\Documents\GitHub\BloodNBile\CliUnt_nloadTanea 0.921294 msine.UI.dll (this message is harmless)
+Loading C:\Users\march\Documents\GitHub\BloodNBile\Client_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
+Platform assembly: C:\Users\march\Documents\GitHub\BloodNBile\Client_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
+Loading C:\Users\march\Documents\GitHub\BloodNBile\Client_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
+Platform assembly: C:\Users\march\Documents\GitHub\BloodNBile\Client_Data\Managed\UnityEngine.PlaymodeTestsRunner.dll (this message is harmless)
+Loading C:\Users\march\Documents\GitHub\BloodNBile\Client_Data\Managed\UnityEngine.PlaymodeTestsRunner.dll into Unity Child Domain
+- Completed reload, in  0.021 seconds
+Platform assembly: C:\Users\march\Documents\GitHub\BloodNBile\Client_Data\Managed\System.Core.dll (this message is harmless)
+Platform assembly: C:\Users\march\Documents\GitHub\BloodNBile\Client_Data\Managed\System.dll (this message is harmless)
+desktop: 2560x1440 59Hz; virtual: 2560x1440 at 0,0
+<RI> Initializing input.
+<RI> Input initialized.
+<RI> Initialized touch support.
+Setting up 2 worker threads for Enlighten.
+  Thread -> id: 9cc -> priority: 1 
+  Thread -> id: 120c -> priority: 1 
+UnloadTime: 0.977757 ms
+Setting up 2 worker threads for Enlighten.
+  Thread -> id: 1750 -> priority: 1 
+  Thread -> id: 3998 -> priority: 1 
+Initialize engine version: 5.5.0f3 (38b4efef76f0)
+GfxDevice: creating device client; threaded=1
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.0]
+    Renderer: NVIDIA GeForce GTX 1070 (ID=0x1b81)
+    Vendor:   NVIDIA
+    VRAM:     3072 MB
+    Driver:   21.21.13.7892
+Begin MonoManager ReloadAssembly
+Platform assembly: C:\Users\march\Documents\GitHub\BloodNBile\Client_Data\Managed\UnityEngine.dll (this message is harmless)
+Loading C:\Users\march\Documents\GitHub\BloodNBile\Client_Data\Managed\UnityEngine.dll into Unity Child Domain
+Platform assembly: C:\Users\march\Documents\GitHub\BloodNBile\Client_Data\Managed\Assembly-CSharp.dll (this message is harmless)
+Loading C:\Users\march\Documents\GitHub\BloodNBile\Client_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
+Platform assembly: C:\Users\march\Documents\GitHub\BloodNBile\Client_Data\Managed\UnityEngine.UI.dll (this message is harmless)
+Loading C:\Users\march\Documents\GitHub\BloodNBile\Client_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
+Platform assembly: C:\Users\march\Documents\GitHub\BloodNBile\Client_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
+Loading C:\Users\march\Documents\GitHub\BloodNBile\Client_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
+Platform assembly: C:\Users\march\Documents\GitHub\BloodNBile\Client_Data\Managed\UnityEngine.PlaymodeTestsRunner.dll (this message is harmless)
+Loading C:\Users\march\Documents\GitHub\BloodNBile\Client_Data\Managed\UnityEngine.PlaymodeTestsRunner.dll into Unity Child Domain
+- Completed reload, in  0.021 seconds
+Platform assembly: C:\Users\march\Documents\GitHub\BloodNBile\Client_Data\Managed\System.Core.dll (this message is harmless)
+Platform assembly: C:\Users\march\Documents\GitHub\BloodNBile\Client_Data\Managed\System.dll (this message is harmless)
+desktop: 2560x1440 59Hz; virtual: 2560x1440 at 0,0
+<RI> Initializing input.
+<RI> Input initialized.
+<RI> Initialized touch support.
+UnloadTime: 0.951441 ms
+Setting up 2 worker threads for Enlighten.
+  Thread -> id: ef8 -> priority: 1 
+  Thread -> id: 3c28 -> priority: 1 
+Demande de connection envoyée !
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+Nouvelle connexion ! ID : 1
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+Connection ID enregitrée : 1
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+Connecté au Master Server ! Envoi des données client. ID de la connection : 1
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+Demande de connection envoyée !
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+Nouvelle connexion ! ID : 1
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+Connection ID enregitrée : 1
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+Connecté au Master Server ! Envoi des données client. ID de la connection : 1
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+Fermeture de la connexion ID : 1
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+Fermeture de la connexion ID : 1
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+Connexion fermée ! ID : 1
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+Connection lost !
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+

@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
-using UnityEngine.Networking;
+using System;
 
 public class BnBClient : MonoBehaviour
 {
@@ -39,16 +39,25 @@ public class BnBClient : MonoBehaviour
             Debug.Log("Nom d'utilisateur non spécifié !");
             return;
         }
-        byte error;
-        NetworkTransport.Connect(NetworkInfo.HostID, IP, Port, 0, out error);
-        if ((NetworkError)error != NetworkError.Ok)
+        if (NetworkInfo.Connect(IP, Port))
         {
-            Debug.Log("Erreur lors de la connexion au Master Server ! Type d'erreur : " + (NetworkError)error);
+            UIManager.SwitchToUI("MatchSearchUI");
+            UIManager.BindButtonToFunction("CancelMatchSearchButton", Reset);
         }
-        else
-        {
-            Connected = true;
-        }
+    }
+
+    public void OnConnectionEstablished(int coID)
+    {
+        Debug.Log("Connecté au Master Server ! Envoi des données client. ID de la connection : " + coID);
+        NetworkInfo.RegisterConnectionID(coID);
+        Connected = true;
+        new NetworkMessage(0, Username).Send(NetworkInfo, coID);
+    }
+
+    public void OnConnectionLost(int coID)
+    {
+        Reset();
+        Debug.Log("Connection lost !");
     }
 
     /// <summary>
@@ -56,6 +65,8 @@ public class BnBClient : MonoBehaviour
     /// </summary>
     private void Reset()
     {
+        if (NetworkInfo.IsConnected())
+        NetworkInfo.Disconnect(0);
         Connected = false;
         InAMatch = false;
         Username = "";
@@ -67,12 +78,49 @@ public class BnBClient : MonoBehaviour
     {
         NetworkInfo = new NetworkSocketInfo(1);
         UIManager = GetComponent<ClientUIManager>();
+        NetworkListener.RegisterOnConnectionCallback(OnConnectionEstablished);
+        NetworkListener.RegisterOnDisconnectionCallback(OnConnectionLost);
+        NetworkListener.AddHandler(4, WaitingForPlayersHandler);
+        NetworkListener.AddHandler(1, MatchStartingHandler);
+        NetworkListener.AddHandler(3, MatchEndedHandler);
+        Reset();
+    }
+
+    void PlayerReady()
+    {
+        new NetworkMessage(2, true).Send(NetworkInfo, NetworkInfo.ConnectionIDs[0]);
+    }
+
+    bool WaitingForPlayerUIReady = false;
+    void WaitingForPlayersHandler(NetworkMessageReceiver message)
+    {
+        if (WaitingForPlayerUIReady == false)
+        {
+            UIManager.SwitchToUI("MatchFoundUI");
+            UIManager.BindButtonToFunction("ReadyButton", PlayerReady);
+        }
+        ServerClientInfo[] players = (message.ReceivedMessage.Content as object[])[0] as ServerClientInfo[];
+        bool[] playersReady = (message.ReceivedMessage.Content as object[])[1] as bool[];
+    }
+
+    void MatchStartingHandler(NetworkMessageReceiver message)
+    {
+        UIManager.SwitchToUI("MatchUI");
+    }
+
+    void MatchEndedHandler(NetworkMessageReceiver message)
+    {
         Reset();
     }
 
     private void Update()
     {
+        NetworkListener.Listen();
+    }
 
+    private void OnApplicationQuit()
+    {
+        Reset();
     }
 
 }
