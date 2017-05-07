@@ -22,7 +22,7 @@ public class EntityManager : MonoBehaviour {
         ConvertSpell YellowToPhlegm = new ConvertSpell(3, 20, 5, 1);
         ConvertSpell YellowToBlack = new ConvertSpell(3, 20, 5, 2);
 
-        mage = new Mage(Vector3.zero, Quaternion.identity, "Loul", loul);
+        mage = new Mage(new Vector3(2,2,2), Quaternion.identity, "Loul", loul);
 
         mage.Cast(BloodToPhlegm);
         mage.Cast(PhlegmToBlack);

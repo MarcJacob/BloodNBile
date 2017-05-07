@@ -84,6 +84,7 @@
     <Compile Include="Assets\Sources\Entities\Mage.cs" />
     <Compile Include="Assets\Sources\Humors\HumorLevels.cs" />
     <Compile Include="Assets\Sources\Humors\IHumorEntity.cs" />
+    <Compile Include="Assets\Sources\MageGameObject.cs" />
     <Compile Include="Assets\Sources\PlayerControl\CameraControl.cs" />
     <Compile Include="Assets\Sources\PlayerControl\PlayerMovement.cs" />
     <Compile Include="Assets\Sources\Spells\AbsorptionSpell.cs" />
