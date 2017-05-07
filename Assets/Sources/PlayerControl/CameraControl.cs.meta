@@ -1,5 +1,6 @@
 fileFormatVersion: 2
 <<<<<<< HEAD
+<<<<<<< HEAD
 <<<<<<< HEAD:Assets/Sources/PlayerControl/CameraControl.cs.meta
 guid: 5ab490534c7dc914eaadfb003d385013
 timeCreated: 1491143186
@@ -11,6 +12,10 @@ timeCreated: 1493324819
 guid: cc153745d2e1bfe4e8d50b7a191cea5d
 timeCreated: 1491215916
 >>>>>>> origin/Trunk-Manu
+=======
+guid: c54a38c3a8ed781468e11eeceb1f4c13
+timeCreated: 1492268879
+>>>>>>> origin/SandBox-Ilan
 licenseType: Free
 MonoImporter:
   serializedVersion: 2

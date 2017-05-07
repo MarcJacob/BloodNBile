@@ -1,16 +1,6 @@
 fileFormatVersion: 2
-<<<<<<< HEAD
-<<<<<<< HEAD:Assets/Sources/Entities/EntityManager.cs.meta
-guid: 83e61177ec48ad240b8cd6f1ac659ffe
-timeCreated: 1491143186
-=======
-guid: 6ba5d24a77276894aa0f4fdef609e8c7
-timeCreated: 1493324819
->>>>>>> Trunk-Marc:Assets/Sources/Entities/EntityManager.cs.meta
-=======
-guid: 80dc03fe66455594ba5ae90c1cb4a061
-timeCreated: 1491215916
->>>>>>> origin/Trunk-Manu
+guid: 547a81e285ff19849ba64a663e499d6f
+timeCreated: 1494199631
 licenseType: Free
 MonoImporter:
   serializedVersion: 2

@@ -46,6 +46,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+<<<<<<< HEAD
      <Compile Include="Assets\Sources\Entities\DrawableEntity.cs" />
      <Compile Include="Assets\Sources\Entities\EntityManager.cs" />
      <Compile Include="Assets\Sources\Entities\Faction.cs" />
@@ -57,6 +58,10 @@
      <Compile Include="Assets\Sources\Map\Cells.cs" />
      <Compile Include="Assets\Sources\PlayerControl\CameraControl.cs" />
      <Compile Include="Assets\Sources\PlayerControl\PlayerMovement.cs" />
+=======
+     <Compile Include="Assets\Sources\CameraControl.cs" />
+     <Compile Include="Assets\Sources\PlayerMovement.cs" />
+>>>>>>> origin/SandBox-Ilan
  <Reference Include="UnityEngine.UI">
  <HintPath>D:/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>

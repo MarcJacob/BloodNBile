@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public struct HumorLevels {
+public class HumorLevels {
     
     public int Blood { get; private set; }
     public int Phlegm { get; private set; }
@@ -18,7 +18,7 @@ public struct HumorLevels {
     }
 
 
-    /// <summary>int 
+    /// <summary>
     /// Add a certain quantity of a humor.
     /// </summary>
     /// <param name="humor">ID number of the humor : 0-Blood, 1-Phlegm, 2-Black Bile, 3-Yellow Bile</param>

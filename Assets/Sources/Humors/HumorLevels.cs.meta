@@ -1,16 +1,6 @@
 fileFormatVersion: 2
-<<<<<<< HEAD
-<<<<<<< HEAD:Assets/Sources/Humors/HumorLevels.cs.meta
-guid: a3ea1c0a3ff126e4ebaf72442cb6e273
-timeCreated: 1491143186
-=======
-guid: 940f669fb7c8b6141a13b9f7770b9760
-timeCreated: 1493324819
->>>>>>> Trunk-Marc:Assets/Sources/Humors/HumorLevels.cs.meta
-=======
-guid: c17884ffd58df6444ae7cbe1daa7451c
-timeCreated: 1491215916
->>>>>>> origin/Trunk-Manu
+guid: 77472620887768d45a394a8fe1efc51a
+timeCreated: 1494199631
 licenseType: Free
 MonoImporter:
   serializedVersion: 2

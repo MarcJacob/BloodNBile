@@ -1,16 +1,6 @@
 fileFormatVersion: 2
-<<<<<<< HEAD
-<<<<<<< HEAD:Assets/Sources/Entities/DrawableEntity.cs.meta
-guid: 9dcfd5fe61666ee489b70d8b1da027c9
-timeCreated: 1491143186
-=======
-guid: 3abca6fa63b547846b234c9d848cb05d
-timeCreated: 1493324819
->>>>>>> Trunk-Marc:Assets/Sources/Entities/DrawableEntity.cs.meta
-=======
-guid: 7301ff72a40a22a40881b8063ad868e0
-timeCreated: 1491215915
->>>>>>> origin/Trunk-Manu
+guid: 537f93bd06088d34e9e651106c54809b
+timeCreated: 1494199631
 licenseType: Free
 MonoImporter:
   serializedVersion: 2

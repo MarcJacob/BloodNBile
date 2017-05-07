@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraControl : MonoBehaviour {
+public class CameraControl : MonoBehaviour
+{
 
     public float mouseSpeed = 1f;
 
@@ -14,7 +15,8 @@ public class CameraControl : MonoBehaviour {
 
     bool Menu = false;
 
-	void Start () {
+    void Start()
+    {
 
         transform.parent = pivot.transform;
         pivot.transform.parent = player.transform;
@@ -24,8 +26,9 @@ public class CameraControl : MonoBehaviour {
         Menu = false;
 
     }
-	
-	void Update () {
+
+    void Update()
+    {
 
         if (Menu == false)
         {
@@ -42,34 +45,34 @@ public class CameraControl : MonoBehaviour {
                 pivot.transform.Rotate(cameraRotation);
             }
         }
-            
+
         cameraRotation = new Vector3(-Input.GetAxis("Mouse Y") * 0.5f * mouseSpeed, 0, 0);
-        
+
         pivot.transform.Rotate(cameraRotation);
 
 
-       if (pivot.transform.localRotation.x < -0.2f) 
+        if (pivot.transform.localRotation.x < -0.2f)
         {
             pivot.transform.localRotation = new Quaternion(-0.2f, pivot.transform.localRotation.y, pivot.transform.localRotation.z, pivot.transform.localRotation.w);
         }
 
-       if (pivot.transform.localRotation.x > 0.5f) 
+        if (pivot.transform.localRotation.x > 0.5f)
         {
             pivot.transform.localRotation = new Quaternion(0.5f, pivot.transform.localRotation.y, pivot.transform.localRotation.z, pivot.transform.localRotation.w);
         }
 
-       if (Input.GetKeyDown(KeyCode.Tab) && Menu == true)
-       {
+        if (Input.GetKeyDown(KeyCode.Tab) && Menu == true)
+        {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
             Menu = false;
-       }
-       else if (Input.GetKeyDown(KeyCode.Tab))
-       {
+        }
+        else if (Input.GetKeyDown(KeyCode.Tab))
+        {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
             Menu = true;
-       }
+        }
 
-	}
+    }
 }

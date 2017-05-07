@@ -1,5 +1,6 @@
 fileFormatVersion: 2
 <<<<<<< HEAD
+<<<<<<< HEAD
 <<<<<<< HEAD:Assets/Sources/PlayerControl/PlayerMovement.cs.meta
 guid: d40860ace6421af4896d48275c175993
 timeCreated: 1491167753
@@ -11,6 +12,10 @@ timeCreated: 1493324819
 guid: 406a84f64e285c04da252aa4dc61c742
 timeCreated: 1491215915
 >>>>>>> origin/Trunk-Manu
+=======
+guid: cf919491663f67d40802d8f745dfbfc9
+timeCreated: 1492268879
+>>>>>>> origin/SandBox-Ilan
 licenseType: Free
 MonoImporter:
   serializedVersion: 2
