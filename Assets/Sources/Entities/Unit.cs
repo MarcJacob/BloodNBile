@@ -26,7 +26,7 @@ public class Unit : DrawableEntity {
             Cells.cells[x, y].Add(this);
     }
 
-    protected void removeFromCell(int x, int y)
+    public void removeFromCell(int x, int y)
     {
         int i = 0;
         foreach (Humorling h in Cells.cells[x, y])
@@ -59,6 +59,11 @@ public class Unit : DrawableEntity {
     public void RemoveHP(int healPoints)
     {
         this.HealPoints -= healPoints;
+    }
+
+    public int GetHealPoints()
+    {
+        return HealPoints;
     }
 
 

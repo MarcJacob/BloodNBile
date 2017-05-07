@@ -170,6 +170,12 @@ public class Humorling : Unit {
             else if (TimerAttack <= 0)
             {
                 attack(Target);
+                if (Target.GetHealPoints() <= 0)
+                {
+                    Target.Die();
+                    Target.removeFromCell(getUnitPositionX(), getUnitPositionY());
+                    Target = null;
+                }
                 TimerAttack = TimerAttackDuration;
             }
         }
