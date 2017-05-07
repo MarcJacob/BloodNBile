@@ -76,10 +76,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Sources\Entities\DrawableEntity.cs" />
-    <Compile Include="Assets\Sources\Entities\Entity.cs" />
     <Compile Include="Assets\Sources\Entities\EntityManager.cs" />
+    <Compile Include="Assets\Sources\Entities\Faction.cs" />
+    <Compile Include="Assets\Sources\Entities\Humorling.cs" />
+    <Compile Include="Assets\Sources\Entities\Unit.cs" />
+    <Compile Include="Assets\Sources\Humors\Entity.cs" />
     <Compile Include="Assets\Sources\Humors\HumorLevels.cs" />
     <Compile Include="Assets\Sources\Humors\IHumorEntity.cs" />
+    <Compile Include="Assets\Sources\Map\CellsManager.cs" />
     <Compile Include="Assets\Sources\MatchSystem\BnBMatch.cs" />
     <Compile Include="Assets\Sources\MatchSystem\MatchManager.cs" />
     <Compile Include="Assets\Sources\Misc\SerializableQuaternion.cs" />

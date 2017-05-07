@@ -1,5 +1,6 @@
 fileFormatVersion: 2
 <<<<<<< HEAD
+<<<<<<< HEAD
 guid: 2fbba1a2dc91bfb4f817bac2b267bb90
 folderAsset: yes
 timeCreated: 1491143185
@@ -8,6 +9,11 @@ guid: deb9b8198600159469eb902f0f9c69fe
 folderAsset: yes
 timeCreated: 1493324819
 >>>>>>> Trunk-Marc
+=======
+guid: f20c9033d4ff7064584452e112e93f80
+folderAsset: yes
+timeCreated: 1491215914
+>>>>>>> origin/Trunk-Manu
 licenseType: Free
 DefaultImporter:
   userData: 

@@ -39,4 +39,8 @@ public class Entity  {
 
     }
 
+    public void SetPos(Vector3 vect)
+    {
+        this.Pos = vect;
+    }
 }

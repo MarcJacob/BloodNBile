@@ -25,4 +25,9 @@ public struct SerializableVector3
     {
         return new SerializableVector3(v.x, v.y, v.z);
     }
+
+    public static SerializableVector3 operator +(SerializableVector3 sv1, SerializableVector3 sv2)
+    {
+        return new SerializableVector3(sv1.x + sv2.x, sv1.y + sv2.y, sv1.z + sv2.z);
+    }
 }
