@@ -9,5 +9,13 @@
 2 = Message envoyé du client au serveur pour notifier que le client est prêt.
 3 = Message envoyé aux clients concernés lorsqu'un match est terminé. Contient des informations sur les circonstances de fin de match.
 4 = Message envoyé régulièrement aux joueurs contenant la liste des joueurs participants au match et s'ils sont prêts.
+5 = Message envoyé au début du match à chaque joueur le notifiant de l'ID de l'entité contrôlée par le joueur.
 
 <--------------- Messages de Gameplay ------------------------------------------------->
+
+	<--- Gestion des entités --->
+
+	10 = Message envoyé au client quand une entité est créée.
+	11 = Message envoyé au client quand une entité est détruite.
+	12 = Message envoyé au client quand une unité a commencé à bouger.
+	13 = Message envoyé au client quand une unité a arrêté de bouger.

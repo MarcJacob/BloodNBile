@@ -8,6 +8,7 @@ public class BnBClient : MonoBehaviour
 
     // Propriétés du client
     public string Username; // Nom du client.
+    public GameObject PlayerPrefab;
 
     // ---------
 
@@ -17,6 +18,11 @@ public class BnBClient : MonoBehaviour
     string IP;
     int Port = 25000;
     // ---------
+
+    // Informations sur le match actuel.
+
+    Map CurrentMap;
+    int ControlledEntityID;
 
     // Utilitaires de jeu CLIENT-SIDE
     public ClientUIManager UIManager;
@@ -78,11 +84,26 @@ public class BnBClient : MonoBehaviour
     {
         NetworkInfo = new NetworkSocketInfo(1);
         UIManager = GetComponent<ClientUIManager>();
+        EntityRenderer = gameObject.AddComponent<EntityRenderer>();
+
+        // Handlers
+
         NetworkListener.RegisterOnConnectionCallback(OnConnectionEstablished);
         NetworkListener.RegisterOnDisconnectionCallback(OnConnectionLost);
         NetworkListener.AddHandler(4, WaitingForPlayersHandler);
         NetworkListener.AddHandler(1, MatchStartingHandler);
         NetworkListener.AddHandler(3, MatchEndedHandler);
+        NetworkListener.AddHandler(5, OnControlledEntityReceived);
+        NetworkListener.AddHandler(10, EntityRenderer.AddUnit);
+        NetworkListener.AddHandler(11, EntityRenderer.RemoveUnit);
+        NetworkListener.AddHandler(12, EntityRenderer.OnUnitMovementStarted);
+        NetworkListener.AddHandler(13, EntityRenderer.OnUnitMovementStop);
+
+        //
+
+        // Chargement des maps
+        Map.InitializeMaps();
+        //
         Reset();
     }
 
@@ -106,6 +127,10 @@ public class BnBClient : MonoBehaviour
     void MatchStartingHandler(NetworkMessageReceiver message)
     {
         UIManager.SwitchToUI("MatchUI");
+        CurrentMap = Map.GetMapFromID((int)(message.ReceivedMessage.Content as object[])[0]);
+        // Instanciation de la map
+        CurrentMap.InstantiateMap();
+        
     }
 
     void MatchEndedHandler(NetworkMessageReceiver message)
@@ -113,10 +138,21 @@ public class BnBClient : MonoBehaviour
         Reset();
     }
 
+    void OnControlledEntityReceived(NetworkMessageReceiver message)
+    {
+        Debug.Log("aa");
+        int entityID = (int)message.ReceivedMessage.Content;
+        ControlledEntityID = entityID;
+        GameObject PlayerGO = GameObject.Instantiate(PlayerPrefab);
+        PlayerGO.AddComponent<LinkToEntity>().Initialize(EntityRenderer.GetUnitFromID(entityID), EntityRenderer);
+    }
+
     private void Update()
     {
         NetworkListener.Listen();
     }
+
+    EntityRenderer EntityRenderer;
 
     private void OnApplicationQuit()
     {

@@ -10,26 +10,30 @@ public class Entity  {
     public SerializableVector3 Pos { get; private set; }
     public SerializableQuaternion Rot { get; private set; }
     public string Name { get; private set; }
+    protected int MatchID; // Match dans lequel cette entité se trouve.
 
-
-    public Entity(int ID, Vector3 pos, Quaternion rot, string name)
+    public Entity(BnBMatch Match, int ID, Vector3 pos, Quaternion rot, string name)
     {
         this.ID = ID;
         Pos = pos;
         Rot = rot;
         Name = name;
+        MatchID = Match.ID;
     }
 
-    // Use this for initialization
-    void Start () {
-    }
-	
-	// Update is called once per frame
-	void Update () {
+    public override bool Equals(object u)
+    {
+        Entity e = (Entity)u;
+        if (e == null)
+        {
+            return false;
+        }
+        if (this.ID == e.ID && this.MatchID == e.MatchID) return true;
+        else return false;
     }
 
     public bool Alive = true;
-    public void Die()
+    virtual public void Die()
     {
         Alive = false;
     }
@@ -43,4 +47,6 @@ public class Entity  {
     {
         this.Pos = vect;
     }
+
+
 }

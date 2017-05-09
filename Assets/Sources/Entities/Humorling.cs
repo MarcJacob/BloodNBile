@@ -5,7 +5,7 @@ using UnityEngine;
 public class Humorling : Unit {
 
     private Unit Target = null;
-    private int Damages = 20;
+    private int Damage = 20;
     private float DistanceTarget = Mathf.Infinity;
     private float TimerTarget = 2f;
     private float TimerTargetDuration = 2f;
@@ -16,7 +16,7 @@ public class Humorling : Unit {
    
     
 
-    public Humorling(int ID, Vector3 pos, Quaternion rot, string name, int mesh, float size) : base(ID, pos, rot, name, mesh, size)
+    public Humorling(BnBMatch Match, int ID, Vector3 pos, Quaternion rot, string name, int mesh, float size) : base(Match, ID, pos, rot, name, mesh, size, new Faction("Test", 0))
     {
 
     }
@@ -144,7 +144,7 @@ public class Humorling : Unit {
 
     private void attack(Unit target)
     {
-        target.RemoveHP(Damages);
+        target.RemoveHP(Damage);
     }
 
     void Start () {
@@ -170,7 +170,7 @@ public class Humorling : Unit {
             else if (TimerAttack <= 0)
             {
                 attack(Target);
-                if (Target.GetHealPoints() <= 0)
+                if (Target.GetHealthPoints() <= 0)
                 {
                     Target.Die();
                     Target.RemoveFromCell(cellsManager, GetUnitPositionX(cellsManager), GetUnitPositionY(cellsManager));

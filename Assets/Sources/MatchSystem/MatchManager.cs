@@ -43,7 +43,7 @@ public class MatchManager
             }
         }
 
-        BnBMatch match = new BnBMatch(NetworkInfo ,validClients.ToArray());
+        BnBMatch match = new BnBMatch(Matches.Count, NetworkInfo ,validClients.ToArray());
         if (match.Initialize(0))
         {
             Matches.Add(match);
@@ -93,7 +93,6 @@ public class MatchManager
         if (ClientsInQueue.Count > 1)
         {
             CreateMatch(new ServerClientInfo[] { ClientsInQueue[0], ClientsInQueue[1] });
-
         }
     }
 }

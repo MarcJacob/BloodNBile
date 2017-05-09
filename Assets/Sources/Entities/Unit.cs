@@ -1,22 +1,31 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
+[Serializable]
 public class Unit : DrawableEntity {
 
-    public Faction Fac = null;
+    public Faction Fac;
     protected int HealthPoints = 100;
- 
 
-    public Unit(int ID, Vector3 pos, Quaternion rot, string name, int mesh, float size) : base(ID, pos, rot, name, mesh, size)
+
+    public SerializableVector3 Destination { get; private set; } // L'entitée sera constamment déplacée vers sa destination par le serveur.
+    public bool HasDestination = false; // L'entitée est-elle en cours de route vers une destination ? Si True alors le déplacement se fera.
+    float BaseSpeed; // Vitesse "de base" de l'unité en mètres par seconde.
+
+
+    public Unit(BnBMatch Match, int ID, Vector3 pos, Quaternion rot, string name, int mesh, float size, Faction fac, float speed = 5f) : base(Match, ID, pos, rot, name, mesh, size)
     {
-
+        BaseSpeed = speed;
+        Fac = fac;
     }
 
-    public bool equals(Unit u)
+
+
+    public float GetSpeed()
     {
-        if (this.ID == u.ID) return true;
-        else return false;
+        return BaseSpeed;
     }
 
     protected void AddToCell(CellsManager Cells)
@@ -28,15 +37,7 @@ public class Unit : DrawableEntity {
 
     public void RemoveFromCell(CellsManager Cells, int x, int y)
     {
-        int i = 0;
-        foreach (Humorling h in Cells.cells[x, y])
-        {
-            if (this.equals(h))
-            {
-                Cells.cells[x, y].RemoveAt(i);
-            }
-            else i++;
-        }
+        Cells.cells[x, y].Remove(this);
     }
 
     protected int GetUnitPositionX(CellsManager Cells)
@@ -59,20 +60,82 @@ public class Unit : DrawableEntity {
     public void RemoveHP(int healPoints)
     {
         this.HealthPoints -= healPoints;
+        if (HealthPoints <= 0f && OnUnitDiedCallback != null)
+        {
+            Die();
+        }
     }
 
-    public int GetHealPoints()
+    public override void Die()
+    {
+        base.Die();
+        OnUnitDiedCallback(this);
+    }
+
+    public int GetHealthPoints()
     {
         return HealthPoints;
     }
 
+    static Action<Unit> OnUnitDiedCallback;
+    public static void RegisterOnUnitDiedCallback(Action<Unit> cb)
+    {
+        OnUnitDiedCallback += cb;
+    }
+
+    /// <summary>
+    /// Set la destination de l'unité.
+    /// </summary>
+    /// <param name="dest"></param>
+    public void SetDestination(Vector3 dest)
+    {
+        HasDestination = true;
+        Destination = dest;
+
+        // Exécution du callback quand une unité change de destination.
+        if (OnDestinationSetCallback != null)
+        OnDestinationSetCallback(this);
+    }
+
+    static Action<Unit> OnDestinationSetCallback;
+    public static void RegisterOnDestinationSetCallback(Action<Unit> cb)
+    {
+        OnDestinationSetCallback += cb;
+    }
+
+    void OnArrivedToDestination()
+    {
+        HasDestination = false;
+        Debug.Log(Name + " est arrivé à destination !");
+        if (OnArrivedToDestinationCallback != null)
+        OnArrivedToDestinationCallback(this);
+    }
+
+    static Action<Unit> OnArrivedToDestinationCallback;
+    public static void RegisterOnArrivedToDestinationCallback(Action<Unit> cb)
+    {
+        OnArrivedToDestinationCallback += cb;
+    }
 
     void Start () {
 		
 	}
 	
 	
-	void Update () {
-		
+	public override void UpdateEntity () {
+
+        // Déplacement vers la destination
+        if (HasDestination == true)
+        {
+            Vector3 movementVector = Destination - Pos;
+            movementVector.Normalize();
+            SetPos((Vector3)Pos + movementVector * BaseSpeed * Time.deltaTime);
+            if ((Destination - Pos).sqrMagnitude < Size*Size) // Calcul de la distance à la destination. Si cette distance est inférieur à la taille de l'unité alors elle l'a atteint.
+            {
+                OnArrivedToDestination();
+                Die();
+            }
+        }
+
 	}
 }

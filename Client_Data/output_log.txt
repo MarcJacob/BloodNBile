@@ -37,26 +37,91 @@ Platform assembly: C:\Users\march\Documents\GitHub\BloodNBile\Client_Data\Manage
 Loading C:\Users\march\Documents\GitHub\BloodNBile\Client_Data\Managed\UnityEngine.dll into Unity Child Domain
 Platform assembly: C:\Users\march\Documents\GitHub\BloodNBile\Client_Data\Managed\Assembly-CSharp.dll (this message is harmless)
 Loading C:\Users\march\Documents\GitHub\BloodNBile\Client_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
-Platform assembly: C:\Users\march\Documents\GitHub\BloodNBile\CliUnt_nloadTanea 0.921294 msine.UI.dll (this message is harmless)
+Platform assembly: C:\Users\march\Documents\GitHub\BloodNBile\Client_Data\Managed\UnityEngine.UI.dll (this message is harmless)
 Loading C:\Users\march\Documents\GitHub\BloodNBile\Client_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
 Platform assembly: C:\Users\march\Documents\GitHub\BloodNBile\Client_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
 Loading C:\Users\march\Documents\GitHub\BloodNBile\Client_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
 Platform assembly: C:\Users\march\Documents\GitHub\BloodNBile\Client_Data\Managed\UnityEngine.PlaymodeTestsRunner.dll (this message is harmless)
 Loading C:\Users\march\Documents\GitHub\BloodNBile\Client_Data\Managed\UnityEngine.PlaymodeTestsRunner.dll into Unity Child Domain
-- Completed reload, in  0.021 seconds
+- Completed reload, in  0.026 seconds
 Platform assembly: C:\Users\march\Documents\GitHub\BloodNBile\Client_Data\Managed\System.Core.dll (this message is harmless)
 Platform assembly: C:\Users\march\Documents\GitHub\BloodNBile\Client_Data\Managed\System.dll (this message is harmless)
 desktop: 2560x1440 59Hz; virtual: 2560x1440 at 0,0
 <RI> Initializing input.
 <RI> Input initialized.
+UnloadTime: 0.815010 ms
 <RI> Initialized touch support.
+UnloadTime: 0.846180 ms
 Setting up 2 worker threads for Enlighten.
-  Thread -> id: 9cc -> priority: 1 
-  Thread -> id: 120c -> priority: 1 
-UnloadTime: 0.977757 ms
+  Thread -> id: 4a44 -> priority: 1 
+  Thread -> id: 23a8 -> priority: 1 
+Demande de connection envoyée !
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+Nouvelle connexion ! ID : 1
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+Connection ID enregitrée : 1
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+Connecté au Master Server ! Envoi des données client. ID de la connection : 1
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
 Setting up 2 worker threads for Enlighten.
-  Thread -> id: 1750 -> priority: 1 
-  Thread -> id: 3998 -> priority: 1 
+  Thread -> id: 263c -> priority: 1 
+  Thread -> id: 1ae4 -> priority: 1 
+Demande de connection envoyée !
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+Nouvelle connexion ! ID : 1
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+Connection ID enregitrée : 1
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+Connecté au Master Server ! Envoi des données client. ID de la connection : 1
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+Fermeture de la connexion ID : 1
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+Fermeture de la connexion ID : 1
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+Connexion fermée ! ID : 1
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+Connection lost !
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+Demande de connection envoyée !
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+Nouvelle connexion ! ID : 1
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+Connection ID enregitrée : 1
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+Connecté au Master Server ! Envoi des données client. ID de la connection : 1
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
 Initialize engine version: 5.5.0f3 (38b4efef76f0)
 GfxDevice: creating device client; threaded=1
 Direct3D:
@@ -76,33 +141,17 @@ Platform assembly: C:\Users\march\Documents\GitHub\BloodNBile\Client_Data\Manage
 Loading C:\Users\march\Documents\GitHub\BloodNBile\Client_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
 Platform assembly: C:\Users\march\Documents\GitHub\BloodNBile\Client_Data\Managed\UnityEngine.PlaymodeTestsRunner.dll (this message is harmless)
 Loading C:\Users\march\Documents\GitHub\BloodNBile\Client_Data\Managed\UnityEngine.PlaymodeTestsRunner.dll into Unity Child Domain
-- Completed reload, in  0.021 seconds
+- Completed reload, in  0.026 seconds
 Platform assembly: C:\Users\march\Documents\GitHub\BloodNBile\Client_Data\Managed\System.Core.dll (this message is harmless)
 Platform assembly: C:\Users\march\Documents\GitHub\BloodNBile\Client_Data\Managed\System.dll (this message is harmless)
 desktop: 2560x1440 59Hz; virtual: 2560x1440 at 0,0
 <RI> Initializing input.
 <RI> Input initialized.
 <RI> Initialized touch support.
-UnloadTime: 0.951441 ms
+UnloadTime: 1.021956 ms
 Setting up 2 worker threads for Enlighten.
-  Thread -> id: ef8 -> priority: 1 
-  Thread -> id: 3c28 -> priority: 1 
-Demande de connection envoyée !
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
-
-Nouvelle connexion ! ID : 1
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
-
-Connection ID enregitrée : 1
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
-
-Connecté au Master Server ! Envoi des données client. ID de la connection : 1
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
-
+  Thread -> id: 38e0 -> priority: 1 
+  Thread -> id: 1020 -> priority: 1 
 Demande de connection envoyée !
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)

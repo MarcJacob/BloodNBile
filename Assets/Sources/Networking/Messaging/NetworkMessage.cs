@@ -16,7 +16,7 @@ public class NetworkMessage
         Content = content;
     }
 
-    public void Send(NetworkSocketInfo SocketInfo, int ConnectionID, int ChannelID = -1)
+    public void Send(NetworkSocketInfo SocketInfo, int ConnectionID, int ChannelID = -1, bool isFragmented = false)
     {
         if (!NetworkTransport.IsStarted)
         {
@@ -25,8 +25,11 @@ public class NetworkMessage
         }
 
         // Conversion de l'objet en un tableau de bytes (Serialization).
-
-        byte[] buffer = new byte[1024];
+        byte[] buffer;
+        if (!isFragmented)
+            buffer = new byte[NetworkListener.MAX_BUFFER_SIZE];
+        else
+            buffer = new byte[NetworkListener.MAX_BUFFER_SIZE * 5];
         MemoryStream stream = new MemoryStream(buffer);
         BinaryFormatter bf = new BinaryFormatter();
         bf.Serialize(stream, this);
