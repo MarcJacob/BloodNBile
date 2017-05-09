@@ -22,7 +22,7 @@ public class BnBClient : MonoBehaviour
     // Informations sur le match actuel.
 
     Map CurrentMap;
-    int ControlledEntityID;
+    Mage ControlledMage;
 
     // Utilitaires de jeu CLIENT-SIDE
     public ClientUIManager UIManager;
@@ -98,6 +98,7 @@ public class BnBClient : MonoBehaviour
         NetworkListener.AddHandler(11, EntityRenderer.RemoveUnit);
         NetworkListener.AddHandler(12, EntityRenderer.OnUnitMovementStarted);
         NetworkListener.AddHandler(13, EntityRenderer.OnUnitMovementStop);
+        NetworkListener.AddHandler(14, EntityRenderer.OnMageCreated);
 
         //
 
@@ -140,11 +141,11 @@ public class BnBClient : MonoBehaviour
 
     void OnControlledEntityReceived(NetworkMessageReceiver message)
     {
-        Debug.Log("aa");
+
         int entityID = (int)message.ReceivedMessage.Content;
-        ControlledEntityID = entityID;
-        GameObject PlayerGO = GameObject.Instantiate(PlayerPrefab);
-        PlayerGO.AddComponent<LinkToEntity>().Initialize(EntityRenderer.GetUnitFromID(entityID), EntityRenderer);
+        Debug.Log("Controlled Entity : " + entityID);
+        ControlledMage = EntityRenderer.GetMageFromID(entityID);
+       // Camera.main.transform.parent = EntityRenderer.MageGOs[entityID].transform;
     }
 
     private void Update()

@@ -9,6 +9,9 @@ using System;
 public class EntityRenderer : MonoBehaviour {
 
     List<Unit> Units = new List<Unit>(); // Ensemble des unités que le Renderer "connait". Est mit à jour par le serveur.
+    List<Mage> Mages = new List<Mage>(); // Ensemble des mages que le Renderer "connait".
+    public Dictionary<int, GameObject> MageGOs = new Dictionary<int, GameObject>(); // Permet de relier l'affichage des mages sous forme de GOs à leur entité.
+
     Camera Cam; // Caméra relié au client actuel.
 	void Start () {
         Cam = Camera.main;
@@ -26,17 +29,37 @@ public class EntityRenderer : MonoBehaviour {
 
     public void RemoveUnit(NetworkMessageReceiver message)
     {
+
         Unit unit = (Unit)message.ReceivedMessage.Content;
         if (Units.Contains(unit))
         {
+            Debug.Log("Suppression d'une unité..");
             Units.Remove(unit);
+            if (OnUnitRemovedCallback != null)
+            OnUnitRemovedCallback(unit);
         }
+    }
+
+    public void OnMageCreated(NetworkMessageReceiver message)
+    {
+        Debug.Log("Mage crée !");
+        Mage mage = (Mage)message.ReceivedMessage.Content;
+        Mages.Add(mage);
+        Units.Add(mage);
+        MageGOs.Add(mage.ID, (GameObject.Instantiate(Resources.Load("Prefabs/PlayerPrefab")) as GameObject) as GameObject);
+        MageGOs[mage.ID].AddComponent<LinkToEntity>().Initialize(mage, this);
+    }
+
+    Action<Unit> OnUnitRemovedCallback;
+    public void RegisterOnUnitRemovedCallback(Action<Unit> cb)
+    {
+        OnUnitRemovedCallback += cb;
     }
 
     public void ProcessMovement(Unit unit)
     {
         Vector3 movementVector = (unit.Destination - unit.Pos).normalized * unit.GetSpeed() * Time.deltaTime;
-        unit.SetPos(movementVector + (Vector3)unit.Pos);
+        SetUnitPos(unit, movementVector + (Vector3)unit.Pos);
     }
 
     public Unit GetUnitFromID(int ID)
@@ -52,20 +75,40 @@ public class EntityRenderer : MonoBehaviour {
         return null;
     }
 
+    public Mage GetMageFromID(int ID)
+    {
+        foreach(Mage mage in Mages)
+        {
+            if (mage.ID == ID)
+            {
+                return mage;
+            }
+        }
+
+        return null;
+    }
+
     public void OnUnitMovementStop(NetworkMessageReceiver message)
     {
         Unit unit = (Unit)message.ReceivedMessage.Content;
-        GetUnitFromID(unit.ID).SetPos(unit.Pos);
-        GetUnitFromID(unit.ID).HasDestination = false;
-        Debug.Log(unit.Name + " s'est arrêté !");
+        Unit u = GetUnitFromID(unit.ID);
+        if (u != null)
+        {
+            SetUnitPos(u, unit.Pos);
+            u.HasDestination = false;
+            Debug.Log(unit.Name + " s'est arrêté !");
+        }
     }
 
     public void OnUnitMovementStarted(NetworkMessageReceiver message)
     {
         Unit unit = (Unit)message.ReceivedMessage.Content;
         Unit u = GetUnitFromID(unit.ID);
-        u.SetPos(unit.Pos);
-        u.SetDestination(unit.Destination);
+        if (u != null)
+        {
+            SetUnitPos(u, unit.Pos);
+            u.SetDestination(unit.Destination);
+        }
     }
 
     void SetUnitPos(Unit unit, Vector3 pos)

@@ -22,7 +22,12 @@ public class MagesManager
         EntityModule.Entities.Add(newMage);
         EntityModule.Units.Add(newMage);
         Mages.Add(newMage);
-
+        OnMageCreated(newMage);
         return newMage.ID;
+    }
+
+    public void OnMageCreated(Mage mage)
+    {
+        Match.SendMessageToPlayers(14, mage, false, true);
     }
 }

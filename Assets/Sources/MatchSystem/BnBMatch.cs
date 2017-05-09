@@ -150,6 +150,7 @@ public class BnBMatch
         {
             // Création du mage et retrait de l'ID.
             int mageID = MagesModule.CreateMage(new Vector3(id, 0, 0), "Entity_Mage" + id, new Faction("Team" + id, id));
+            MagesModule.Mages[0].SetDestination(new Vector3(0, 0, 10));
             id++;
             // Envoi au joueur correspondant.
             NetworkMessage message = new NetworkMessage(5, mageID);

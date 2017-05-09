@@ -12,14 +12,30 @@ public class LinkToEntity : MonoBehaviour {
 
     public Entity LinkedEntity;
 
-    public void Initialize(Entity e, EntityRenderer renderer)
+    public void LinkEntity(Entity e)
     {
         LinkedEntity = e;
+        OnEntityPositionUpdated(e);
+    }
+
+    public void Initialize(Entity e, EntityRenderer renderer)
+    {
+        LinkEntity(e);
         renderer.RegisterOnUnitPositionUpdatedCallback(OnEntityPositionUpdated);
+        renderer.RegisterOnUnitRemovedCallback(OnEntityDied);
         Initialized = true;
     }
 
-    public void OnEntityPositionUpdated(Unit unit)
+    public void OnEntityDied(Entity e)
+    {
+        if (e.Equals(LinkedEntity))
+        {
+            Debug.Log("Mort de l'entité " + e.Name);
+            Destroy(gameObject);
+        }
+    }
+
+    public void OnEntityPositionUpdated(Entity unit)
     {
         if (LinkedEntity == unit)
         {

@@ -62,7 +62,6 @@ public class EntityManager {
 
     void OnUnitCreated(Unit unit)
     {
-        if (Units.Contains(unit))
         Match.SendMessageToPlayers(10, unit, false, true);
     }
 

@@ -133,7 +133,6 @@ public class Unit : DrawableEntity {
             if ((Destination - Pos).sqrMagnitude < Size*Size) // Calcul de la distance à la destination. Si cette distance est inférieur à la taille de l'unité alors elle l'a atteint.
             {
                 OnArrivedToDestination();
-                Die();
             }
         }
 
