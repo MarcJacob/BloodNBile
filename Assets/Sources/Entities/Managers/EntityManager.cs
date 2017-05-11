@@ -17,12 +17,25 @@ public class EntityManager {
     public EntityManager(BnBMatch match)
     {
         Match = match;
-        
-        Unit.RegisterOnDestinationSetCallback(OnUnitStartedMoving);
-        Unit.RegisterOnArrivedToDestinationCallback(OnUnitReachedDestination);
         Unit.RegisterOnUnitDiedCallback(OnUnitDeath);
+        Unit.RegisterOnUnitMovementVectorChanged(OnUnitMovementVectorChanged);
     }
 
+    public Unit GetUnitFromID(int ID)
+    {
+        foreach(Unit u in Units)
+        {
+            if (u.ID == ID)
+            {
+                return u;
+            }
+        }
+        return null;
+    }
+
+
+    float EntityPositionsUpdateCooldown = 2f;
+    float currentEntityPositionUpdateCooldown = 0f;
     public void UpdateEntities()
     {
         List<Entity> DeadEntities = new List<Entity>();
@@ -37,6 +50,16 @@ public class EntityManager {
         foreach(Entity e in DeadEntities)
         {
             Entities.Remove(e);
+        }
+
+        if (currentEntityPositionUpdateCooldown >= EntityPositionsUpdateCooldown)
+        {
+            Match.SendMessageToPlayers(15, Entities.ToArray(), true, true);
+            currentEntityPositionUpdateCooldown = 0f;
+        }
+        else
+        {
+            currentEntityPositionUpdateCooldown += Time.deltaTime;
         }
     }
 
@@ -75,15 +98,10 @@ public class EntityManager {
         }
     }
 
-    void OnUnitStartedMoving(Unit unit)
+    void OnUnitMovementVectorChanged(Unit unit)
     {
+        Debug.Log((SerializableVector3)((Vector3)unit.MovementVector + (Vector3)unit.WilledMovementVector));
         if (Units.Contains(unit))
-            Match.SendMessageToPlayers(12, unit, false, true);
-    }
-
-    void OnUnitReachedDestination(Unit unit)
-    {
-        if (Units.Contains(unit))
-            Match.SendMessageToPlayers(13, unit, false, true);
+            Match.SendMessageToPlayers(12, new UnitMovementChangeMessage(unit.ID, (SerializableVector3)((Vector3)unit.MovementVector + (Vector3)unit.WilledMovementVector)), true);
     }
 }

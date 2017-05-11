@@ -28,6 +28,21 @@ public class MagesManager
 
     public void OnMageCreated(Mage mage)
     {
-        Match.SendMessageToPlayers(14, mage, false, true);
+        Match.SendMessageToPlayers(13, mage, false, true);
+    }
+
+    public void OnClientMovement(NetworkMessageReceiver message)
+    {
+        if (Match.IsInMatch(message.ConnectionID))
+        {
+            UnitMovementChangeMessage messageContent = (UnitMovementChangeMessage)message.ReceivedMessage.Content;
+
+            Unit unit = EntityModule.GetUnitFromID(messageContent.UnitID);
+            if (unit != null && unit.CanMove)
+            {
+                Vector3 mov = (Vector3)messageContent.NewMovementVector;
+                unit.Move((Vector3)messageContent.NewMovementVector * unit.GetSpeed());
+            }
+        }
     }
 }

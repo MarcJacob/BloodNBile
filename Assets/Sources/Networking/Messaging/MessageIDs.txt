@@ -17,6 +17,9 @@
 
 	10 = Message envoyé au client quand une entité est créée.
 	11 = Message envoyé au client quand une entité est détruite.
-	12 = Message envoyé au client quand une unité a commencé à bouger.
-	13 = Message envoyé au client quand une unité a arrêté de bouger.
-	14 = Message envoyé au client quand un mage est crée.
+	12 = Message envoyé au client quand une unité a modifié son vecteur mouvement.
+	13 = Message envoyé au client quand un mage est crée.
+
+	<--- Actions joueur -->
+
+	14 = Message envoyé au serveur quand le client a envoyé une tentative de changement de direction au serveur.

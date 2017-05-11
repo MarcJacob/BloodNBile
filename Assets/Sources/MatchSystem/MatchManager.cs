@@ -90,9 +90,9 @@ public class MatchManager
 
     public void MatchMaking()
     {
-        if (ClientsInQueue.Count > 1)
+        if (ClientsInQueue.Count > 0)
         {
-            CreateMatch(new ServerClientInfo[] { ClientsInQueue[0], ClientsInQueue[1] });
+            CreateMatch(new ServerClientInfo[] { ClientsInQueue[0] });
         }
     }
 }

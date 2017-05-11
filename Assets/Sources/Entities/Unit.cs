@@ -10,18 +10,18 @@ public class Unit : DrawableEntity {
     protected int HealthPoints = 100;
 
 
-    public SerializableVector3 Destination { get; private set; } // L'entitée sera constamment déplacée vers sa destination par le serveur.
-    public bool HasDestination = false; // L'entitée est-elle en cours de route vers une destination ? Si True alors le déplacement se fera.
+    // Movement
     float BaseSpeed; // Vitesse "de base" de l'unité en mètres par seconde.
-
+    public SerializableVector3 MovementVector { get; private set; }
+    public bool CanMove { get; private set; } // L'unité peut-elle influencer son propre mouvement ? Est faux par exemple quand l'unité est entrain de tomber
+                         // ou est affectée par un phénomène physique.
 
     public Unit(BnBMatch Match, int ID, Vector3 pos, Quaternion rot, string name, int mesh, float size, Faction fac, float speed = 5f) : base(Match, ID, pos, rot, name, mesh, size)
     {
         BaseSpeed = speed;
         Fac = fac;
+        CanMove = true;
     }
-
-
 
     public float GetSpeed()
     {
@@ -83,39 +83,6 @@ public class Unit : DrawableEntity {
         OnUnitDiedCallback += cb;
     }
 
-    /// <summary>
-    /// Set la destination de l'unité.
-    /// </summary>
-    /// <param name="dest"></param>
-    public void SetDestination(Vector3 dest)
-    {
-        HasDestination = true;
-        Destination = dest;
-
-        // Exécution du callback quand une unité change de destination.
-        if (OnDestinationSetCallback != null)
-        OnDestinationSetCallback(this);
-    }
-
-    static Action<Unit> OnDestinationSetCallback;
-    public static void RegisterOnDestinationSetCallback(Action<Unit> cb)
-    {
-        OnDestinationSetCallback += cb;
-    }
-
-    void OnArrivedToDestination()
-    {
-        HasDestination = false;
-        Debug.Log(Name + " est arrivé à destination !");
-        if (OnArrivedToDestinationCallback != null)
-        OnArrivedToDestinationCallback(this);
-    }
-
-    static Action<Unit> OnArrivedToDestinationCallback;
-    public static void RegisterOnArrivedToDestinationCallback(Action<Unit> cb)
-    {
-        OnArrivedToDestinationCallback += cb;
-    }
 
     void Start () {
 		
@@ -124,17 +91,72 @@ public class Unit : DrawableEntity {
 	
 	public override void UpdateEntity () {
 
-        // Déplacement vers la destination
-        if (HasDestination == true)
+        if (MovementVector != Vector3.zero || WilledMovementVector != Vector3.zero)
         {
-            Vector3 movementVector = Destination - Pos;
-            movementVector.Normalize();
-            SetPos((Vector3)Pos + movementVector * BaseSpeed * Time.deltaTime);
-            if ((Destination - Pos).sqrMagnitude < Size*Size) // Calcul de la distance à la destination. Si cette distance est inférieur à la taille de l'unité alors elle l'a atteint.
+            ProcessMovement();
+        }
+	}
+
+    void ProcessMovement()
+    {
+        Pos += (SerializableVector3)((Vector3)MovementVector + (Quaternion)Rot * (Vector3)WilledMovementVector * Time.deltaTime);
+    }
+
+    public SerializableVector3 WilledMovementVector { get; private set; } // Mouvement que l'unité applique sur elle même.
+    /// <summary>
+    /// Si l'unité est en capacité d'influencer son propre mouvement, fait avancer l'unité dans la direction indiquée.
+    /// Le mouvement ajouté au vecteur mouvement dépend de la vitesse de l'unité.
+    /// </summary>
+    /// <param name="dir"></param>
+    public void Move(Vector3 dir)
+    {
+        if (CanMove)
+        {
+            WilledMovementVector = dir;
+            if (OnUnitMovementVectorChanged != null)
             {
-                OnArrivedToDestination();
+                OnUnitMovementVectorChanged(this);
             }
         }
+    }
 
-	}
+    public void PreventWilledMovement()
+    {
+        CanMove = false;
+        WilledMovementVector = Vector3.zero;
+        if (OnUnitMovementVectorChanged != null)
+        {
+            OnUnitMovementVectorChanged(this);
+        }
+    }
+
+    public void AllowMovement()
+    {
+        CanMove = true;
+    }
+
+    public void ApplyMovement(Vector3 mov)
+    {
+        MovementVector += (SerializableVector3)mov;
+        if (OnUnitMovementVectorChanged != null)
+        {
+            OnUnitMovementVectorChanged(this);
+        }
+    }
+
+    public void SetMovement(Vector3 mov)
+    {
+        MovementVector = mov;
+        Debug.Log("Setting movement to " + mov);
+        if (OnUnitMovementVectorChanged != null)
+        {
+            OnUnitMovementVectorChanged(this);
+        }
+    }
+
+    static Action<Unit> OnUnitMovementVectorChanged;
+    static public void RegisterOnUnitMovementVectorChanged(Action<Unit> cb)
+    {
+        OnUnitMovementVectorChanged += cb;
+    }
 }

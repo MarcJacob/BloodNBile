@@ -42,6 +42,25 @@ public class BnBMatch
         return State;
     }
 
+    public bool IsInMatch(int coID)
+    {
+        bool inMatch = false;
+        int i = 0;
+        while (i < Players.Length && inMatch == false)
+        {
+            if (Players[i].GetConnectionID() == coID)
+            {
+                inMatch = true;
+            }
+            else
+            {
+                i++;
+            }
+        }
+
+        return inMatch;
+    }
+
     public void SendMessageToPlayers(byte type, object content, bool useUnreliable = false, bool useFragmented = false)
     {
         NetworkMessage message = new NetworkMessage(type, content);
@@ -150,11 +169,13 @@ public class BnBMatch
         {
             // Création du mage et retrait de l'ID.
             int mageID = MagesModule.CreateMage(new Vector3(id, 0, 0), "Entity_Mage" + id, new Faction("Team" + id, id));
-            MagesModule.Mages[0].SetDestination(new Vector3(0, 0, 10));
             id++;
             // Envoi au joueur correspondant.
             NetworkMessage message = new NetworkMessage(5, mageID);
             message.Send(NetworkInfo, info.GetConnectionID());
+
+            // Handlers
+            NetworkListener.AddHandler(14, MagesModule.OnClientMovement);
         }
     }
 

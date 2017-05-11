@@ -11,7 +11,7 @@ public class Mage : Unit, IHumorEntity {
     private bool IsCasting;
     public Dictionary<Spell, float> ReloadingSpells;
 
-    public Mage(BnBMatch Match, int ID, Vector3 pos, Quaternion rot, string name, Faction fac, HumorLevels humors) : base(Match, ID, pos, rot, name, -1, 2, fac)
+    public Mage(BnBMatch Match, int ID, Vector3 pos, Quaternion rot, string name, Faction fac, HumorLevels humors) : base(Match, ID, pos, rot, name, -1, 8, fac)
     {
         Humors = humors;
         IsCasting = false;

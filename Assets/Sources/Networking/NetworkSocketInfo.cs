@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using System.Collections.Generic;
 
-public struct NetworkSocketInfo
+public class NetworkSocketInfo
 {
     public int HostID;
     public int ReliableChannelID;
@@ -59,7 +59,7 @@ public struct NetworkSocketInfo
     public bool Connect(string IP, int Port)
     {
         byte error;
-        int coID = NetworkTransport.Connect(HostID, IP, Port, 0, out error);
+        NetworkTransport.Connect(HostID, IP, Port, 0, out error);
         if (error == 0)
         {
             Debug.Log("Demande de connection envoyée !");

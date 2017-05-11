@@ -23,6 +23,8 @@ public class BnBClient : MonoBehaviour
 
     Map CurrentMap;
     Mage ControlledMage;
+    bool ControlledMageIDReceived;
+    int ControlledMageID;
 
     // Utilitaires de jeu CLIENT-SIDE
     public ClientUIManager UIManager;
@@ -76,6 +78,9 @@ public class BnBClient : MonoBehaviour
         Connected = false;
         InAMatch = false;
         Username = "";
+        ControlledMage = null;
+        ControlledMageID = 0;
+        ControlledMageIDReceived = false;
         UIManager.SwitchToUI("MainMenuUI");
         UIManager.BindButtonToFunction("StartMatchSearchButton", StartMatchSearch);
     }
@@ -96,9 +101,9 @@ public class BnBClient : MonoBehaviour
         NetworkListener.AddHandler(5, OnControlledEntityReceived);
         NetworkListener.AddHandler(10, EntityRenderer.AddUnit);
         NetworkListener.AddHandler(11, EntityRenderer.RemoveUnit);
-        NetworkListener.AddHandler(12, EntityRenderer.OnUnitMovementStarted);
-        NetworkListener.AddHandler(13, EntityRenderer.OnUnitMovementStop);
-        NetworkListener.AddHandler(14, EntityRenderer.OnMageCreated);
+        NetworkListener.AddHandler(12, EntityRenderer.OnUnitMovementVectorUpdate);
+        NetworkListener.AddHandler(13, EntityRenderer.OnMageCreated);
+        NetworkListener.AddHandler(15, EntityRenderer.OnEntitiesPositionUpdate);
 
         //
 
@@ -144,13 +149,23 @@ public class BnBClient : MonoBehaviour
 
         int entityID = (int)message.ReceivedMessage.Content;
         Debug.Log("Controlled Entity : " + entityID);
-        ControlledMage = EntityRenderer.GetMageFromID(entityID);
-       // Camera.main.transform.parent = EntityRenderer.MageGOs[entityID].transform;
+        ControlledMageIDReceived = true;
+        ControlledMageID = entityID;
     }
 
     private void Update()
     {
         NetworkListener.Listen();
+        if (ControlledMageIDReceived == true && ControlledMage == null)
+        {
+            // On cherche le mage qu'on est sensé contrôler.
+            ControlledMage = EntityRenderer.GetMageFromID(ControlledMageID);
+            if (ControlledMage != null)
+            {
+                GameObject mageGO = EntityRenderer.MageGOs[ControlledMageID];
+                mageGO.AddComponent<EntityControl>().Initialize(NetworkInfo);
+            }
+        }
     }
 
     EntityRenderer EntityRenderer;

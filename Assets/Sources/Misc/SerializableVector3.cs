@@ -35,4 +35,9 @@ public struct SerializableVector3
     {
         return new Vector3(sv1.x - sv2.x, sv1.y - sv2.y, sv1.z - sv2.z);
     }
+
+    public override string ToString()
+    {
+        return "( " + x + " , " + y + " , " + z + " )"; 
+    }
 }

@@ -58,8 +58,11 @@ public class EntityRenderer : MonoBehaviour {
 
     public void ProcessMovement(Unit unit)
     {
-        Vector3 movementVector = (unit.Destination - unit.Pos).normalized * unit.GetSpeed() * Time.deltaTime;
-        SetUnitPos(unit, movementVector + (Vector3)unit.Pos);
+        Debug.Log("Applying : " + unit.MovementVector);
+        if (unit.MovementVector != Vector3.zero || unit.WilledMovementVector != Vector3.zero)
+        {
+            SetUnitPos(unit, unit.Pos + (SerializableVector3)((Vector3)unit.MovementVector * Time.deltaTime));
+        }
     }
 
     public Unit GetUnitFromID(int ID)
@@ -88,29 +91,6 @@ public class EntityRenderer : MonoBehaviour {
         return null;
     }
 
-    public void OnUnitMovementStop(NetworkMessageReceiver message)
-    {
-        Unit unit = (Unit)message.ReceivedMessage.Content;
-        Unit u = GetUnitFromID(unit.ID);
-        if (u != null)
-        {
-            SetUnitPos(u, unit.Pos);
-            u.HasDestination = false;
-            Debug.Log(unit.Name + " s'est arrêté !");
-        }
-    }
-
-    public void OnUnitMovementStarted(NetworkMessageReceiver message)
-    {
-        Unit unit = (Unit)message.ReceivedMessage.Content;
-        Unit u = GetUnitFromID(unit.ID);
-        if (u != null)
-        {
-            SetUnitPos(u, unit.Pos);
-            u.SetDestination(unit.Destination);
-        }
-    }
-
     void SetUnitPos(Unit unit, Vector3 pos)
     {
         unit.SetPos(pos);
@@ -123,14 +103,30 @@ public class EntityRenderer : MonoBehaviour {
         OnUnitPositionUpdatedCallback += cb;
     }
 
+    public void OnUnitMovementVectorUpdate(NetworkMessageReceiver message)
+    {
+        UnitMovementChangeMessage messageContent = (UnitMovementChangeMessage)message.ReceivedMessage.Content;
+        Debug.Log("Received : " + messageContent.NewMovementVector);
+        GetUnitFromID(messageContent.UnitID).SetMovement(messageContent.NewMovementVector);
+    }
+
+    public void OnEntitiesPositionUpdate(NetworkMessageReceiver message)
+    {
+        Entity[] ent = (Entity[])message.ReceivedMessage.Content;
+        int i = 0;
+        foreach(Entity e in ent)
+        {
+            SetUnitPos(Units[i], e.Pos);
+        }
+    }
+
     void Update () {
         // Afficher les entités.
         if (Units != null)
         {
             foreach (Unit entity in Units)
             {
-                if (entity.HasDestination)
-                    ProcessMovement(entity);
+                ProcessMovement(entity);
                 if (entity.MeshID >= 0)
                 {
                     CurrentlyRendered = entity;
