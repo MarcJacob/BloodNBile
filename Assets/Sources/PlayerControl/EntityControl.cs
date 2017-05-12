@@ -6,12 +6,14 @@ public class EntityControl : MonoBehaviour
 {
 
     NetworkSocketInfo NetworkInfo;
-    LinkToEntity EntityLink;
+    LinkTo EntityLink;
 
     public void Initialize(NetworkSocketInfo netInfo)
     {
         NetworkInfo = netInfo;
-        EntityLink = GetComponent<LinkToEntity>();
+        EntityLink = GetComponent<LinkTo>();
+        EntityLink.TrackLocation = false;
+        EntityLink.TrackRotation = false;
     }
 
     private void Start()
@@ -23,6 +25,7 @@ public class EntityControl : MonoBehaviour
         pivot.transform.parent = transform;
         Camera.main.transform.parent = pivot.transform;
     }
+
     Vector3 DirectionVector;
     bool Changed = false;
 
@@ -38,9 +41,11 @@ public class EntityControl : MonoBehaviour
             }
         }
 
-
+        transform.Translate(EntityLink.LinkedEntity.GetSpeed() * DirectionVector * Time.deltaTime);
     }
 
+    float RotationUpdateFrequency = 0.5f;
+    float RotationUpdateCooldown = 0f;
     void Mouselook()
     {
         float rawX = Input.GetAxis("Mouse X");
@@ -48,6 +53,14 @@ public class EntityControl : MonoBehaviour
 
         transform.eulerAngles += new Vector3(0, rawX, 0);
         transform.Find("CameraPivot").eulerAngles += new Vector3(-rawY, 0, 0);
+
+        RotationUpdateCooldown += Time.deltaTime;
+        if (RotationUpdateCooldown >= RotationUpdateFrequency)
+        {
+            RotationUpdateCooldown = 0f;
+            Debug.Log("Envoie d'une nouvelle rotation au serveur");
+            new NetworkMessage(16, new UnitRotationChangedMessage(EntityLink.LinkedEntity.ID, (SerializableQuaternion)transform.rotation)).Send(NetworkInfo, NetworkInfo.ConnectionIDs[0], NetworkInfo.UnreliableChannelID);
+        }
     }
 
     void HandleInput()

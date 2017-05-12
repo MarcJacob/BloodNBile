@@ -176,6 +176,7 @@ public class BnBMatch
 
             // Handlers
             NetworkListener.AddHandler(14, MagesModule.OnClientMovement);
+            NetworkListener.AddHandler(16, MagesModule.OnClientRotated);
         }
     }
 

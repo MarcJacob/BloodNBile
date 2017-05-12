@@ -154,9 +154,23 @@ public class Unit : DrawableEntity {
         }
     }
 
+    public override void SetRot(Quaternion quat)
+    {
+        base.SetRot(quat);
+        Debug.Log("Test");
+        if (OnUnitRotationChanged != null)
+        OnUnitRotationChanged(this);
+    }
+
     static Action<Unit> OnUnitMovementVectorChanged;
     static public void RegisterOnUnitMovementVectorChanged(Action<Unit> cb)
     {
         OnUnitMovementVectorChanged += cb;
+    }
+
+    static Action<Unit> OnUnitRotationChanged;
+    static public void RegisterOnUnitRotationChanged(Action<Unit> cb)
+    {
+        OnUnitRotationChanged += cb;
     }
 }

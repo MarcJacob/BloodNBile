@@ -19,6 +19,8 @@
 	11 = Message envoyé au client quand une entité est détruite.
 	12 = Message envoyé au client quand une unité a modifié son vecteur mouvement.
 	13 = Message envoyé au client quand un mage est crée.
+	15 = Message envoyé aux clients à un intervalle de temps régulier spécifiant la position de toutes les entités.
+	16 = Message envoyé au client quand une unité a modifié sa rotation.
 
 	<--- Actions joueur -->
 

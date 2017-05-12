@@ -48,5 +48,10 @@ public class Entity  {
         this.Pos = vect;
     }
 
+    public virtual void SetRot(Quaternion quat)
+    {
+        Rot = quat;
+    }
+
 
 }

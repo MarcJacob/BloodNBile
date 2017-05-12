@@ -19,6 +19,7 @@ public class EntityManager {
         Match = match;
         Unit.RegisterOnUnitDiedCallback(OnUnitDeath);
         Unit.RegisterOnUnitMovementVectorChanged(OnUnitMovementVectorChanged);
+        Unit.RegisterOnUnitRotationChanged(OnUnitRotationChanged);
     }
 
     public Unit GetUnitFromID(int ID)
@@ -102,6 +103,15 @@ public class EntityManager {
     {
         Debug.Log((SerializableVector3)((Vector3)unit.MovementVector + (Vector3)unit.WilledMovementVector));
         if (Units.Contains(unit))
-            Match.SendMessageToPlayers(12, new UnitMovementChangeMessage(unit.ID, (SerializableVector3)((Vector3)unit.MovementVector + (Vector3)unit.WilledMovementVector)), true);
+            Match.SendMessageToPlayers(12, new UnitMovementChangeMessage(unit.ID, (SerializableVector3)((Vector3)unit.MovementVector + (Quaternion)unit.Rot * (Vector3)unit.WilledMovementVector)), true);
+    }
+
+    void OnUnitRotationChanged(Unit unit)
+    {
+        Debug.Log("Rotation de l'unité modifiée !");
+        if (Units.Contains(unit))
+        {
+            Match.SendMessageToPlayers(16, new UnitRotationChangedMessage(unit.ID, unit.Rot), true);
+        }
     }
 }

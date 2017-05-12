@@ -45,4 +45,16 @@ public class MagesManager
             }
         }
     }
+
+    public void OnClientRotated(NetworkMessageReceiver message)
+    {
+        UnitRotationChangedMessage messageContent = (UnitRotationChangedMessage)message.ReceivedMessage.Content;
+        Debug.Log("Reçu une nouvelle rotation du joueur");
+        Unit unit = EntityModule.GetUnitFromID(messageContent.UnitID);
+        if (unit != null)
+        {
+            Quaternion newRot = (Quaternion)messageContent.NewQuaternion;
+            unit.SetRot(newRot);
+        }
+    }
 }

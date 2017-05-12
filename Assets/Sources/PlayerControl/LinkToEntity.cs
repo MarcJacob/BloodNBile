@@ -8,17 +8,18 @@ using UnityEngine;
 /// (côté client) entre deux de ces mises à jours. Si le client et le serveur sont synchronisés alors le mouvement du GameObject devrait
 /// correspondre à celui de l'entitée liée côté serveur et donc avoir un déplacement fluide.
 /// </summary>
-public class LinkToEntity : MonoBehaviour {
+public class LinkTo : MonoBehaviour {
 
-    public Entity LinkedEntity;
-
-    public void LinkEntity(Entity e)
+    public Unit LinkedEntity;
+    public bool TrackRotation = true;
+    public bool TrackLocation = true;
+    public void LinkEntity(Unit e)
     {
         LinkedEntity = e;
-        OnEntityPositionUpdated(e);
+        OnEntityPositionUpdated(e, true);
     }
 
-    public void Initialize(Entity e, EntityRenderer renderer)
+    public void Initialize(Unit e, EntityRenderer renderer)
     {
         LinkEntity(e);
         renderer.RegisterOnUnitPositionUpdatedCallback(OnEntityPositionUpdated);
@@ -26,7 +27,7 @@ public class LinkToEntity : MonoBehaviour {
         Initialized = true;
     }
 
-    public void OnEntityDied(Entity e)
+    public void OnEntityDied(Unit e)
     {
         if (e.Equals(LinkedEntity))
         {
@@ -35,9 +36,9 @@ public class LinkToEntity : MonoBehaviour {
         }
     }
 
-    public void OnEntityPositionUpdated(Entity unit)
+    public void OnEntityPositionUpdated(Unit unit, bool forced)
     {
-        if (LinkedEntity == unit)
+        if (LinkedEntity == unit && (forced || TrackLocation))
         {
             transform.position = unit.Pos;
         }

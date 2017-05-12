@@ -97,6 +97,7 @@
     <Compile Include="Assets\Sources\Networking\BnBClient.cs" />
     <Compile Include="Assets\Sources\Networking\BnBMasterServer.cs" />
     <Compile Include="Assets\Sources\Networking\Messaging\MessageContent\UnitMovementChangeMessage.cs" />
+    <Compile Include="Assets\Sources\Networking\Messaging\MessageContent\UnitRotationChangedMessage.cs" />
     <Compile Include="Assets\Sources\Networking\Messaging\NetworkMessage.cs" />
     <Compile Include="Assets\Sources\Networking\Messaging\NetworkMessageReceiver.cs" />
     <Compile Include="Assets\Sources\Networking\NetworkListener.cs" />

@@ -104,7 +104,7 @@ public class BnBClient : MonoBehaviour
         NetworkListener.AddHandler(12, EntityRenderer.OnUnitMovementVectorUpdate);
         NetworkListener.AddHandler(13, EntityRenderer.OnMageCreated);
         NetworkListener.AddHandler(15, EntityRenderer.OnEntitiesPositionUpdate);
-
+        NetworkListener.AddHandler(16, EntityRenderer.OnEntityRotationUpdate);
         //
 
         // Chargement des maps

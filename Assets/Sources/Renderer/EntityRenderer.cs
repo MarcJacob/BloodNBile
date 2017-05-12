@@ -47,7 +47,7 @@ public class EntityRenderer : MonoBehaviour {
         Mages.Add(mage);
         Units.Add(mage);
         MageGOs.Add(mage.ID, (GameObject.Instantiate(Resources.Load("Prefabs/PlayerPrefab")) as GameObject) as GameObject);
-        MageGOs[mage.ID].AddComponent<LinkToEntity>().Initialize(mage, this);
+        MageGOs[mage.ID].AddComponent<LinkTo>().Initialize(mage, this);
     }
 
     Action<Unit> OnUnitRemovedCallback;
@@ -61,7 +61,7 @@ public class EntityRenderer : MonoBehaviour {
         Debug.Log("Applying : " + unit.MovementVector);
         if (unit.MovementVector != Vector3.zero || unit.WilledMovementVector != Vector3.zero)
         {
-            SetUnitPos(unit, unit.Pos + (SerializableVector3)((Vector3)unit.MovementVector * Time.deltaTime));
+            SetUnitPos(unit, unit.Pos + (SerializableVector3)((Vector3)unit.MovementVector * Time.deltaTime), false);
         }
     }
 
@@ -91,16 +91,30 @@ public class EntityRenderer : MonoBehaviour {
         return null;
     }
 
-    void SetUnitPos(Unit unit, Vector3 pos)
+    void SetUnitPos(Unit unit, Vector3 pos, bool force = false)
     {
         unit.SetPos(pos);
-        OnUnitPositionUpdatedCallback(unit);
+        if (OnUnitPositionUpdatedCallback != null)
+        OnUnitPositionUpdatedCallback(unit, force);
     }
 
-    Action<Unit> OnUnitPositionUpdatedCallback;
-    public void RegisterOnUnitPositionUpdatedCallback(Action<Unit> cb)
+    void SetUnitRot(Unit unit, Quaternion rot, bool force = false)
+    {
+        unit.SetRot(rot);
+        if (OnUnitRotationUpdatedCallback != null)
+            OnUnitRotationUpdatedCallback(unit, force);
+    }
+
+    Action<Unit, bool> OnUnitPositionUpdatedCallback;
+    public void RegisterOnUnitPositionUpdatedCallback(Action<Unit, bool> cb)
     {
         OnUnitPositionUpdatedCallback += cb;
+    }
+
+    Action<Unit, bool> OnUnitRotationUpdatedCallback;
+    public void RegisterOnUnitRotationUpdatedCallback(Action<Unit, bool> cb)
+    {
+        OnUnitRotationUpdatedCallback += cb;
     }
 
     public void OnUnitMovementVectorUpdate(NetworkMessageReceiver message)
@@ -116,7 +130,18 @@ public class EntityRenderer : MonoBehaviour {
         int i = 0;
         foreach(Entity e in ent)
         {
-            SetUnitPos(Units[i], e.Pos);
+            SetUnitPos(Units[i], e.Pos, true);
+        }
+    }
+
+    public void OnEntityRotationUpdate(NetworkMessageReceiver messageReceiver)
+    {
+        UnitRotationChangedMessage messageContent = (UnitRotationChangedMessage)messageReceiver.ReceivedMessage.Content;
+
+        Unit unit = GetUnitFromID(messageContent.UnitID);
+        if (unit != null)
+        {
+            SetUnitRot(unit, messageContent.NewQuaternion, true);
         }
     }
 
