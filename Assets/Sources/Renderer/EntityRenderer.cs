@@ -12,6 +12,9 @@ public class EntityRenderer : MonoBehaviour {
     List<Mage> Mages = new List<Mage>(); // Ensemble des mages que le Renderer "connait".
     public Dictionary<int, GameObject> MageGOs = new Dictionary<int, GameObject>(); // Permet de relier l'affichage des mages sous forme de GOs à leur entité.
 
+    Dictionary<Entity, PositionUpdateVector3> PositionUpdates = new Dictionary<Entity, PositionUpdateVector3>(); // Mises à jour de positions d'entités en cours.
+    Dictionary<Entity, Quaternion> RotationUpdates = new Dictionary<Entity, Quaternion>(); // Mises à jour de rotations d'entités en cours
+
     Camera Cam; // Caméra relié au client actuel.
 	void Start () {
         Cam = Camera.main;
@@ -42,12 +45,13 @@ public class EntityRenderer : MonoBehaviour {
 
     public void OnMageCreated(NetworkMessageReceiver message)
     {
-        Debug.Log("Mage crée !");
+
         Mage mage = (Mage)message.ReceivedMessage.Content;
         Mages.Add(mage);
         Units.Add(mage);
         MageGOs.Add(mage.ID, (GameObject.Instantiate(Resources.Load("Prefabs/PlayerPrefab")) as GameObject) as GameObject);
         MageGOs[mage.ID].AddComponent<LinkTo>().Initialize(mage, this);
+        Debug.Log("Mage crée ! ID : " + mage.ID);
     }
 
     Action<Unit> OnUnitRemovedCallback;
@@ -58,10 +62,9 @@ public class EntityRenderer : MonoBehaviour {
 
     public void ProcessMovement(Unit unit)
     {
-        Debug.Log("Applying : " + unit.MovementVector);
         if (unit.MovementVector != Vector3.zero || unit.WilledMovementVector != Vector3.zero)
         {
-            SetUnitPos(unit, unit.Pos + (SerializableVector3)((Vector3)unit.MovementVector * Time.deltaTime), false);
+            SetUnitPos(unit, unit.Pos + (SerializableVector3)((Vector3)unit.MovementVector * Time.deltaTime), false, false);
         }
     }
 
@@ -91,18 +94,29 @@ public class EntityRenderer : MonoBehaviour {
         return null;
     }
 
-    void SetUnitPos(Unit unit, Vector3 pos, bool force = false)
+    void SetUnitPos(Unit unit, Vector3 pos, bool force = false, bool smooth = false)
     {
-        unit.SetPos(pos);
-        if (OnUnitPositionUpdatedCallback != null)
-        OnUnitPositionUpdatedCallback(unit, force);
+        if (smooth)
+        {
+            if (!PositionUpdates.ContainsKey(unit))
+                PositionUpdates.Add(unit, pos);
+            else
+                PositionUpdates[unit] = pos;
+        }
+        else
+        {
+            unit.SetPos(pos);
+            if (OnUnitPositionUpdatedCallback != null)
+                OnUnitPositionUpdatedCallback(unit, force);
+        }
     }
 
     void SetUnitRot(Unit unit, Quaternion rot, bool force = false)
     {
-        unit.SetRot(rot);
-        if (OnUnitRotationUpdatedCallback != null)
-            OnUnitRotationUpdatedCallback(unit, force);
+        if (!RotationUpdates.ContainsKey(unit))
+            RotationUpdates.Add(unit, rot);
+        else
+            RotationUpdates[unit] = rot;
     }
 
     Action<Unit, bool> OnUnitPositionUpdatedCallback;
@@ -111,8 +125,8 @@ public class EntityRenderer : MonoBehaviour {
         OnUnitPositionUpdatedCallback += cb;
     }
 
-    Action<Unit, bool> OnUnitRotationUpdatedCallback;
-    public void RegisterOnUnitRotationUpdatedCallback(Action<Unit, bool> cb)
+    Action<Unit> OnUnitRotationUpdatedCallback;
+    public void RegisterOnUnitRotationUpdatedCallback(Action<Unit> cb)
     {
         OnUnitRotationUpdatedCallback += cb;
     }
@@ -120,17 +134,17 @@ public class EntityRenderer : MonoBehaviour {
     public void OnUnitMovementVectorUpdate(NetworkMessageReceiver message)
     {
         UnitMovementChangeMessage messageContent = (UnitMovementChangeMessage)message.ReceivedMessage.Content;
-        Debug.Log("Received : " + messageContent.NewMovementVector);
         GetUnitFromID(messageContent.UnitID).SetMovement(messageContent.NewMovementVector);
     }
 
     public void OnEntitiesPositionUpdate(NetworkMessageReceiver message)
     {
+        Debug.Log("Mise à jour de la position de toutes les entités");
         Entity[] ent = (Entity[])message.ReceivedMessage.Content;
-        int i = 0;
         foreach(Entity e in ent)
         {
-            SetUnitPos(Units[i], e.Pos, true);
+            SetUnitPos(GetUnitFromID(e.ID), e.Pos, true, true);
+            SetUnitRot(GetUnitFromID(e.ID), e.Rot, true);
         }
     }
 
@@ -141,7 +155,35 @@ public class EntityRenderer : MonoBehaviour {
         Unit unit = GetUnitFromID(messageContent.UnitID);
         if (unit != null)
         {
-            SetUnitRot(unit, messageContent.NewQuaternion, true);
+            SetUnitRot(unit, messageContent.NewQuaternion, false);
+        }
+    }
+
+    public void ProcessPositionUpdate(Entity e)
+    {
+        if (PositionUpdates.ContainsKey(e))
+        {
+            e.SetPos(Vector3.Lerp(e.Pos, PositionUpdates[e], Time.deltaTime*5));
+            if (OnUnitPositionUpdatedCallback != null)
+                OnUnitPositionUpdatedCallback(GetUnitFromID(e.ID), PositionUpdates[e].Forced);
+            if (((Vector3)e.Pos - PositionUpdates[e]).sqrMagnitude <= 0.2f)
+            {
+                PositionUpdates.Remove(e);
+            }
+        }
+    }
+
+    public void ProcessRotationUpdate(Entity e)
+    {
+        if (RotationUpdates.ContainsKey(e))
+        {
+            e.SetRot(Quaternion.Lerp(e.Rot, RotationUpdates[e], Time.deltaTime*5));
+            if (OnUnitRotationUpdatedCallback != null)
+                OnUnitRotationUpdatedCallback(GetUnitFromID(e.ID));
+            if (Quaternion.Angle(e.Rot, RotationUpdates[e]) <= 0.1f)
+            {
+                RotationUpdates.Remove(e);
+            }
         }
     }
 
@@ -152,6 +194,8 @@ public class EntityRenderer : MonoBehaviour {
             foreach (Unit entity in Units)
             {
                 ProcessMovement(entity);
+                ProcessPositionUpdate(entity);
+                ProcessRotationUpdate(entity);
                 if (entity.MeshID >= 0)
                 {
                     CurrentlyRendered = entity;

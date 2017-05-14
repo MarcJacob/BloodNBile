@@ -8,7 +8,8 @@ public class EntityManager {
 
     public List<Entity> Entities = new List<Entity>(); // Ensemble des entités
     public List<Unit> Units = new List<Unit>(); // Ensemble des unités. NOTE : Entities contient Units.
-    BnBMatch Match; // Le match auquel cet EntityManager est lié.
+    WeakReference MatchWeakRef; // Le match auquel cet EntityManager est lié.
+    public BnBMatch Match { get { return ((BnBMatch)(MatchWeakRef.Target)); } }
     public Entity[] GetAllEntities()
     {
         return Entities.ToArray();
@@ -16,7 +17,7 @@ public class EntityManager {
 
     public EntityManager(BnBMatch match)
     {
-        Match = match;
+        MatchWeakRef = new WeakReference(match);
         Unit.RegisterOnUnitDiedCallback(OnUnitDeath);
         Unit.RegisterOnUnitMovementVectorChanged(OnUnitMovementVectorChanged);
         Unit.RegisterOnUnitRotationChanged(OnUnitRotationChanged);
@@ -55,6 +56,7 @@ public class EntityManager {
 
         if (currentEntityPositionUpdateCooldown >= EntityPositionsUpdateCooldown)
         {
+            Debug.Log("Envoi de la position de toutes les entités aux clients.");
             Match.SendMessageToPlayers(15, Entities.ToArray(), true, true);
             currentEntityPositionUpdateCooldown = 0f;
         }
@@ -101,14 +103,12 @@ public class EntityManager {
 
     void OnUnitMovementVectorChanged(Unit unit)
     {
-        Debug.Log((SerializableVector3)((Vector3)unit.MovementVector + (Vector3)unit.WilledMovementVector));
         if (Units.Contains(unit))
             Match.SendMessageToPlayers(12, new UnitMovementChangeMessage(unit.ID, (SerializableVector3)((Vector3)unit.MovementVector + (Quaternion)unit.Rot * (Vector3)unit.WilledMovementVector)), true);
     }
 
     void OnUnitRotationChanged(Unit unit)
     {
-        Debug.Log("Rotation de l'unité modifiée !");
         if (Units.Contains(unit))
         {
             Match.SendMessageToPlayers(16, new UnitRotationChangedMessage(unit.ID, unit.Rot), true);

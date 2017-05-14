@@ -147,7 +147,6 @@ public class Unit : DrawableEntity {
     public void SetMovement(Vector3 mov)
     {
         MovementVector = mov;
-        Debug.Log("Setting movement to " + mov);
         if (OnUnitMovementVectorChanged != null)
         {
             OnUnitMovementVectorChanged(this);
@@ -157,7 +156,6 @@ public class Unit : DrawableEntity {
     public override void SetRot(Quaternion quat)
     {
         base.SetRot(quat);
-        Debug.Log("Test");
         if (OnUnitRotationChanged != null)
         OnUnitRotationChanged(this);
     }

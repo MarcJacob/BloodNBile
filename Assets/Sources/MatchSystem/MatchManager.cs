@@ -88,11 +88,19 @@ public class MatchManager
         DoneMatches.Add(match);
     }
 
+
+    int PlayersPerMatch = 2;
     public void MatchMaking()
     {
-        if (ClientsInQueue.Count > 0)
+        if (ClientsInQueue.Count >= PlayersPerMatch)
         {
-            CreateMatch(new ServerClientInfo[] { ClientsInQueue[0] });
+            List<ServerClientInfo> PlayersList = new List<ServerClientInfo>();
+            int playerCount;
+            for (playerCount = 0; playerCount < PlayersPerMatch; playerCount++)
+            {
+                PlayersList.Add(ClientsInQueue[playerCount]);
+            }
+            CreateMatch(PlayersList.ToArray());
         }
     }
 }

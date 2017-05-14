@@ -107,6 +107,7 @@
     <Compile Include="Assets\Sources\PlayerControl\LinkToEntity.cs" />
     <Compile Include="Assets\Sources\Renderer\EntityRenderer.cs" />
     <Compile Include="Assets\Sources\Renderer\Model.cs" />
+    <Compile Include="Assets\Sources\Renderer\PositionUpdateVector3.cs" />
     <Compile Include="Assets\Sources\Spells\AbsorptionSpell.cs" />
     <Compile Include="Assets\Sources\Spells\ConvertSpell.cs" />
     <Compile Include="Assets\Sources\Spells\Spell.cs" />

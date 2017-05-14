@@ -58,7 +58,6 @@ public class EntityControl : MonoBehaviour
         if (RotationUpdateCooldown >= RotationUpdateFrequency)
         {
             RotationUpdateCooldown = 0f;
-            Debug.Log("Envoie d'une nouvelle rotation au serveur");
             new NetworkMessage(16, new UnitRotationChangedMessage(EntityLink.LinkedEntity.ID, (SerializableQuaternion)transform.rotation)).Send(NetworkInfo, NetworkInfo.ConnectionIDs[0], NetworkInfo.UnreliableChannelID);
         }
     }

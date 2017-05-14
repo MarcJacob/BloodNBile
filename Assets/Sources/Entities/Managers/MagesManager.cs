@@ -6,11 +6,9 @@ public class MagesManager
 {
     public List<Mage> Mages;
     EntityManager EntityModule; // EntityManager associé à ce MagesManager.
-    BnBMatch Match; // Match auquel ce MagesManager appartient.
 
-    public MagesManager(BnBMatch match, EntityManager module)
+    public MagesManager(EntityManager module)
     {
-        Match = match;
         EntityModule = module;
         Mages = new List<Mage>();
     }
@@ -18,7 +16,7 @@ public class MagesManager
 
     public int CreateMage(Vector3 pos, string name, Faction fac)
     {
-        Mage newMage = new Mage(Match, EntityModule.GetAllEntities().Length, pos, Quaternion.identity, name, fac, new HumorLevels(100, 100, 100, 100));
+        Mage newMage = new Mage(EntityModule.Match, EntityModule.GetAllEntities().Length, pos, Quaternion.identity, name, fac, new HumorLevels(100, 100, 100, 100));
         EntityModule.Entities.Add(newMage);
         EntityModule.Units.Add(newMage);
         Mages.Add(newMage);
@@ -28,12 +26,12 @@ public class MagesManager
 
     public void OnMageCreated(Mage mage)
     {
-        Match.SendMessageToPlayers(13, mage, false, true);
+        EntityModule.Match.SendMessageToPlayers(13, mage, false, true);
     }
 
     public void OnClientMovement(NetworkMessageReceiver message)
     {
-        if (Match.IsInMatch(message.ConnectionID))
+        if (EntityModule.Match.IsInMatch(message.ConnectionID))
         {
             UnitMovementChangeMessage messageContent = (UnitMovementChangeMessage)message.ReceivedMessage.Content;
 
@@ -49,7 +47,6 @@ public class MagesManager
     public void OnClientRotated(NetworkMessageReceiver message)
     {
         UnitRotationChangedMessage messageContent = (UnitRotationChangedMessage)message.ReceivedMessage.Content;
-        Debug.Log("Reçu une nouvelle rotation du joueur");
         Unit unit = EntityModule.GetUnitFromID(messageContent.UnitID);
         if (unit != null)
         {

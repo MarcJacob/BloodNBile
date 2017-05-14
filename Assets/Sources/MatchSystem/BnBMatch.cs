@@ -162,7 +162,7 @@ public class BnBMatch
     {
         Debug.Log("FirstUpdate()");
         EntityModule = new EntityManager(this);
-        MagesModule = new MagesManager(this, EntityModule);
+        MagesModule = new MagesManager(EntityModule);
         // Création des entités joueur & quelques humorlings
         int id = 0;
         foreach (ServerClientInfo info in Players)

@@ -23,6 +23,7 @@ public class LinkTo : MonoBehaviour {
     {
         LinkEntity(e);
         renderer.RegisterOnUnitPositionUpdatedCallback(OnEntityPositionUpdated);
+        renderer.RegisterOnUnitRotationUpdatedCallback(OnEntityRotationUpdated);
         renderer.RegisterOnUnitRemovedCallback(OnEntityDied);
         Initialized = true;
     }
@@ -38,9 +39,21 @@ public class LinkTo : MonoBehaviour {
 
     public void OnEntityPositionUpdated(Unit unit, bool forced)
     {
+        if (forced == true)
+            Debug.Log("MAJ forcée");
         if (LinkedEntity == unit && (forced || TrackLocation))
         {
+            Debug.Log("Mise à jour de la position de l'entité ID " + unit.ID);
             transform.position = unit.Pos;
+        }
+    }
+    
+    public void OnEntityRotationUpdated(Unit unit)
+    {
+        if (LinkedEntity == unit && TrackRotation)
+        {
+            Debug.Log("Mise à jour de la rotation de l'enttié ID " + unit.ID);
+            transform.rotation = unit.Rot;
         }
     } 
 
