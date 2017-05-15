@@ -7,6 +7,23 @@ using UnityEngine;
 [Serializable]
 public class NetworkMessage
 {
+    public static int nbSent = 0;
+    static float debug_NbMessagesSent = 1f;
+    static float cd_debug_NbMessagesSent = 0;
+    public static void TrackMessages()
+    {
+        if (cd_debug_NbMessagesSent > debug_NbMessagesSent)
+        {
+            cd_debug_NbMessagesSent = 0f;
+            Debugger.LogMessage("Nombre de messages envoyés : " + nbSent);
+            nbSent = 0;
+        }
+        else
+        {
+            cd_debug_NbMessagesSent += Time.deltaTime;
+        }
+    }
+
     public byte Type;
     public object Content;
 

@@ -44,6 +44,7 @@ public class BnBMasterServer : MonoBehaviour
     private void Update()
     {
         NetworkListener.Listen();
+        NetworkMessage.TrackMessages();
         Matchmaker.MatchMaking();
         Matchmaker.UpdateMatches();
     }
