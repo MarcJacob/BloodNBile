@@ -47,12 +47,12 @@ public class MatchManager
         if (match.Initialize(0))
         {
             Matches.Add(match);
-            Debug.Log("Match created !");
+            Debugger.LogMessage("Match created !");
             foreach (ServerClientInfo info in validClients)
                 RemoveClientFromQueue(info);
         }
         else
-            Debug.Log("Match n'a pas pu être crée !");
+            Debugger.LogMessage("Match n'a pas pu être crée !");
     }
 
     public void UpdateMatches()
@@ -101,6 +101,14 @@ public class MatchManager
                 PlayersList.Add(ClientsInQueue[playerCount]);
             }
             CreateMatch(PlayersList.ToArray());
+        }
+    }
+
+    public void StopAllMatches()
+    {
+        foreach(BnBMatch match in Matches)
+        {
+            match.Stop();
         }
     }
 }

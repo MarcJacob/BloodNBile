@@ -44,7 +44,7 @@ public class BnBClient : MonoBehaviour
         Username = UIManager.GetTextInputValue("UsernameInputField");
         if (Username == "")
         {
-            Debug.Log("Nom d'utilisateur non spécifié !");
+            Debugger.LogMessage("Nom d'utilisateur non spécifié !");
             return;
         }
         if (NetworkInfo.Connect(IP, Port))
@@ -56,7 +56,7 @@ public class BnBClient : MonoBehaviour
 
     public void OnConnectionEstablished(int coID)
     {
-        Debug.Log("Connecté au Master Server ! Envoi des données client. ID de la connection : " + coID);
+        Debugger.LogMessage("Connecté au Master Server ! Envoi des données client. ID de la connection : " + coID);
         NetworkInfo.RegisterConnectionID(coID);
         Connected = true;
         new NetworkMessage(0, Username).Send(NetworkInfo, coID);
@@ -65,7 +65,7 @@ public class BnBClient : MonoBehaviour
     public void OnConnectionLost(int coID)
     {
         Reset();
-        Debug.Log("Connection lost !");
+        Debugger.LogMessage("Connection lost !");
     }
 
     /// <summary>
@@ -101,10 +101,8 @@ public class BnBClient : MonoBehaviour
         NetworkListener.AddHandler(5, OnControlledEntityReceived);
         NetworkListener.AddHandler(10, EntityRenderer.AddUnit);
         NetworkListener.AddHandler(11, EntityRenderer.RemoveUnit);
-        NetworkListener.AddHandler(12, EntityRenderer.OnUnitMovementVectorUpdate);
+        NetworkListener.AddHandler(12, EntityRenderer.EntitiesPositionRotationUpdate);
         NetworkListener.AddHandler(13, EntityRenderer.OnMageCreated);
-        NetworkListener.AddHandler(15, EntityRenderer.OnEntitiesPositionUpdate);
-        NetworkListener.AddHandler(16, EntityRenderer.OnEntityRotationUpdate);
         //
 
         // Chargement des maps
@@ -148,7 +146,7 @@ public class BnBClient : MonoBehaviour
     {
 
         int entityID = (int)message.ReceivedMessage.Content;
-        Debug.Log("Controlled Entity : " + entityID);
+        Debugger.LogMessage("Controlled Entity : " + entityID);
         ControlledMageIDReceived = true;
         ControlledMageID = entityID;
     }

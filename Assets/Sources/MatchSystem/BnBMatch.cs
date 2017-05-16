@@ -150,17 +150,25 @@ public class BnBMatch
 
                 State = MatchState.Starting_FAILED;
                 SendMessageToPlayers(3, false);
-                Debug.Log("Arrêt du match !");
+                Debugger.LogMessage("Arrêt du match !");
                 return;
             }
         }
+    }
+
+    public void Stop()
+    {
+        State = MatchState.Ended;
+        SendMessageToPlayers(3, false);
+        Debugger.LogMessage("Arrêt du match !");
+        return;
     }
     /// <summary>
     /// Exécuté à la première image d'Update.
     /// </summary>
     void FirstUpdate()
     {
-        Debug.Log("FirstUpdate()");
+        Debugger.LogMessage("FirstUpdate()");
         EntityModule = new EntityManager(this);
         MagesModule = new MagesManager(EntityModule);
         // Création des entités joueur & quelques humorlings
@@ -168,15 +176,14 @@ public class BnBMatch
         foreach (ServerClientInfo info in Players)
         {
             // Création du mage et retrait de l'ID.
-            int mageID = MagesModule.CreateMage(new Vector3(id, 0, 0), "Entity_Mage" + id, new Faction("Team" + id, id));
+            int mageID = MagesModule.CreateMage(new Vector3(id * 10 + 50, 1, 0), "Entity_Mage" + id, new Faction("Team" + id, id));
             id++;
             // Envoi au joueur correspondant.
             NetworkMessage message = new NetworkMessage(5, mageID);
             message.Send(NetworkInfo, info.GetConnectionID());
 
             // Handlers
-            NetworkListener.AddHandler(14, MagesModule.OnClientMovement);
-            NetworkListener.AddHandler(16, MagesModule.OnClientRotated);
+            NetworkListener.AddHandler(12, MagesModule.OnClientEntityUpdate);
         }
     }
 

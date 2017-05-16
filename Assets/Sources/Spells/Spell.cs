@@ -46,12 +46,12 @@ public class Spell {
     public virtual void Cast(Mage caster)
     {
         IsReloading = true;
-        Debug.Log("Je me lance !");
+        Debugger.LogMessage("Je me lance !");
     }
 
     public void HasReloaded()
     {
         IsReloading = false;
-        Debug.Log("Wow je suis prêt mtn");
+        Debugger.LogMessage("Wow je suis prêt mtn");
     }
 }

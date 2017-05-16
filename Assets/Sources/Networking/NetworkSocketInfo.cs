@@ -16,7 +16,7 @@ public class NetworkSocketInfo
     {
         if (!ConnectionIDs.Contains(ID))
         {
-            Debug.Log("Connection ID enregitrée : " + ID);
+            Debugger.LogMessage("Connection ID enregitrée : " + ID);
             ConnectionIDs.Add(ID);
         }
     }
@@ -62,12 +62,12 @@ public class NetworkSocketInfo
         NetworkTransport.Connect(HostID, IP, Port, 0, out error);
         if (error == 0)
         {
-            Debug.Log("Demande de connection envoyée !");
+            Debugger.LogMessage("Demande de connection envoyée !");
             return true;
         }
         else
         {
-             Debug.Log("Erreur lors de l'envoie de demande de connection ! Type d'erreur : " + (NetworkError)error);
+             Debugger.LogMessage("Erreur lors de l'envoie de demande de connection ! Type d'erreur : " + (NetworkError)error);
             return false;
         }
     }
@@ -78,12 +78,12 @@ public class NetworkSocketInfo
     }
     public bool Disconnect(int coIndex)
     {
-        Debug.Log("Fermeture de la connexion ID : " + ConnectionIDs[coIndex]);
+        Debugger.LogMessage("Fermeture de la connexion ID : " + ConnectionIDs[coIndex]);
         byte error;
         NetworkTransport.Disconnect(HostID, ConnectionIDs[coIndex], out error);
         if ((NetworkError)error != NetworkError.Ok)
         {
-            Debug.Log("Erreur lors de la déconnexion ! Type d'erreur : " + (NetworkError)error);
+            Debugger.LogMessage("Erreur lors de la déconnexion ! Type d'erreur : " + (NetworkError)error);
             return false;
         }
         else

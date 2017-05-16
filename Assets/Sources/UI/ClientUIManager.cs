@@ -18,7 +18,7 @@ public class ClientUIManager : MonoBehaviour
 
         if (CanvasSearcher == null)
         {
-            Debug.Log("L'interface de nom '" + UIName + "' n'existe pas !");
+            Debugger.LogMessage("L'interface de nom '" + UIName + "' n'existe pas !");
         }
         else
         {
@@ -50,14 +50,14 @@ public class ClientUIManager : MonoBehaviour
         Transform field = CurrentUICanvas.transform.Find(textInputFieldName);
         if (field == null)
         {
-            Debug.Log("Il n'existe pas de champs de texte nommé : '" + textInputFieldName + "'");
+            Debugger.LogMessage("Il n'existe pas de champs de texte nommé : '" + textInputFieldName + "'");
             return "";
         }
 
         InputField inputFieldComponent = field.gameObject.GetComponent<InputField>();
         if (inputFieldComponent == null)
         {
-            Debug.Log("Le champs de texte spécifié ne possède pas le component Input Field.");
+            Debugger.LogMessage("Le champs de texte spécifié ne possède pas le component Input Field.");
             return "";
         }
 

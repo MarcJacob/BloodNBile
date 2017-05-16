@@ -23,7 +23,6 @@ public class LinkTo : MonoBehaviour {
     {
         LinkEntity(e);
         renderer.RegisterOnUnitPositionUpdatedCallback(OnEntityPositionUpdated);
-        renderer.RegisterOnUnitRotationUpdatedCallback(OnEntityRotationUpdated);
         renderer.RegisterOnUnitRemovedCallback(OnEntityDied);
         Initialized = true;
     }
@@ -32,38 +31,51 @@ public class LinkTo : MonoBehaviour {
     {
         if (e.Equals(LinkedEntity))
         {
-            Debug.Log("Mort de l'entité " + e.Name);
+            Debugger.LogMessage("Mort de l'entité " + e.Name);
             Destroy(gameObject);
         }
     }
 
+    Vector3 LastKnownServerPosition; // Dernière position sur le serveur connue.
+    Quaternion LastKnownServerRotation; // Dernière rotation sur le serveur connue.
+
+    Vector3 CurrentMovementVector; // Vecteur mouvement en direction de la dernière position sur le serveur connue.
+    bool FastPositionUpdate = false; // Si vrai, alors l'entité va LERP vers sa dernière position connue au lieu d'y aller
+    // en fonction de sa vitesse. Fait pour les mises à jour de la position après un coup de lag par exemple.
     public void OnEntityPositionUpdated(Unit unit, bool forced)
     {
-        if (forced == true)
-            Debug.Log("MAJ forcée");
-        if (LinkedEntity == unit && (forced || TrackLocation))
+        if (unit == LinkedEntity)
         {
-            Debug.Log("Mise à jour de la position de l'entité ID " + unit.ID);
-            transform.position = unit.Pos;
+            LastKnownServerPosition = unit.Pos;
+            LastKnownServerRotation = unit.Rot;
         }
+            
     }
-    
-    public void OnEntityRotationUpdated(Unit unit)
-    {
-        if (LinkedEntity == unit && TrackRotation)
-        {
-            Debug.Log("Mise à jour de la rotation de l'enttié ID " + unit.ID);
-            transform.rotation = unit.Rot;
-        }
-    } 
 
     bool Initialized = false;
-
+    float MaxDistanceToServerPosition = 5f; // Distance maximale à la position dictée par le serveur si cette entité ne traque
+    // pas la position de son entité associée constamment.
+    float MaxDistanceToServerPositionFalling = 10f; // IDEM mais durant une chute. Permet d'éviter les "lag de chute".
     void Update()
     {
         if (Initialized)
         {
-
+            // Si on ne traque pas la position de l'entité "directement", alors on attend d'être trop éloigné de la position
+            // dictée par le serveur avant de rectifier.
+            if (!TrackLocation && ((LastKnownServerPosition - transform.position).sqrMagnitude > MaxDistanceToServerPosition * MaxDistanceToServerPosition || (!TrackLocation && (LastKnownServerPosition - transform.position).sqrMagnitude > MaxDistanceToServerPositionFalling* MaxDistanceToServerPositionFalling && (int)LastKnownServerPosition.y != (int)transform.position.y)))
+            {
+                transform.position = LastKnownServerPosition;
+            }
+            // Sinon on Lerp vers la dernière position connue sur le serveur
+            else
+            {
+                if (TrackLocation && (transform.position - LastKnownServerPosition).sqrMagnitude > 0.04f)
+                    transform.position = Vector3.Lerp(transform.position, LastKnownServerPosition, Time.deltaTime * 4f);
+                else if (TrackLocation)
+                    transform.position = Vector3.Lerp(transform.position, LastKnownServerPosition, Time.deltaTime * 8f);
+                if (TrackRotation)
+                transform.rotation = Quaternion.Lerp(transform.rotation, LastKnownServerRotation, Time.deltaTime * 5f);
+            }
         }
     }
 }

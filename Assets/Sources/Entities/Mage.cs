@@ -78,7 +78,7 @@ public class Mage : Unit, IHumorEntity {
             {
                 s[i].HasReloaded();
                 ReloadingSpells.Remove(s[i]);
-                Debug.Log(Humors.Blood + " et " + Humors.Phlegm + " et " + Humors.BlackBile + " et " + Humors.YellowBile);
+                Debugger.LogMessage(Humors.Blood + " et " + Humors.Phlegm + " et " + Humors.BlackBile + " et " + Humors.YellowBile);
             }
         }
     }

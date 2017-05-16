@@ -7,6 +7,7 @@ public class EntityControl : MonoBehaviour
 
     NetworkSocketInfo NetworkInfo;
     LinkTo EntityLink;
+    Rigidbody ControlledEntityRigidbody;
 
     public void Initialize(NetworkSocketInfo netInfo)
     {
@@ -24,28 +25,37 @@ public class EntityControl : MonoBehaviour
         pivot.transform.rotation = transform.rotation;
         pivot.transform.parent = transform;
         Camera.main.transform.parent = pivot.transform;
+        ControlledEntityRigidbody = gameObject.AddComponent<Rigidbody>();
+        ControlledEntityRigidbody.constraints = RigidbodyConstraints.FreezeRotation;
+        gameObject.AddComponent<CapsuleCollider>();
     }
 
     Vector3 DirectionVector;
     bool Changed = false;
 
+    float ClientEntityUpdatesToServerPerSecond = 20f;
+    float cd_ClientEntityUpdateToServer = 0f;
     private void Update()
     {
         if (NetworkInfo != null)
         {
             Mouselook();
             HandleInput();
-            if (Changed)
+            if (1 / ClientEntityUpdatesToServerPerSecond < cd_ClientEntityUpdateToServer)
             {
-                new NetworkMessage(14, new UnitMovementChangeMessage(EntityLink.LinkedEntity.ID, DirectionVector)).Send(NetworkInfo, NetworkInfo.ConnectionIDs[0]);
+                new NetworkMessage(12, new EntityPositionRotationUpdate(EntityLink.LinkedEntity.ID, transform.position, transform.rotation)).Send(NetworkInfo, NetworkInfo.ConnectionIDs[0], NetworkInfo.UnreliableChannelID);
+                cd_ClientEntityUpdateToServer = 0f;
+                Debugger.LogMessage("Envoie de la nouvelle position et nouvelle rotation au serveur !");
+            }
+            else
+            {
+                cd_ClientEntityUpdateToServer += Time.deltaTime;
             }
         }
 
         transform.Translate(EntityLink.LinkedEntity.GetSpeed() * DirectionVector * Time.deltaTime);
     }
 
-    float RotationUpdateFrequency = 0.5f;
-    float RotationUpdateCooldown = 0f;
     void Mouselook()
     {
         float rawX = Input.GetAxis("Mouse X");
@@ -53,13 +63,6 @@ public class EntityControl : MonoBehaviour
 
         transform.eulerAngles += new Vector3(0, rawX, 0);
         transform.Find("CameraPivot").eulerAngles += new Vector3(-rawY, 0, 0);
-
-        RotationUpdateCooldown += Time.deltaTime;
-        if (RotationUpdateCooldown >= RotationUpdateFrequency)
-        {
-            RotationUpdateCooldown = 0f;
-            new NetworkMessage(16, new UnitRotationChangedMessage(EntityLink.LinkedEntity.ID, (SerializableQuaternion)transform.rotation)).Send(NetworkInfo, NetworkInfo.ConnectionIDs[0], NetworkInfo.UnreliableChannelID);
-        }
     }
 
     void HandleInput()
@@ -109,6 +112,6 @@ public class EntityControl : MonoBehaviour
             Changed = true;
         }
 
-        //Debug.Log(DirectionVector);
+        //Debugger.LogMessage(DirectionVector);
     }
 }

@@ -37,7 +37,7 @@ public class NetworkMessage
     {
         if (!NetworkTransport.IsStarted)
         {
-            Debug.Log("Impossible d'envoyer un message - NetworkTransport n'a pas été activé !");
+            Debugger.LogMessage("Impossible d'envoyer un message - NetworkTransport n'a pas été activé !");
             return;
         }
 
@@ -58,7 +58,9 @@ public class NetworkMessage
 
         if ((NetworkError)error != NetworkError.Ok)
         {
-            Debug.Log("Erreur lors de l'envoie d'un message ! Type : " + (NetworkError)error);
+            Debugger.LogMessage("Erreur lors de l'envoie d'un message ! Type : " + (NetworkError)error);
         }
+        else
+            nbSent += 1;
     }
 }

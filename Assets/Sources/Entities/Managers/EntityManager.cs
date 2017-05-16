@@ -19,8 +19,6 @@ public class EntityManager {
     {
         MatchWeakRef = new WeakReference(match);
         Unit.RegisterOnUnitDiedCallback(OnUnitDeath);
-        Unit.RegisterOnUnitMovementVectorChanged(OnUnitMovementVectorChanged);
-        Unit.RegisterOnUnitRotationChanged(OnUnitRotationChanged);
     }
 
     public Unit GetUnitFromID(int ID)
@@ -36,7 +34,7 @@ public class EntityManager {
     }
 
 
-    float EntityPositionsUpdateCooldown = 2f;
+    float EntityPositionsUpdateCooldown = 0.1f;
     float currentEntityPositionUpdateCooldown = 0f;
     public void UpdateEntities()
     {
@@ -56,8 +54,13 @@ public class EntityManager {
 
         if (currentEntityPositionUpdateCooldown >= EntityPositionsUpdateCooldown)
         {
-            Debug.Log("Envoi de la position de toutes les entités aux clients.");
-            Match.SendMessageToPlayers(15, Entities.ToArray(), true, true);
+            Debugger.LogMessage("Envoi de la position de toutes les entités aux clients.");
+            List<EntityPositionRotationUpdate> updateList = new List<EntityPositionRotationUpdate>();
+            foreach(Entity e in Entities)
+            {
+                updateList.Add(new EntityPositionRotationUpdate(e.ID, e.Pos, e.Rot));
+            }
+            Match.SendMessageToPlayers(12, updateList.ToArray(), true, true);
             currentEntityPositionUpdateCooldown = 0f;
         }
         else
@@ -68,7 +71,7 @@ public class EntityManager {
 
     public Entity CreateEntity(Vector3 pos, Quaternion rot, string name)
     {
-        Debug.Log("Création d'une entité : " + name);
+        Debugger.LogMessage("Création d'une entité : " + name);
         Entity ent = new Entity(Match, Entities.Count, pos, rot, name);
         Entities.Add(ent);
         return ent;
@@ -76,7 +79,7 @@ public class EntityManager {
 
     public Unit CreateUnit(Vector3 pos, Quaternion rot, string name, int mesh, float size, Faction fac, float speed) // Surcharge pour les entités de type Unit.
     {
-        Debug.Log("Création d'une unité : " + name);
+        Debugger.LogMessage("Création d'une unité : " + name);
         Unit newUnit = new Unit(Match, Entities.Count, pos, rot, name, mesh, size, fac, speed);
         Units.Add(newUnit);
         Entities.Add(newUnit);
@@ -95,23 +98,9 @@ public class EntityManager {
     {
         if (Units.Contains(unit))
         {
-            Debug.Log(unit.Name + " est morte.");
+            Debugger.LogMessage(unit.Name + " est morte.");
             Match.SendMessageToPlayers(11, unit, false, true);
             Units.Remove(unit);
-        }
-    }
-
-    void OnUnitMovementVectorChanged(Unit unit)
-    {
-        if (Units.Contains(unit))
-            Match.SendMessageToPlayers(12, new UnitMovementChangeMessage(unit.ID, (SerializableVector3)((Vector3)unit.MovementVector + (Quaternion)unit.Rot * (Vector3)unit.WilledMovementVector)), true);
-    }
-
-    void OnUnitRotationChanged(Unit unit)
-    {
-        if (Units.Contains(unit))
-        {
-            Match.SendMessageToPlayers(16, new UnitRotationChangedMessage(unit.ID, unit.Rot), true);
         }
     }
 }
