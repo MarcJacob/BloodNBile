@@ -3,7 +3,7 @@ using UnityEngine;
 
 public static class Debugger
 {
-    static bool Activated = false;
+    static bool Activated = true;
     public static void TurnOff()
     {
         Activated = false;

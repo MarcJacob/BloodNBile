@@ -8,6 +8,8 @@ public class Map {
     int ID;
     bool Loaded = false;
 
+
+
     public Map(string name)
     {
         Name = name;

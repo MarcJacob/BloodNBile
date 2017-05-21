@@ -22,8 +22,9 @@ public class BnBMatch
 
     // Propriétés / modules du jeu.
 
-    EntityManager EntityModule;
-    MagesManager MagesModule;
+    EntityManager EntityModule; // Gestion des entités, notamment des unités.
+    MagesManager MagesModule; // Gestion des mages
+    WellsManager WellsModule; // Gestion des puits
     int MapID;
     bool[] PlayersReady;
     int[] PlayerEntityIDs;
@@ -171,6 +172,7 @@ public class BnBMatch
         Debugger.LogMessage("FirstUpdate()");
         EntityModule = new EntityManager(this);
         MagesModule = new MagesManager(EntityModule);
+        WellsModule = new WellsManager(EntityModule);
         // Création des entités joueur & quelques humorlings
         int id = 0;
         foreach (ServerClientInfo info in Players)

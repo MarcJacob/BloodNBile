@@ -13,7 +13,7 @@ static class NetworkListener
     static int recChannelID;
     static int recBufferSize;
     static byte[] recBuffer;
-    public const int MAX_BUFFER_SIZE = 1472;
+    public const int MAX_BUFFER_SIZE = 1402;
 
     static BinaryFormatter Formatter = new BinaryFormatter();
     // ..
