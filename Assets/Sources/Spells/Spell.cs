@@ -11,7 +11,7 @@ public class Spell {
     public float Cooldown { get; protected set; }
     public bool IsReloading { get; protected set; }
     public Effect SpellEffect { get; protected set; }
-    public static List<Spell> SpellsList = new List<Spell>();
+    private static List<Spell> SpellsList = new List<Spell>();
 
     public Spell(int humor, int cost, int cooldown)
     {
@@ -51,5 +51,15 @@ public class Spell {
     {
         IsReloading = false;
         Debug.Log("Wow je suis prêt mtn");
+    }
+
+    public static Spell GetSpellFromID(int id)
+    {
+        foreach (Spell s in SpellsList)
+            if (s.ID == id)
+            {
+                return s;
+            }
+        return null;
     }
 }

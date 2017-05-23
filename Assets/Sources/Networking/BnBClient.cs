@@ -10,6 +10,9 @@ public class BnBClient : MonoBehaviour
     public string Username; // Nom du client.
 
     // ---------
+    public ActionBar ClientActionBar;
+    public Mage ClientMage;
+    public HumorLevels ClientHumorLevels;
 
     // Propriétés de connexion
     bool Connected; // Le client est-il connecté au serveur ?
@@ -83,6 +86,13 @@ public class BnBClient : MonoBehaviour
         NetworkListener.AddHandler(4, WaitingForPlayersHandler);
         NetworkListener.AddHandler(1, MatchStartingHandler);
         NetworkListener.AddHandler(3, MatchEndedHandler);
+
+
+        ConvertSpell.LoadConvertSpells();
+        ClientHumorLevels = new HumorLevels(100, 100, 100, 100);
+        ClientMage = new Mage(0, Vector3.zero,Quaternion.identity,"Client", ClientHumorLevels);
+        ClientActionBar = new ActionBar(ClientMage);
+
         Reset();
     }
 
@@ -116,6 +126,11 @@ public class BnBClient : MonoBehaviour
     private void Update()
     {
         NetworkListener.Listen();
+        if (!InAMatch)
+        {
+            ClientActionBar.UpdateActionBar();
+            ClientMage.UpdateCooldowns();
+        }
     }
 
     private void OnApplicationQuit()

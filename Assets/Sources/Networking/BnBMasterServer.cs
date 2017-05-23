@@ -39,6 +39,9 @@ public class BnBMasterServer : MonoBehaviour
         NetworkListener.AddHandler(0, RegisterConnectedClient); // Handler 0 : RegisterConnectedClient. Permet la réception des informations client envoyées par des Clients lors de leur connection.
         NetworkListener.RegisterOnDisconnectionCallback(UnregisterConnectedClient);
         Matchmaker = new MatchManager(NetworkInfo);
+        ConvertSpell.LoadConvertSpells();
+
+
     }
 
     private void Update()

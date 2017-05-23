@@ -51,4 +51,9 @@ public class HumorLevels {
 
         }
     }
+
+    public override string ToString()
+    {
+        return "Blood : " + Blood + " Phlegm : " + Phlegm + " Black : " + BlackBile + " Yellow : " + YellowBile;
+    }
 }
