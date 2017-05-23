@@ -11,6 +11,9 @@ public class BnBClient : MonoBehaviour
     public GameObject PlayerPrefab;
 
     // ---------
+    public ActionBar ClientActionBar;
+    public Mage ClientMage;
+    public HumorLevels ClientHumorLevels;
 
     // Propriétés de connexion
     bool Connected; // Le client est-il connecté au serveur ?
@@ -25,6 +28,8 @@ public class BnBClient : MonoBehaviour
     Mage ControlledMage;
     bool ControlledMageIDReceived;
     int ControlledMageID;
+
+    EntityRenderer EntityRender;
 
     // Utilitaires de jeu CLIENT-SIDE
     public ClientUIManager UIManager;
@@ -89,7 +94,7 @@ public class BnBClient : MonoBehaviour
     {
         NetworkInfo = new NetworkSocketInfo(1);
         UIManager = GetComponent<ClientUIManager>();
-        EntityRenderer = gameObject.AddComponent<EntityRenderer>();
+        EntityRender = gameObject.AddComponent<EntityRenderer>();
 
         // Handlers
 
@@ -99,15 +104,19 @@ public class BnBClient : MonoBehaviour
         NetworkListener.AddHandler(1, MatchStartingHandler);
         NetworkListener.AddHandler(3, MatchEndedHandler);
         NetworkListener.AddHandler(5, OnControlledEntityReceived);
-        NetworkListener.AddHandler(10, EntityRenderer.AddUnit);
-        NetworkListener.AddHandler(11, EntityRenderer.RemoveUnit);
-        NetworkListener.AddHandler(12, EntityRenderer.EntitiesPositionRotationUpdate);
-        NetworkListener.AddHandler(13, EntityRenderer.OnMageCreated);
+        NetworkListener.AddHandler(10, EntityRender.AddUnit);
+        NetworkListener.AddHandler(11, EntityRender.RemoveUnit);
+        NetworkListener.AddHandler(12, EntityRender.EntitiesPositionRotationUpdate);
+        NetworkListener.AddHandler(13, EntityRender.OnMageCreated);
         //
 
         // Chargement des maps
         Map.InitializeMaps();
         //
+
+
+        ConvertSpell.LoadConvertSpells();
+        ClientActionBar = new ActionBar(ClientMage);
         Reset();
     }
 
@@ -157,16 +166,20 @@ public class BnBClient : MonoBehaviour
         if (ControlledMageIDReceived == true && ControlledMage == null)
         {
             // On cherche le mage qu'on est sensé contrôler.
-            ControlledMage = EntityRenderer.GetMageFromID(ControlledMageID);
+            ControlledMage = EntityRender.GetMageFromID(ControlledMageID);
             if (ControlledMage != null)
             {
-                GameObject mageGO = EntityRenderer.MageGOs[ControlledMageID];
+                GameObject mageGO = EntityRender.MageGOs[ControlledMageID];
                 mageGO.AddComponent<EntityControl>().Initialize(NetworkInfo);
             }
         }
+        if (InAMatch)
+        {
+            ClientActionBar.UpdateActionBar();
+            ClientMage.UpdateCooldowns();
+        }
     }
 
-    EntityRenderer EntityRenderer;
 
     private void OnApplicationQuit()
     {
