@@ -17,7 +17,6 @@ public class Mage : Unit, IHumorEntity {
         IsCasting = false;
         ReloadingSpells = new Dictionary<Spell, float>();
         LOP = (humors.Blood + humors.Phlegm + humors.BlackBile + humors.YellowBile) / 4;
-        fac.AddMageToFaction(this);
     }
 
     /// <summary>
