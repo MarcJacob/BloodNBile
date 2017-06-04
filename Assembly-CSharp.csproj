@@ -46,22 +46,50 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-<<<<<<< HEAD
+     <Compile Include="Assets\Sources\Debug\Debugger.cs" />
+     <Compile Include="Assets\Sources\Effects\ConvertEffect.cs" />
+     <Compile Include="Assets\Sources\Effects\Effect.cs" />
+     <Compile Include="Assets\Sources\Effects\MissileEffect.cs" />
      <Compile Include="Assets\Sources\Entities\DrawableEntity.cs" />
-     <Compile Include="Assets\Sources\Entities\EntityManager.cs" />
+     <Compile Include="Assets\Sources\Entities\Entity.cs" />
      <Compile Include="Assets\Sources\Entities\Faction.cs" />
      <Compile Include="Assets\Sources\Entities\Humorling.cs" />
+     <Compile Include="Assets\Sources\Entities\Mage.cs" />
+     <Compile Include="Assets\Sources\Entities\Managers\EntityManager.cs" />
+     <Compile Include="Assets\Sources\Entities\Managers\MagesManager.cs" />
+     <Compile Include="Assets\Sources\Entities\Managers\WellsManager.cs" />
      <Compile Include="Assets\Sources\Entities\Unit.cs" />
-     <Compile Include="Assets\Sources\Humors\Entity.cs" />
      <Compile Include="Assets\Sources\Humors\HumorLevels.cs" />
      <Compile Include="Assets\Sources\Humors\IHumorEntity.cs" />
-     <Compile Include="Assets\Sources\Map\Cells.cs" />
-     <Compile Include="Assets\Sources\PlayerControl\CameraControl.cs" />
-     <Compile Include="Assets\Sources\PlayerControl\PlayerMovement.cs" />
-=======
-     <Compile Include="Assets\Sources\CameraControl.cs" />
-     <Compile Include="Assets\Sources\PlayerMovement.cs" />
->>>>>>> origin/SandBox-Ilan
+     <Compile Include="Assets\Sources\Map\Cell.cs" />
+     <Compile Include="Assets\Sources\Map\CellsManager.cs" />
+     <Compile Include="Assets\Sources\Map\Map.cs" />
+     <Compile Include="Assets\Sources\Map\Well.cs" />
+     <Compile Include="Assets\Sources\MatchSystem\BnBMatch.cs" />
+     <Compile Include="Assets\Sources\MatchSystem\MatchManager.cs" />
+     <Compile Include="Assets\Sources\Misc\SerializableQuaternion.cs" />
+     <Compile Include="Assets\Sources\Misc\SerializableVector3.cs" />
+     <Compile Include="Assets\Sources\Networking\BnBClient.cs" />
+     <Compile Include="Assets\Sources\Networking\BnBMasterServer.cs" />
+     <Compile Include="Assets\Sources\Networking\Messaging\MessageContent\EntityPositionRotationUpdate.cs" />
+     <Compile Include="Assets\Sources\Networking\Messaging\MessageContent\UnitMovementChangeMessage.cs" />
+     <Compile Include="Assets\Sources\Networking\Messaging\NetworkMessage.cs" />
+     <Compile Include="Assets\Sources\Networking\Messaging\NetworkMessageReceiver.cs" />
+     <Compile Include="Assets\Sources\Networking\NetworkListener.cs" />
+     <Compile Include="Assets\Sources\Networking\NetworkSocketInfo.cs" />
+     <Compile Include="Assets\Sources\Networking\ServerClientInfo.cs" />
+     <Compile Include="Assets\Sources\PlayerControl\EntityControl.cs" />
+     <Compile Include="Assets\Sources\PlayerControl\LinkToEntity.cs" />
+     <Compile Include="Assets\Sources\Renderer\EntityRenderer.cs" />
+     <Compile Include="Assets\Sources\Renderer\Model.cs" />
+     <Compile Include="Assets\Sources\Renderer\PositionUpdateVector3.cs" />
+     <Compile Include="Assets\Sources\Spells\AbsorptionSpell.cs" />
+     <Compile Include="Assets\Sources\Spells\ConvertSpell.cs" />
+     <Compile Include="Assets\Sources\Spells\Spell.cs" />
+     <Compile Include="Assets\Sources\UI\ActionBar.cs" />
+     <Compile Include="Assets\Sources\UI\ClientUIManager.cs" />
+     <Compile Include="Assets\Sources\UI\Slot.cs" />
+     <None Include="Assets\Sources\Networking\Messaging\MessageIDs.txt" />
  <Reference Include="UnityEngine.UI">
  <HintPath>D:/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>

@@ -6,6 +6,8 @@ public class Humorling : Unit {
 
     private Unit Target = null;
     private int Damage = 20;
+    private int Range = 5;
+    private int Type; // 0 = Blood, 1 = Phlegm, 2 = BlackBile, 3 = YellowBile
     private float DistanceTarget = Mathf.Infinity;
     private float TimerTarget = 2f;
     private float TimerTargetDuration = 2f;
@@ -16,9 +18,9 @@ public class Humorling : Unit {
    
     
 
-    public Humorling(BnBMatch Match, int ID, Vector3 pos, Quaternion rot, string name, int mesh, float size) : base(Match, ID, pos, rot, name, mesh, size, new Faction("Test", 0))
+    public Humorling(BnBMatch Match, int ID, Vector3 pos, Quaternion rot, string name, int mesh, float size, int type) : base(Match, ID, pos, rot, name, mesh, size, new Faction("Test", 0))
     {
-
+        Type = type; // 0 = Blood, 1 = Phlegm, 2 = BlackBile, 3 = YellowBile
     }
 
     public bool Equals (Humorling h)
@@ -27,105 +29,57 @@ public class Humorling : Unit {
         else return false;
     }
 
-    private List<Unit> GetTargetsList(CellsManager Cells, int indiceX, int indiceY)
+    private void SearchTarget(CellsManager Cells)
     {
-        List<Unit> listTargets = new List<Unit>();
-        if (indiceX == -1 || indiceY == -1) return listTargets;
+        int i = 0;
+        int j = 0;
+        int k = -1;
 
-        foreach (Unit h in Cells.cells[indiceX, indiceY]) listTargets.Add(h);
-
-        if (indiceX == 0)
+        foreach(Unit u in Cells.cells[GetUnitPositionX(Cells), GetUnitPositionY(Cells)].UnitList)
         {
-            if (indiceY == 0)
-            {
-                foreach (Unit h in Cells.cells[indiceX + 1, indiceY]) listTargets.Add(h);
-                foreach (Unit h in Cells.cells[indiceX, indiceY + 1]) listTargets.Add(h);
-                foreach (Unit h in Cells.cells[indiceX + 1, indiceY + 1]) listTargets.Add(h);
-            }
-            else if (indiceY == Cells.NbCellY)
-            {
-                foreach (Unit h in Cells.cells[indiceX + 1, indiceY]) listTargets.Add(h);
-                foreach (Unit h in Cells.cells[indiceX, indiceY - 1]) listTargets.Add(h);
-                foreach (Unit h in Cells.cells[indiceX + 1, indiceY - 1]) listTargets.Add(h);
-            }
-            else
-            {
-                foreach (Unit h in Cells.cells[indiceX, indiceY - 1]) listTargets.Add(h);
-                foreach (Unit h in Cells.cells[indiceX, indiceY + 1]) listTargets.Add(h);
-                foreach (Unit h in Cells.cells[indiceX + 1, indiceY]) listTargets.Add(h);
-                foreach (Unit h in Cells.cells[indiceX + 1, indiceY - 1]) listTargets.Add(h);
-                foreach (Unit h in Cells.cells[indiceX + 1, indiceY + 1]) listTargets.Add(h);
-            }
-        }
-        else if (indiceX == Cells.NbCellX)
-        {
-            if (indiceY == 0)
-            {
-                foreach (Unit h in Cells.cells[indiceX -1, indiceY]) listTargets.Add(h);
-                foreach (Unit h in Cells.cells[indiceX, indiceY + 1]) listTargets.Add(h);
-                foreach (Unit h in Cells.cells[indiceX - 1, indiceY + 1]) listTargets.Add(h);
-            }
-
-            if (indiceY == Cells.NbCellY)
-            {
-                foreach (Unit h in Cells.cells[indiceX - 1, indiceY]) listTargets.Add(h);
-                foreach (Unit h in Cells.cells[indiceX, indiceY - 1]) listTargets.Add(h);
-                foreach (Unit h in Cells.cells[indiceX - 1, indiceY - 1]) listTargets.Add(h);
-            }
-
-            else
-            {
-                foreach (Unit h in Cells.cells[indiceX, indiceY - 1]) listTargets.Add(h);
-                foreach (Unit h in Cells.cells[indiceX, indiceY + 1]) listTargets.Add(h);
-                foreach (Unit h in Cells.cells[indiceX - 1, indiceY]) listTargets.Add(h);
-                foreach (Unit h in Cells.cells[indiceX - 1, indiceY - 1]) listTargets.Add(h);
-                foreach (Unit h in Cells.cells[indiceX - 1, indiceY + 1]) listTargets.Add(h);
-            }
-        }
-        else
-        {
-            if (indiceY == 0)
-            {
-                foreach (Unit h in Cells.cells[indiceX - 1, indiceY]) listTargets.Add(h);
-                foreach (Unit h in Cells.cells[indiceX + 1, indiceY]) listTargets.Add(h);
-                foreach (Unit h in Cells.cells[indiceX, indiceY + 1]) listTargets.Add(h);
-                foreach (Unit h in Cells.cells[indiceX - 1, indiceY + 1]) listTargets.Add(h);
-                foreach (Unit h in Cells.cells[indiceX + 1, indiceY + 1]) listTargets.Add(h);
-            }
-
-            else if (indiceY == Cells.NbCellY)
-            {
-                foreach (Unit h in Cells.cells[indiceX - 1, indiceY]) listTargets.Add(h);
-                foreach (Unit h in Cells.cells[indiceX + 1, indiceY]) listTargets.Add(h);
-                foreach (Unit h in Cells.cells[indiceX - 1, indiceY - 1]) listTargets.Add(h);
-                foreach (Unit h in Cells.cells[indiceX + 1, indiceY - 1]) listTargets.Add(h);
-                foreach (Unit h in Cells.cells[indiceX, indiceY - 1]) listTargets.Add(h);
-            }
-
-            else
-            {
-                foreach (Unit h in Cells.cells[indiceX - 1, indiceY - 1]) listTargets.Add(h);
-                foreach (Unit h in Cells.cells[indiceX - 1, indiceY + 1]) listTargets.Add(h);
-                foreach (Unit h in Cells.cells[indiceX - 1, indiceY]) listTargets.Add(h);
-                foreach (Unit h in Cells.cells[indiceX + 1, indiceY - 1]) listTargets.Add(h);
-                foreach (Unit h in Cells.cells[indiceX + 1, indiceY + 1]) listTargets.Add(h);
-                foreach (Unit h in Cells.cells[indiceX + 1, indiceY]) listTargets.Add(h);
-                foreach (Unit h in Cells.cells[indiceX, indiceY - 1]) listTargets.Add(h);
-                foreach (Unit h in Cells.cells[indiceX, indiceY + 1]) listTargets.Add(h);
-            }
-        }
-
-        return listTargets;
-    }
-
-    private void SearchTarget(CellsManager cells)
-    {
-        foreach (Unit u in GetTargetsList(cells, GetUnitPositionX(cells), GetUnitPositionY(cells)))
-        {
-            if (DistanceTarget*DistanceTarget < Vector3.SqrMagnitude(Pos + u.Pos) && !(Fac.equals(u.Fac)))
+            if (DistanceTarget * DistanceTarget < Vector3.SqrMagnitude(Pos + u.Pos) && !(Fac.equals(u.Fac)))
             {
                 Target = u;
                 DistanceTarget = Vector3.Distance(Pos, u.Pos);
+            }
+        }
+
+        while (Target == null && -k <= Range)
+        {
+            for (i = k;  i <= -k; i++)
+            {
+                for (j = k; j <= -k; j++)
+                {
+                    if(GetUnitPositionX(Cells) + i >= 0 && GetUnitPositionY(Cells) + j >= 0 && GetUnitPositionX(Cells) + i <= Cells.NbCellX && GetUnitPositionY(Cells) + j <= Cells.NbCellY)
+                    {
+                        foreach (Unit u in Cells.cells[GetUnitPositionX(Cells) + i, GetUnitPositionY(Cells) + j].UnitList)
+                        {
+                            if (DistanceTarget * DistanceTarget < Vector3.SqrMagnitude(Pos + u.Pos) && !(Fac.equals(u.Fac)))
+                            {
+                                Target = u;
+                                DistanceTarget = Vector3.Distance(Pos, u.Pos);
+                            }
+                         }
+                    }
+                }
+            }
+            k--;
+        }
+    }
+
+    private void CompareTarget(CellsManager Cells)
+    {
+        for (int i = -Range; i <= Range; i++)
+        {
+            for (int j = -Range; j <= Range; j++)
+            {
+                if (GetUnitPositionX(Cells) + i >= 0 && GetUnitPositionY(Cells) + j >= 0 && GetUnitPositionX(Cells) + i <= Cells.NbCellX && GetUnitPositionY(Cells) + j <= Cells.NbCellY)
+                {
+                    foreach (Humorling h in Cells.cells[i, j].UnitList)
+                    {
+                        if (h.DistanceTarget * h.DistanceTarget < Vector3.SqrMagnitude(Pos + h.Pos) && !(Fac.equals(h.Fac))) h.Target = this;
+                    }
+                }
             }
         }
     }
@@ -142,15 +96,10 @@ public class Humorling : Unit {
             }
     }
 
-    private void attack(Unit target)
+    private void Attack(Unit target) 
     {
-        target.RemoveHP(Damage);
+        Target.RemoveHumors(Type, Damage);
     }
-
-    void Start () {
-		
-	}
-	
 	
 	void Update (CellsManager cellsManager) {
 		
@@ -169,8 +118,8 @@ public class Humorling : Unit {
             }
             else if (TimerAttack <= 0)
             {
-                attack(Target);
-                if (Target.GetHealthPoints() <= 0)
+                Attack(Target);
+                if (Target.IsDead())
                 {
                     Target.Die();
                     Target.RemoveFromCell(cellsManager, GetUnitPositionX(cellsManager), GetUnitPositionY(cellsManager));
@@ -184,5 +133,10 @@ public class Humorling : Unit {
 
 
 
-	}
+	} 
+
+    void Start(CellsManager cellsManager)
+    {
+        
+    }
 }

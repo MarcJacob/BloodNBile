@@ -7,7 +7,7 @@ using System;
 public class Unit : DrawableEntity {
 
     public Faction Fac;
-    protected int HealthPoints = 100;
+    protected HumorLevels Humor;
 
 
     // Movement
@@ -28,16 +28,21 @@ public class Unit : DrawableEntity {
         return BaseSpeed;
     }
 
+    public virtual bool IsDead() // A refaire mes choupinous
+    {
+        return false;
+    }
+
     protected void AddToCell(CellsManager Cells)
     {
             int x = (int) Pos.z / Cells.SizeCellX;
             int y = (int) Pos.x / Cells.SizeCellY;
-            Cells.cells[x, y].Add(this);
+            Cells.cells[x, y].UnitList.Add(this);
     }
 
     public void RemoveFromCell(CellsManager Cells, int x, int y)
     {
-        Cells.cells[x, y].Remove(this);
+        Cells.cells[x, y].UnitList.Remove(this);
     }
 
     protected int GetUnitPositionX(CellsManager Cells)
@@ -52,18 +57,9 @@ public class Unit : DrawableEntity {
         return y;
     }
 
-    public void AddHP(int healPoints)
+    public void RemoveHumors(int type, int quantity)
     {
-        this.HealthPoints += healPoints;
-    }
-
-    public void RemoveHP(int healPoints)
-    {
-        this.HealthPoints -= healPoints;
-        if (HealthPoints <= 0f && OnUnitDiedCallback != null)
-        {
-            Die();
-        }
+        Humor.LoseHumor(type, quantity);
     }
 
     public override void Die()
@@ -72,10 +68,6 @@ public class Unit : DrawableEntity {
         OnUnitDiedCallback(this);
     }
 
-    public int GetHealthPoints()
-    {
-        return HealthPoints;
-    }
 
     static Action<Unit> OnUnitDiedCallback;
     public static void RegisterOnUnitDiedCallback(Action<Unit> cb)
@@ -84,11 +76,7 @@ public class Unit : DrawableEntity {
     }
 
 
-    void Start () {
-		
-	}
-	
-	
+
 	public override void UpdateEntity () {
 
         if (MovementVector != Vector3.zero || WilledMovementVector != Vector3.zero)
