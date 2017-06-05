@@ -3,14 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Mage : Entity, IHumorEntity {
+[Serializable]
+public class Mage : Unit, IHumorEntity {
 
     public HumorLevels Humors { get; private set; }
     public float LOP { get; private set; }
     private bool IsCasting;
     public Dictionary<Spell, float> ReloadingSpells;
 
-    public Mage(int ID, Vector3 pos, Quaternion rot, string name, HumorLevels humors) : base(ID, pos, rot, name)
+    public Mage(BnBMatch Match, int ID, Vector3 pos, Quaternion rot, string name, Faction fac, HumorLevels humors) : base(Match, ID, pos, rot, name, -1, 8, fac)
     {
         Humors = humors;
         IsCasting = false;
@@ -77,7 +78,7 @@ public class Mage : Entity, IHumorEntity {
             {
                 s[i].HasReloaded();
                 ReloadingSpells.Remove(s[i]);
-                Debug.Log(Humors.Blood + " et " + Humors.Phlegm + " et " + Humors.BlackBile + " et " + Humors.YellowBile);
+                Debugger.LogMessage(Humors.Blood + " et " + Humors.Phlegm + " et " + Humors.BlackBile + " et " + Humors.YellowBile);
             }
         }
     }

@@ -7,6 +7,23 @@ using UnityEngine;
 [Serializable]
 public class NetworkMessage
 {
+    public static int nbSent = 0;
+    static float debug_NbMessagesSent = 1f;
+    static float cd_debug_NbMessagesSent = 0;
+    public static void TrackMessages()
+    {
+        if (cd_debug_NbMessagesSent > debug_NbMessagesSent)
+        {
+            cd_debug_NbMessagesSent = 0f;
+            Debugger.LogMessage("Nombre de messages envoyés : " + nbSent);
+            nbSent = 0;
+        }
+        else
+        {
+            cd_debug_NbMessagesSent += Time.deltaTime;
+        }
+    }
+
     public byte Type;
     public object Content;
 
@@ -16,17 +33,20 @@ public class NetworkMessage
         Content = content;
     }
 
-    public void Send(NetworkSocketInfo SocketInfo, int ConnectionID, int ChannelID = -1)
+    public void Send(NetworkSocketInfo SocketInfo, int ConnectionID, int ChannelID = -1, bool isFragmented = false)
     {
         if (!NetworkTransport.IsStarted)
         {
-            Debug.Log("Impossible d'envoyer un message - NetworkTransport n'a pas été activé !");
+            Debugger.LogMessage("Impossible d'envoyer un message - NetworkTransport n'a pas été activé !");
             return;
         }
 
         // Conversion de l'objet en un tableau de bytes (Serialization).
-
-        byte[] buffer = new byte[1024];
+        byte[] buffer;
+        if (!isFragmented)
+            buffer = new byte[NetworkListener.MAX_BUFFER_SIZE];
+        else
+            buffer = new byte[NetworkListener.MAX_BUFFER_SIZE * 5];
         MemoryStream stream = new MemoryStream(buffer);
         BinaryFormatter bf = new BinaryFormatter();
         bf.Serialize(stream, this);
@@ -38,7 +58,9 @@ public class NetworkMessage
 
         if ((NetworkError)error != NetworkError.Ok)
         {
-            Debug.Log("Erreur lors de l'envoie d'un message ! Type : " + (NetworkError)error);
+            Debugger.LogMessage("Erreur lors de l'envoie d'un message ! Type : " + (NetworkError)error);
         }
+        else
+            nbSent += 1;
     }
 }

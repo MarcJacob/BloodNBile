@@ -1,22 +1,31 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
+[Serializable]
 public class Unit : DrawableEntity {
 
-    public Faction Fac = null;
+    public Faction Fac;
     protected int HealthPoints = 100;
- 
 
-    public Unit(int ID, Vector3 pos, Quaternion rot, string name, int mesh, float size) : base(ID, pos, rot, name, mesh, size)
+
+    // Movement
+    float BaseSpeed; // Vitesse "de base" de l'unité en mètres par seconde.
+    public SerializableVector3 MovementVector { get; private set; }
+    public bool CanMove { get; private set; } // L'unité peut-elle influencer son propre mouvement ? Est faux par exemple quand l'unité est entrain de tomber
+                         // ou est affectée par un phénomène physique.
+
+    public Unit(BnBMatch Match, int ID, Vector3 pos, Quaternion rot, string name, int mesh, float size, Faction fac, float speed = 5f) : base(Match, ID, pos, rot, name, mesh, size)
     {
-
+        BaseSpeed = speed;
+        Fac = fac;
+        CanMove = true;
     }
 
-    public bool equals(Unit u)
+    public float GetSpeed()
     {
-        if (this.ID == u.ID) return true;
-        else return false;
+        return BaseSpeed;
     }
 
     protected void AddToCell(CellsManager Cells)
@@ -28,15 +37,7 @@ public class Unit : DrawableEntity {
 
     public void RemoveFromCell(CellsManager Cells, int x, int y)
     {
-        int i = 0;
-        foreach (Humorling h in Cells.cells[x, y])
-        {
-            if (this.equals(h))
-            {
-                Cells.cells[x, y].RemoveAt(i);
-            }
-            else i++;
-        }
+        Cells.cells[x, y].Remove(this);
     }
 
     protected int GetUnitPositionX(CellsManager Cells)
@@ -59,11 +60,27 @@ public class Unit : DrawableEntity {
     public void RemoveHP(int healPoints)
     {
         this.HealthPoints -= healPoints;
+        if (HealthPoints <= 0f && OnUnitDiedCallback != null)
+        {
+            Die();
+        }
     }
 
-    public int GetHealPoints()
+    public override void Die()
+    {
+        base.Die();
+        OnUnitDiedCallback(this);
+    }
+
+    public int GetHealthPoints()
     {
         return HealthPoints;
+    }
+
+    static Action<Unit> OnUnitDiedCallback;
+    public static void RegisterOnUnitDiedCallback(Action<Unit> cb)
+    {
+        OnUnitDiedCallback += cb;
     }
 
 
@@ -72,7 +89,86 @@ public class Unit : DrawableEntity {
 	}
 	
 	
-	void Update () {
-		
+	public override void UpdateEntity () {
+
+        if (MovementVector != Vector3.zero || WilledMovementVector != Vector3.zero)
+        {
+            ProcessMovement();
+        }
 	}
+
+    void ProcessMovement()
+    {
+        Pos += (SerializableVector3)((Vector3)MovementVector + (Quaternion)Rot * (Vector3)WilledMovementVector * Time.deltaTime);
+    }
+
+    public SerializableVector3 WilledMovementVector { get; private set; } // Mouvement que l'unité applique sur elle même.
+    /// <summary>
+    /// Si l'unité est en capacité d'influencer son propre mouvement, fait avancer l'unité dans la direction indiquée.
+    /// Le mouvement ajouté au vecteur mouvement dépend de la vitesse de l'unité.
+    /// </summary>
+    /// <param name="dir"></param>
+    public void Move(Vector3 dir)
+    {
+        if (CanMove)
+        {
+            WilledMovementVector = dir;
+            if (OnUnitMovementVectorChanged != null)
+            {
+                OnUnitMovementVectorChanged(this);
+            }
+        }
+    }
+
+    public void PreventWilledMovement()
+    {
+        CanMove = false;
+        WilledMovementVector = Vector3.zero;
+        if (OnUnitMovementVectorChanged != null)
+        {
+            OnUnitMovementVectorChanged(this);
+        }
+    }
+
+    public void AllowMovement()
+    {
+        CanMove = true;
+    }
+
+    public void ApplyMovement(Vector3 mov)
+    {
+        MovementVector += (SerializableVector3)mov;
+        if (OnUnitMovementVectorChanged != null)
+        {
+            OnUnitMovementVectorChanged(this);
+        }
+    }
+
+    public void SetMovement(Vector3 mov)
+    {
+        MovementVector = mov;
+        if (OnUnitMovementVectorChanged != null)
+        {
+            OnUnitMovementVectorChanged(this);
+        }
+    }
+
+    public override void SetRot(Quaternion quat)
+    {
+        base.SetRot(quat);
+        if (OnUnitRotationChanged != null)
+        OnUnitRotationChanged(this);
+    }
+
+    static Action<Unit> OnUnitMovementVectorChanged;
+    static public void RegisterOnUnitMovementVectorChanged(Action<Unit> cb)
+    {
+        OnUnitMovementVectorChanged += cb;
+    }
+
+    static Action<Unit> OnUnitRotationChanged;
+    static public void RegisterOnUnitRotationChanged(Action<Unit> cb)
+    {
+        OnUnitRotationChanged += cb;
+    }
 }

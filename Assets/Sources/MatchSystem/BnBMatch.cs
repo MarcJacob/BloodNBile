@@ -7,6 +7,7 @@ public class BnBMatch
     // Informations réseau
     ServerClientInfo[] Players;
     NetworkSocketInfo NetworkInfo;
+    public int ID { get; private set; }
 
     public enum MatchState
     {
@@ -21,14 +22,17 @@ public class BnBMatch
 
     // Propriétés / modules du jeu.
 
-    EntityManager EntityModule;
+    EntityManager EntityModule; // Gestion des entités, notamment des unités.
+    MagesManager MagesModule; // Gestion des mages
+    WellsManager WellsModule; // Gestion des puits
     int MapID;
     bool[] PlayersReady;
-
+    int[] PlayerEntityIDs;
     //
 
-    public BnBMatch(NetworkSocketInfo networkInfo, ServerClientInfo[] clients)
+    public BnBMatch(int ID,  NetworkSocketInfo networkInfo, ServerClientInfo[] clients)
     {
+        this.ID = ID;
         NetworkInfo = networkInfo;
         Players = clients;
         PlayersReady = new bool[Players.Length];
@@ -39,11 +43,33 @@ public class BnBMatch
         return State;
     }
 
-    void SendMessageToPlayers(byte type, object content, bool useUnreliable = false)
+    public bool IsInMatch(int coID)
+    {
+        bool inMatch = false;
+        int i = 0;
+        while (i < Players.Length && inMatch == false)
+        {
+            if (Players[i].GetConnectionID() == coID)
+            {
+                inMatch = true;
+            }
+            else
+            {
+                i++;
+            }
+        }
+
+        return inMatch;
+    }
+
+    public void SendMessageToPlayers(byte type, object content, bool useUnreliable = false, bool useFragmented = false)
     {
         NetworkMessage message = new NetworkMessage(type, content);
         foreach(ServerClientInfo info in Players)
         {
+            if (useFragmented)
+                message.Send(NetworkInfo, info.GetConnectionID(), NetworkInfo.FragmentedChannelID, true);
+            else
             if (useUnreliable)
             {
                 message.Send(NetworkInfo, info.GetConnectionID(), NetworkInfo.UnreliableChannelID);
@@ -66,16 +92,17 @@ public class BnBMatch
         State = MatchState.Starting;
         NetworkListener.AddHandler(2, PlayerReadyHandler);
         NetworkListener.RegisterOnDisconnectionCallback(PlayerDisconnectedHandler);
+
         Initialized = true;
         return true;
     }
 
     float TimeLeft = 30f;
     float RepeatMessageTime = 1f;
+
     // Exécuté chaque image jusqu'à ce que tous les joueurs soient connectés et prêts.
     public void Start()
     {
-        Debug.Log("test");
         TimeLeft -= Time.deltaTime;
         if (TimeLeft <= 0f)
         {
@@ -99,7 +126,7 @@ public class BnBMatch
         RepeatMessageTime += Time.deltaTime;
         if (playersReady)
         {
-            SendMessageToPlayers(1, MapID); // Envoi de l'ID de la map aux joueurs & commencement du match.
+            SendMessageToPlayers(1, new object[] { MapID, PlayerEntityIDs }); // Envoi de l'ID de la map aux joueurs & commencement du match.
             State = MatchState.Ongoing;
         }
     }
@@ -124,17 +151,42 @@ public class BnBMatch
 
                 State = MatchState.Starting_FAILED;
                 SendMessageToPlayers(3, false);
-                Debug.Log("Arrêt du match !");
+                Debugger.LogMessage("Arrêt du match !");
                 return;
             }
         }
+    }
+
+    public void Stop()
+    {
+        State = MatchState.Ended;
+        SendMessageToPlayers(3, false);
+        Debugger.LogMessage("Arrêt du match !");
+        return;
     }
     /// <summary>
     /// Exécuté à la première image d'Update.
     /// </summary>
     void FirstUpdate()
     {
+        Debugger.LogMessage("FirstUpdate()");
+        EntityModule = new EntityManager(this);
+        MagesModule = new MagesManager(EntityModule);
+        WellsModule = new WellsManager(EntityModule);
+        // Création des entités joueur & quelques humorlings
+        int id = 0;
+        foreach (ServerClientInfo info in Players)
+        {
+            // Création du mage et retrait de l'ID.
+            int mageID = MagesModule.CreateMage(new Vector3(id * 10 + 50, 1, 0), "Entity_Mage" + id, new Faction("Team" + id, id));
+            id++;
+            // Envoi au joueur correspondant.
+            NetworkMessage message = new NetworkMessage(5, mageID);
+            message.Send(NetworkInfo, info.GetConnectionID());
 
+            // Handlers
+            NetworkListener.AddHandler(12, MagesModule.OnClientEntityUpdate);
+        }
     }
 
     bool FirstFrame = true;
@@ -146,6 +198,8 @@ public class BnBMatch
             FirstUpdate();
             FirstFrame = false;
         }
+
+        EntityModule.UpdateEntities();
     }
 
 

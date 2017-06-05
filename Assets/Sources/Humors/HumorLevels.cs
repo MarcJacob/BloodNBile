@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
+[Serializable]
 public class HumorLevels {
     
     public int Blood { get; private set; }
@@ -50,5 +52,10 @@ public class HumorLevels {
             case 3: YellowBile -= quantity; break;
 
         }
+    }
+
+    public override string ToString()
+    {
+        return "Blood : " + Blood + " Phlegm : " + Phlegm + " Black : " + BlackBile + " Yellow : " + YellowBile;
     }
 }

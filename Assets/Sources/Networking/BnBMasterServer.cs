@@ -17,7 +17,7 @@ public class BnBMasterServer : MonoBehaviour
         ServerClientInfo clientInfo = new ServerClientInfo(info, message.ConnectionID);
         ConnectedClients.Add(clientInfo);
         Matchmaker.AddClientToQueue(clientInfo);
-        Debug.Log("Nouveau client enregistré ! ConnectionID : " + message.ConnectionID);
+        Debugger.LogMessage("Nouveau client enregistré ! ConnectionID : " + message.ConnectionID);
     }
 
     void UnregisterConnectedClient(int coID)
@@ -34,17 +34,27 @@ public class BnBMasterServer : MonoBehaviour
 
     private void Start()
     {
-        Debug.Log("Master Server lancé !");
+        Debugger.LogMessage("Master Server lancé !");
         NetworkInfo = new NetworkSocketInfo(50, 25000);
         NetworkListener.AddHandler(0, RegisterConnectedClient); // Handler 0 : RegisterConnectedClient. Permet la réception des informations client envoyées par des Clients lors de leur connection.
         NetworkListener.RegisterOnDisconnectionCallback(UnregisterConnectedClient);
         Matchmaker = new MatchManager(NetworkInfo);
+        ConvertSpell.LoadConvertSpells();
+
+
     }
 
     private void Update()
     {
         NetworkListener.Listen();
+        NetworkMessage.TrackMessages();
         Matchmaker.MatchMaking();
+        Matchmaker.UpdateMatches();
+    }
+
+    private void OnApplicationQuit()
+    {
+        Matchmaker.StopAllMatches();
         Matchmaker.UpdateMatches();
     }
 }

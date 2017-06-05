@@ -8,8 +8,12 @@ public class BnBClient : MonoBehaviour
 
     // Propriétés du client
     public string Username; // Nom du client.
+    public GameObject PlayerPrefab;
 
     // ---------
+    public ActionBar ClientActionBar;
+    public Mage ClientMage;
+    public HumorLevels ClientHumorLevels;
 
     // Propriétés de connexion
     bool Connected; // Le client est-il connecté au serveur ?
@@ -17,6 +21,15 @@ public class BnBClient : MonoBehaviour
     string IP;
     int Port = 25000;
     // ---------
+
+    // Informations sur le match actuel.
+
+    Map CurrentMap;
+    Mage ControlledMage;
+    bool ControlledMageIDReceived;
+    int ControlledMageID;
+
+    EntityRenderer EntityRender;
 
     // Utilitaires de jeu CLIENT-SIDE
     public ClientUIManager UIManager;
@@ -36,7 +49,7 @@ public class BnBClient : MonoBehaviour
         Username = UIManager.GetTextInputValue("UsernameInputField");
         if (Username == "")
         {
-            Debug.Log("Nom d'utilisateur non spécifié !");
+            Debugger.LogMessage("Nom d'utilisateur non spécifié !");
             return;
         }
         if (NetworkInfo.Connect(IP, Port))
@@ -48,7 +61,7 @@ public class BnBClient : MonoBehaviour
 
     public void OnConnectionEstablished(int coID)
     {
-        Debug.Log("Connecté au Master Server ! Envoi des données client. ID de la connection : " + coID);
+        Debugger.LogMessage("Connecté au Master Server ! Envoi des données client. ID de la connection : " + coID);
         NetworkInfo.RegisterConnectionID(coID);
         Connected = true;
         new NetworkMessage(0, Username).Send(NetworkInfo, coID);
@@ -57,7 +70,7 @@ public class BnBClient : MonoBehaviour
     public void OnConnectionLost(int coID)
     {
         Reset();
-        Debug.Log("Connection lost !");
+        Debugger.LogMessage("Connection lost !");
     }
 
     /// <summary>
@@ -70,6 +83,9 @@ public class BnBClient : MonoBehaviour
         Connected = false;
         InAMatch = false;
         Username = "";
+        ControlledMage = null;
+        ControlledMageID = 0;
+        ControlledMageIDReceived = false;
         UIManager.SwitchToUI("MainMenuUI");
         UIManager.BindButtonToFunction("StartMatchSearchButton", StartMatchSearch);
     }
@@ -78,11 +94,29 @@ public class BnBClient : MonoBehaviour
     {
         NetworkInfo = new NetworkSocketInfo(1);
         UIManager = GetComponent<ClientUIManager>();
+        EntityRender = gameObject.AddComponent<EntityRenderer>();
+
+        // Handlers
+
         NetworkListener.RegisterOnConnectionCallback(OnConnectionEstablished);
         NetworkListener.RegisterOnDisconnectionCallback(OnConnectionLost);
         NetworkListener.AddHandler(4, WaitingForPlayersHandler);
         NetworkListener.AddHandler(1, MatchStartingHandler);
         NetworkListener.AddHandler(3, MatchEndedHandler);
+        NetworkListener.AddHandler(5, OnControlledEntityReceived);
+        NetworkListener.AddHandler(10, EntityRender.AddUnit);
+        NetworkListener.AddHandler(11, EntityRender.RemoveUnit);
+        NetworkListener.AddHandler(12, EntityRender.EntitiesPositionRotationUpdate);
+        NetworkListener.AddHandler(13, EntityRender.OnMageCreated);
+        //
+
+        // Chargement des maps
+        Map.InitializeMaps();
+        //
+
+
+        ConvertSpell.LoadConvertSpells();
+        ClientActionBar = new ActionBar(ClientMage);
         Reset();
     }
 
@@ -106,6 +140,10 @@ public class BnBClient : MonoBehaviour
     void MatchStartingHandler(NetworkMessageReceiver message)
     {
         UIManager.SwitchToUI("MatchUI");
+        CurrentMap = Map.GetMapFromID((int)(message.ReceivedMessage.Content as object[])[0]);
+        // Instanciation de la map
+        CurrentMap.InstantiateMap();
+        
     }
 
     void MatchEndedHandler(NetworkMessageReceiver message)
@@ -113,10 +151,35 @@ public class BnBClient : MonoBehaviour
         Reset();
     }
 
+    void OnControlledEntityReceived(NetworkMessageReceiver message)
+    {
+
+        int entityID = (int)message.ReceivedMessage.Content;
+        Debugger.LogMessage("Controlled Entity : " + entityID);
+        ControlledMageIDReceived = true;
+        ControlledMageID = entityID;
+    }
+
     private void Update()
     {
         NetworkListener.Listen();
+        if (ControlledMageIDReceived == true && ControlledMage == null)
+        {
+            // On cherche le mage qu'on est sensé contrôler.
+            ControlledMage = EntityRender.GetMageFromID(ControlledMageID);
+            if (ControlledMage != null)
+            {
+                GameObject mageGO = EntityRender.MageGOs[ControlledMageID];
+                mageGO.AddComponent<EntityControl>().Initialize(NetworkInfo);
+            }
+        }
+        if (InAMatch)
+        {
+            ClientActionBar.UpdateActionBar();
+            ClientMage.UpdateCooldowns();
+        }
     }
+
 
     private void OnApplicationQuit()
     {

@@ -13,7 +13,7 @@ static class NetworkListener
     static int recChannelID;
     static int recBufferSize;
     static byte[] recBuffer;
-    static int MAX_BUFFER_SIZE = 1024;
+    public const int MAX_BUFFER_SIZE = 1402;
 
     static BinaryFormatter Formatter = new BinaryFormatter();
     // ..
@@ -54,19 +54,26 @@ static class NetworkListener
         NetworkEventType e = NetworkTransport.Receive(out recHostID, out recConnectionID, out recChannelID, recBuffer, MAX_BUFFER_SIZE, out recBufferSize, out error);
         if ((NetworkError)error != NetworkError.Ok)
         {
-            Debug.Log("Problème lors de la réception des messages : " + (NetworkError)error);
-            return;
+            Debugger.LogMessage("Problème lors de la réception des messages : " + (NetworkError)error);
+            if ((NetworkError)error == NetworkError.MessageToLong)
+            {
+                recBuffer = new byte[65535];
+                e = NetworkTransport.Receive(out recHostID, out recConnectionID, out recChannelID, recBuffer, 65535, out recBufferSize, out error);
+            }
+            else
+                return;
         }
-        switch(e)
+
+        switch (e)
         {
             case (NetworkEventType.Nothing):
                 break;
             case (NetworkEventType.ConnectEvent):
-                Debug.Log("Nouvelle connexion ! ID : " + recConnectionID);
+                Debugger.LogMessage("Nouvelle connexion ! ID : " + recConnectionID);
                 OnConnectionCallback(recConnectionID);
                 break;
             case (NetworkEventType.DisconnectEvent):
-                Debug.Log("Connexion fermée ! ID : " + recConnectionID);
+                Debugger.LogMessage("Connexion fermée ! ID : " + recConnectionID);
                 OnDisconnectionCallback(recConnectionID);
                 break;
             case (NetworkEventType.DataEvent):

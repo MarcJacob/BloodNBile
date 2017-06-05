@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
+[Serializable]
 public class Spell {
 
     public int ID { get; protected set; }
@@ -11,7 +13,7 @@ public class Spell {
     public float Cooldown { get; protected set; }
     public bool IsReloading { get; protected set; }
     public Effect SpellEffect { get; protected set; }
-    public static List<Spell> SpellsList = new List<Spell>();
+    private static List<Spell> SpellsList = new List<Spell>();
 
     public Spell(int humor, int cost, int cooldown)
     {
@@ -44,12 +46,22 @@ public class Spell {
     public virtual void Cast(Mage caster)
     {
         IsReloading = true;
-        Debug.Log("Je me lance !");
+        Debugger.LogMessage("Je me lance !");
     }
 
     public void HasReloaded()
     {
         IsReloading = false;
-        Debug.Log("Wow je suis prêt mtn");
+        Debugger.LogMessage("Wow je suis prêt mtn");
+    }
+
+    public static Spell GetSpellFromID(int id)
+    {
+        foreach (Spell s in SpellsList)
+            if (s.ID == id)
+            {
+                return s;
+            }
+        return null;
     }
 }

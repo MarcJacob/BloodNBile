@@ -43,16 +43,16 @@ public class MatchManager
             }
         }
 
-        BnBMatch match = new BnBMatch(NetworkInfo ,validClients.ToArray());
+        BnBMatch match = new BnBMatch(Matches.Count, NetworkInfo ,validClients.ToArray());
         if (match.Initialize(0))
         {
             Matches.Add(match);
-            Debug.Log("Match created !");
+            Debugger.LogMessage("Match created !");
             foreach (ServerClientInfo info in validClients)
                 RemoveClientFromQueue(info);
         }
         else
-            Debug.Log("Match n'a pas pu être crée !");
+            Debugger.LogMessage("Match n'a pas pu être crée !");
     }
 
     public void UpdateMatches()
@@ -88,12 +88,27 @@ public class MatchManager
         DoneMatches.Add(match);
     }
 
+
+    int PlayersPerMatch = 2;
     public void MatchMaking()
     {
-        if (ClientsInQueue.Count > 1)
+        if (ClientsInQueue.Count >= PlayersPerMatch)
         {
-            CreateMatch(new ServerClientInfo[] { ClientsInQueue[0], ClientsInQueue[1] });
+            List<ServerClientInfo> PlayersList = new List<ServerClientInfo>();
+            int playerCount;
+            for (playerCount = 0; playerCount < PlayersPerMatch; playerCount++)
+            {
+                PlayersList.Add(ClientsInQueue[playerCount]);
+            }
+            CreateMatch(PlayersList.ToArray());
+        }
+    }
 
+    public void StopAllMatches()
+    {
+        foreach(BnBMatch match in Matches)
+        {
+            match.Stop();
         }
     }
 }
