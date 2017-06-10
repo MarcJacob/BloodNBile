@@ -113,8 +113,10 @@ public class Humorling : Unit {
             if (AttackRange < DistanceTarget)
             {
                 RemoveFromCell(cellsManager, GetUnitPositionX(cellsManager), GetUnitPositionY(cellsManager));
+                cellsManager.CallbackAddingUnit(this, cellsManager.cells[GetUnitPositionX(cellsManager), GetUnitPositionY(cellsManager)]);
                 MoveToTarget();
                 AddToCell(cellsManager);
+                cellsManager.CallbackRemovingUnit(this, cellsManager.cells[GetUnitPositionX(cellsManager), GetUnitPositionY(cellsManager)]);
             }
             else if (TimerAttack <= 0)
             {
@@ -135,8 +137,4 @@ public class Humorling : Unit {
 
 	} 
 
-    void Start(CellsManager cellsManager)
-    {
-        
-    }
 }
