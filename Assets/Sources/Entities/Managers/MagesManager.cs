@@ -43,4 +43,31 @@ public class MagesManager
             }
         }
     }
+
+    public void OnClientMageCasting(NetworkMessageReceiver message)
+    {
+        bool isCastable;
+        Spell spell = Spell.GetSpellFromID(((ClientMageSpellMessage) message.ReceivedMessage.Content).SpellID);
+        Mage mage = (Mage) EntityModule.GetUnitFromID(((ClientMageSpellMessage)message.ReceivedMessage.Content).MageID);
+        isCastable = spell.IsCastable(mage);
+        if(isCastable && mage.Humors != null)
+        {
+            spell.Cast(mage);
+            mage.IsCasting = true;
+            mage.LoseHumor(spell.Humor, spell.Cost);
+            mage.IsCasting = false;
+            mage.ReloadingSpells.Add(spell, spell.Cooldown);
+            Debug.Log("Les humeurs selon le server : " + mage.Humors);
+            EntityModule.Match.SendMessageToPlayers(21, new ClientMageSpellMessage(mage.ID, spell.ID, mage.Humors));
+        }
+    }
+
+    public void UpdateMagesCooldowns()
+    {
+        foreach (Mage m in Mages)
+        {
+            if(m.ReloadingSpells.Count != 0)
+                m.UpdateCooldowns();
+        }
+    }
 }

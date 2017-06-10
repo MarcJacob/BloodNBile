@@ -36,7 +36,7 @@ public class EntityRenderer : MonoBehaviour {
             Debugger.LogMessage("Suppression d'une unité..");
             Units.Remove(unit);
             if (OnUnitRemovedCallback != null)
-            OnUnitRemovedCallback(unit);
+                OnUnitRemovedCallback(unit);
         }
     }
 

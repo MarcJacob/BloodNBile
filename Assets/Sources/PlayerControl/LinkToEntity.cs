@@ -10,16 +10,16 @@ using UnityEngine;
 /// </summary>
 public class LinkTo : MonoBehaviour {
 
-    public Unit LinkedEntity;
+    public Mage LinkedEntity;
     public bool TrackRotation = true;
     public bool TrackLocation = true;
-    public void LinkEntity(Unit e)
+    public void LinkEntity(Mage e)
     {
         LinkedEntity = e;
         OnEntityPositionUpdated(e, true);
     }
 
-    public void Initialize(Unit e, EntityRenderer renderer)
+    public void Initialize(Mage e, EntityRenderer renderer)
     {
         LinkEntity(e);
         renderer.RegisterOnUnitPositionUpdatedCallback(OnEntityPositionUpdated);

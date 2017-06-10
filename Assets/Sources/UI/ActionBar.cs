@@ -25,23 +25,10 @@ public class ActionBar {
         ActionBarMage = mage;
     }
 
-    private void ChangeSlot(Slot slot)
+    public void ChangeSlot(Slot slot)
     {
         CurrentSlot = slot;
         Debug.Log("Slot changé !");
-    }
-
-    public void CheckSlotKeys()
-    {
-        foreach (KeyCode k in Slots.Keys)
-            if (Input.GetKeyDown(k) && CurrentSlot != Slots[k])
-                ChangeSlot(Slots[k]);
-    }
-
-    public void CheckSpellCast()
-    {
-        if (Input.GetMouseButtonDown(0))
-            ActionBarMage.Cast(CurrentSlot.SlotSpell);
     }
 
     public void ChangeSlotSpell(Slot slot, Spell spell)
@@ -49,9 +36,4 @@ public class ActionBar {
         slot.ChangeSpell(spell);
     }
 
-    public void UpdateActionBar()
-    {
-        CheckSlotKeys();
-        CheckSpellCast();
-    }
 }

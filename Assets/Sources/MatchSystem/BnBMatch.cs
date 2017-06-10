@@ -186,6 +186,7 @@ public class BnBMatch
 
             // Handlers
             NetworkListener.AddHandler(12, MagesModule.OnClientEntityUpdate);
+            NetworkListener.AddHandler(20, MagesModule.OnClientMageCasting);
         }
     }
 
@@ -200,6 +201,22 @@ public class BnBMatch
         }
 
         EntityModule.UpdateEntities();
+        
+        MagesModule.UpdateMagesCooldowns();
+
+        float ClientEntityUpdatesToServerPerSecond = 1f;
+        float cd_ClientEntityUpdateToServer = 0f;
+
+        if (1 / ClientEntityUpdatesToServerPerSecond < cd_ClientEntityUpdateToServer)
+        {
+            foreach (Mage m in MagesModule.Mages)
+                SendMessageToPlayers(23, new MageCooldownsMessage(m.ID, m.ReloadingSpells), true);
+            cd_ClientEntityUpdateToServer = 0f;
+        }
+        else
+        {
+            cd_ClientEntityUpdateToServer += Time.deltaTime;
+        }
     }
 
 

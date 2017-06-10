@@ -8,6 +8,7 @@ public class EntityControl : MonoBehaviour
     NetworkSocketInfo NetworkInfo;
     LinkTo EntityLink;
     Rigidbody ControlledEntityRigidbody;
+    ActionBar ControlledActionBar;
 
     public void Initialize(NetworkSocketInfo netInfo)
     {
@@ -28,10 +29,10 @@ public class EntityControl : MonoBehaviour
         ControlledEntityRigidbody = gameObject.AddComponent<Rigidbody>();
         ControlledEntityRigidbody.constraints = RigidbodyConstraints.FreezeRotation;
         gameObject.AddComponent<CapsuleCollider>();
+        ControlledActionBar = new ActionBar(EntityLink.LinkedEntity);
     }
 
     Vector3 DirectionVector;
-    bool Changed = false;
 
     float ClientEntityUpdatesToServerPerSecond = 20f;
     float cd_ClientEntityUpdateToServer = 0f;
@@ -41,6 +42,9 @@ public class EntityControl : MonoBehaviour
         {
             Mouselook();
             HandleInput();
+            CheckSlotKeys();
+            CheckSpellCast();
+            EntityLink.LinkedEntity.UpdateCooldowns();
             if (1 / ClientEntityUpdatesToServerPerSecond < cd_ClientEntityUpdateToServer)
             {
                 new NetworkMessage(12, new EntityPositionRotationUpdate(EntityLink.LinkedEntity.ID, transform.position, transform.rotation)).Send(NetworkInfo, NetworkInfo.ConnectionIDs[0], NetworkInfo.UnreliableChannelID);
@@ -67,51 +71,58 @@ public class EntityControl : MonoBehaviour
 
     void HandleInput()
     {
-        Changed = false;
         if (Input.GetKeyDown(KeyCode.Z))
         {
             DirectionVector.z += 1f;
-            Changed = true;
         }
         else if (Input.GetKeyUp(KeyCode.Z))
         {
             DirectionVector.z += -1f;
-            Changed = true;
         }
 
         if (Input.GetKeyDown(KeyCode.S))
         {
             DirectionVector.z += -1f;
-            Changed = true;
         }
         else if (Input.GetKeyUp(KeyCode.S))
         {
             DirectionVector.z += 1f;
-            Changed = true;
         }
 
         if (Input.GetKeyDown(KeyCode.D))
         {
             DirectionVector.x += 1f;
-            Changed = true;
         }
         else if (Input.GetKeyUp(KeyCode.D))
         {
             DirectionVector.x += -1f;
-            Changed = true;
         }
 
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            Changed = true;
             DirectionVector.x += -1f;
         }
         else if (Input.GetKeyUp(KeyCode.Q))
         {
             DirectionVector.x += 1f;
-            Changed = true;
         }
 
         //Debugger.LogMessage(DirectionVector);
+    }
+
+    void CheckSlotKeys()
+    {
+        foreach (KeyCode k in ControlledActionBar.Slots.Keys)
+            if (Input.GetKeyDown(k) && ControlledActionBar.CurrentSlot != ControlledActionBar.Slots[k])
+                ControlledActionBar.ChangeSlot(ControlledActionBar.Slots[k]);
+    }
+
+    void CheckSpellCast()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            NetworkMessage message = new NetworkMessage(20, new ClientMageSpellMessage(EntityLink.LinkedEntity.ID, ControlledActionBar.CurrentSlot.SlotSpell.ID));
+            message.Send(NetworkInfo, NetworkInfo.ConnectionIDs[0]);
+        }
     }
 }

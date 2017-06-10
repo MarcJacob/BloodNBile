@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 using System;
+using System.Collections.Generic;
 
 public class BnBClient : MonoBehaviour
 {
@@ -11,9 +12,6 @@ public class BnBClient : MonoBehaviour
     public GameObject PlayerPrefab;
 
     // ---------
-    public ActionBar ClientActionBar;
-    public Mage ClientMage;
-    public HumorLevels ClientHumorLevels;
 
     // Propriétés de connexion
     bool Connected; // Le client est-il connecté au serveur ?
@@ -108,15 +106,15 @@ public class BnBClient : MonoBehaviour
         NetworkListener.AddHandler(11, EntityRender.RemoveUnit);
         NetworkListener.AddHandler(12, EntityRender.EntitiesPositionRotationUpdate);
         NetworkListener.AddHandler(13, EntityRender.OnMageCreated);
+        NetworkListener.AddHandler(21, OnSpellCasted);
+        NetworkListener.AddHandler(23, CooldownsUpdate);
         //
 
         // Chargement des maps
         Map.InitializeMaps();
         //
+        Spell.LoadSpells();
 
-
-        ConvertSpell.LoadConvertSpells();
-        ClientActionBar = new ActionBar(ClientMage);
         Reset();
     }
 
@@ -160,6 +158,48 @@ public class BnBClient : MonoBehaviour
         ControlledMageID = entityID;
     }
 
+    public void OnSpellCasted(NetworkMessageReceiver message)
+    {
+        if(ControlledMageID == ((ClientMageSpellMessage) message.ReceivedMessage.Content).MageID)
+        {
+            Spell spell = Spell.GetSpellFromID(((ClientMageSpellMessage)message.ReceivedMessage.Content).SpellID);
+            ControlledMage.Humors = ((ClientMageSpellMessage) message.ReceivedMessage.Content).Humors;
+            Debug.Log("Voici mes humeurs : " + ControlledMage.Humors);
+            ControlledMage.ReloadingSpells.Add(spell, spell.Cooldown);
+        }
+    }
+
+    public void CooldownsUpdate(NetworkMessageReceiver message)
+    {
+        if (ControlledMageID == ((MageCooldownsMessage)message.ReceivedMessage.Content).ID)
+        {
+
+            float AcceptedGap = 0.05f;
+            Dictionary<Spell, float> cooldowns = ((MageCooldownsMessage)message.ReceivedMessage.Content).Cooldowns;
+            if (cooldowns.Keys != ControlledMage.ReloadingSpells.Keys)
+                ControlledMage.ReloadingSpells = cooldowns;
+            else
+            {
+                Spell[] s = new Spell[cooldowns.Count];
+                int i = 0;
+                foreach (Spell spell in cooldowns.Keys)
+                {
+                    s[i] = spell;
+                    i++;
+                }
+                for (i = 0; i < s.Length; i++)
+                {
+                    if (Mathf.Abs(cooldowns[s[i]] - ControlledMage.ReloadingSpells[s[i]]) > AcceptedGap)
+                        ControlledMage.ReloadingSpells[s[i]] = cooldowns[s[i]];
+                }
+            }
+        }
+
+    }
+
+
+
+
     private void Update()
     {
         NetworkListener.Listen();
@@ -172,11 +212,6 @@ public class BnBClient : MonoBehaviour
                 GameObject mageGO = EntityRender.MageGOs[ControlledMageID];
                 mageGO.AddComponent<EntityControl>().Initialize(NetworkInfo);
             }
-        }
-        if (InAMatch)
-        {
-            ClientActionBar.UpdateActionBar();
-            ClientMage.UpdateCooldowns();
         }
     }
 

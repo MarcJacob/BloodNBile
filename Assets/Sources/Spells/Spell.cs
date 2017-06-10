@@ -64,4 +64,9 @@ public class Spell {
             }
         return null;
     }
+
+    public static void LoadSpells()
+    {
+        ConvertSpell.LoadConvertSpells();
+    }
 }

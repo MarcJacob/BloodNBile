@@ -6,9 +6,9 @@ using UnityEngine;
 [Serializable]
 public class Mage : Unit, IHumorEntity {
 
-    public HumorLevels Humors { get; private set; }
+    public HumorLevels Humors;
     public float LOP { get; private set; }
-    private bool IsCasting;
+    public bool IsCasting;
     public Dictionary<Spell, float> ReloadingSpells;
 
     public Mage(BnBMatch Match, int ID, Vector3 pos, Quaternion rot, string name, Faction fac, HumorLevels humors) : base(Match, ID, pos, rot, name, -1, 8, fac)
@@ -39,27 +39,6 @@ public class Mage : Unit, IHumorEntity {
     {
         Humors.LoseHumor(humor, quantity);
         UpdateLOP();
-    }
-
-    // Use this for initialization
-    void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	}
-
-    public void Cast(Spell spell)
-    {
-        if(spell.IsCastable(this) && !IsCasting)
-        {
-            IsCasting = true;
-            spell.Cast(this);
-            ReloadingSpells.Add(spell, spell.Cooldown);
-            LoseHumor(spell.Humor, spell.Cost);
-            IsCasting = false;
-        }
     }
 
     public void UpdateCooldowns()

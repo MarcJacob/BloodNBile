@@ -24,10 +24,7 @@ public class Well : Entity
     {
         if (ControllingFaction != null)
         {
-            foreach(Mage mage in ControllingFaction.GetMages())
-            {
 
-            }
         }
     }
 }
