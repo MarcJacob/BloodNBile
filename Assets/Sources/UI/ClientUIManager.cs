@@ -63,4 +63,17 @@ public class ClientUIManager : MonoBehaviour
 
         return inputFieldComponent.text;
     }
+
+    public void SetText(string textFieldName, string content)
+    {
+        Transform field = CurrentUICanvas.transform.Find(textFieldName);
+        if (field == null)
+        {
+            Debugger.LogMessage("Il n'existe pas de champs de texte nommé : '" + textFieldName + "'");
+        }
+        else
+        {
+            field.GetComponent<Text>().text = content;
+        }
+    }
 }

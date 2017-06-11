@@ -10,12 +10,13 @@ public class EntityControl : MonoBehaviour
     Rigidbody ControlledEntityRigidbody;
     ActionBar ControlledActionBar;
 
-    public void Initialize(NetworkSocketInfo netInfo)
+    public void Initialize(NetworkSocketInfo netInfo ,   ClientUIManager UIManager)
     {
         NetworkInfo = netInfo;
         EntityLink = GetComponent<LinkTo>();
         EntityLink.TrackLocation = false;
         EntityLink.TrackRotation = false;
+        ControlledActionBar = new ActionBar(EntityLink.LinkedEntity, UIManager);
     }
 
     private void Start()
@@ -29,7 +30,7 @@ public class EntityControl : MonoBehaviour
         ControlledEntityRigidbody = gameObject.AddComponent<Rigidbody>();
         ControlledEntityRigidbody.constraints = RigidbodyConstraints.FreezeRotation;
         gameObject.AddComponent<CapsuleCollider>();
-        ControlledActionBar = new ActionBar(EntityLink.LinkedEntity);
+
     }
 
     Vector3 DirectionVector;

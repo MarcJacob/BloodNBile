@@ -10,7 +10,7 @@ public class Entity  {
     public SerializableVector3 Pos { get; protected set; }
     public SerializableQuaternion Rot { get; protected set; }
     public string Name { get; protected set; }
-    protected int MatchID; // Match dans lequel cette entité se trouve.
+    public int MatchID { get; private set; } // Match dans lequel cette entité se trouve.
 
     public Entity(BnBMatch Match, int ID, Vector3 pos, Quaternion rot, string name)
     {

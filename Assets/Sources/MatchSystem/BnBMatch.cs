@@ -25,6 +25,7 @@ public class BnBMatch
     EntityManager EntityModule; // Gestion des entités, notamment des unités.
     MagesManager MagesModule; // Gestion des mages
     WellsManager WellsModule; // Gestion des puits
+    CellsManager CellsModule;
     int MapID;
     bool[] PlayersReady;
     int[] PlayerEntityIDs;
@@ -173,6 +174,7 @@ public class BnBMatch
         EntityModule = new EntityManager(this);
         MagesModule = new MagesManager(EntityModule);
         WellsModule = new WellsManager(EntityModule);
+        CellsModule = new CellsManager(this, 500, 500, 25, 25);
         // Création des entités joueur & quelques humorlings
         int id = 0;
         foreach (ServerClientInfo info in Players)
@@ -184,10 +186,15 @@ public class BnBMatch
             NetworkMessage message = new NetworkMessage(5, mageID);
             message.Send(NetworkInfo, info.GetConnectionID());
 
-            // Handlers
-            NetworkListener.AddHandler(12, MagesModule.OnClientEntityUpdate);
-            NetworkListener.AddHandler(20, MagesModule.OnClientMageCasting);
         }
+
+        // Handlers
+        NetworkListener.AddHandler(12, MagesModule.OnClientEntityUpdate);
+        NetworkListener.AddHandler(20, MagesModule.OnClientMageCasting);
+
+        //Callbacks
+        EntityModule.RegisterOnUnitCreatedCallback(CellsModule.OnUnitCreated);
+        EntityModule.RegisterOnUnitDeathCallback(CellsModule.OnUnitDestroyed);
     }
 
     bool FirstFrame = true;
@@ -202,20 +209,11 @@ public class BnBMatch
 
         EntityModule.UpdateEntities();
         
-        MagesModule.UpdateMagesCooldowns();
+        MagesModule.UpdateMages();
 
-        float ClientEntityUpdatesToServerPerSecond = 1f;
-        float cd_ClientEntityUpdateToServer = 0f;
-
-        if (1 / ClientEntityUpdatesToServerPerSecond < cd_ClientEntityUpdateToServer)
+        foreach(Mage m in MagesModule.Mages)
         {
-            foreach (Mage m in MagesModule.Mages)
-                SendMessageToPlayers(23, new MageCooldownsMessage(m.ID, m.ReloadingSpells), true);
-            cd_ClientEntityUpdateToServer = 0f;
-        }
-        else
-        {
-            cd_ClientEntityUpdateToServer += Time.deltaTime;
+            Debugger.LogMessage("Mage " + m.Name + " is in cell " + CellsModule.GetCurrentCell(m));
         }
     }
 

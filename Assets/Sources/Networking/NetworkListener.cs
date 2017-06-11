@@ -54,7 +54,6 @@ static class NetworkListener
         NetworkEventType e = NetworkTransport.Receive(out recHostID, out recConnectionID, out recChannelID, recBuffer, MAX_BUFFER_SIZE, out recBufferSize, out error);
         if ((NetworkError)error != NetworkError.Ok)
         {
-            Debugger.LogMessage("Problème lors de la réception des messages : " + (NetworkError)error);
             if ((NetworkError)error == NetworkError.MessageToLong)
             {
                 recBuffer = new byte[65535];

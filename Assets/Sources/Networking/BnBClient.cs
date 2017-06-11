@@ -107,7 +107,7 @@ public class BnBClient : MonoBehaviour
         NetworkListener.AddHandler(12, EntityRender.EntitiesPositionRotationUpdate);
         NetworkListener.AddHandler(13, EntityRender.OnMageCreated);
         NetworkListener.AddHandler(21, OnSpellCasted);
-        NetworkListener.AddHandler(23, CooldownsUpdate);
+        NetworkListener.AddHandler(23, OnMageUpdate);
         //
 
         // Chargement des maps
@@ -163,35 +163,40 @@ public class BnBClient : MonoBehaviour
         if(ControlledMageID == ((ClientMageSpellMessage) message.ReceivedMessage.Content).MageID)
         {
             Spell spell = Spell.GetSpellFromID(((ClientMageSpellMessage)message.ReceivedMessage.Content).SpellID);
-            ControlledMage.Humors = ((ClientMageSpellMessage) message.ReceivedMessage.Content).Humors;
-            Debug.Log("Voici mes humeurs : " + ControlledMage.Humors);
             ControlledMage.ReloadingSpells.Add(spell, spell.Cooldown);
         }
     }
 
-    public void CooldownsUpdate(NetworkMessageReceiver message)
+    public void OnMageUpdate(NetworkMessageReceiver message)
     {
-        if (ControlledMageID == ((MageCooldownsMessage)message.ReceivedMessage.Content).ID)
+        Debugger.LogMessage("Updating mage");
+        for (int i = 0; i < ((MageUpdateMessage)message.ReceivedMessage.Content).IDs.Length; i++)
         {
-
-            float AcceptedGap = 0.05f;
-            Dictionary<Spell, float> cooldowns = ((MageCooldownsMessage)message.ReceivedMessage.Content).Cooldowns;
-            if (cooldowns.Keys != ControlledMage.ReloadingSpells.Keys)
-                ControlledMage.ReloadingSpells = cooldowns;
-            else
+            int ID = ((MageUpdateMessage)message.ReceivedMessage.Content).IDs[i];
+            EntityRender.GetMageFromID(ID).Humors = ((MageUpdateMessage)message.ReceivedMessage.Content).Humors[i];
+            if (ControlledMageID == ID)
             {
-                Spell[] s = new Spell[cooldowns.Count];
-                int i = 0;
-                foreach (Spell spell in cooldowns.Keys)
+
+                float AcceptedGap = 0.05f;
+                Dictionary<int, float>[] cooldowns = ((MageUpdateMessage)message.ReceivedMessage.Content).Cooldowns;
+                Dictionary<Spell, float> cds = new Dictionary<Spell, float>();
+                foreach(int id in cooldowns[i].Keys)
                 {
-                    s[i] = spell;
-                    i++;
+                    cds.Add(Spell.GetSpellFromID(id), cooldowns[i][id]);
                 }
-                for (i = 0; i < s.Length; i++)
+                if (cds.Keys != ControlledMage.ReloadingSpells.Keys)
+                    ControlledMage.ReloadingSpells = cds;
+                else
                 {
-                    if (Mathf.Abs(cooldowns[s[i]] - ControlledMage.ReloadingSpells[s[i]]) > AcceptedGap)
-                        ControlledMage.ReloadingSpells[s[i]] = cooldowns[s[i]];
+                    foreach (Spell spell in cds.Keys)
+                    {
+                        if (Mathf.Abs(cds[spell] - ControlledMage.ReloadingSpells[spell]) > AcceptedGap)
+                            ControlledMage.ReloadingSpells[spell] = cds[spell];
+                    }
                 }
+
+                UIManager.SetText("Humors", "Humors : " + ControlledMage.Humors.Blood + " - " + ControlledMage.Humors.Phlegm
+                    + " - " + ControlledMage.Humors.YellowBile + " - " + ControlledMage.Humors.BlackBile);
             }
         }
 
@@ -210,7 +215,7 @@ public class BnBClient : MonoBehaviour
             if (ControlledMage != null)
             {
                 GameObject mageGO = EntityRender.MageGOs[ControlledMageID];
-                mageGO.AddComponent<EntityControl>().Initialize(NetworkInfo);
+                mageGO.AddComponent<EntityControl>().Initialize(NetworkInfo, UIManager);
             }
         }
     }

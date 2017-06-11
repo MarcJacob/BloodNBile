@@ -13,11 +13,13 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile></CompilerResponseFile>
+    <CompilerResponseFile>
+    </CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>StandaloneWindows:5</UnityBuildTarget>
     <UnityVersion>5.6.1f1</UnityVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
     <LangVersion Condition=" '$(VisualStudioVersion)' != '10.0' ">4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -93,6 +95,7 @@
     <Compile Include="Assets\Sources\Entities\Unit.cs" />
     <Compile Include="Assets\Sources\Humors\HumorLevels.cs" />
     <Compile Include="Assets\Sources\Humors\IHumorEntity.cs" />
+    <Compile Include="Assets\Sources\Map\Cell.cs" />
     <Compile Include="Assets\Sources\Map\CellsManager.cs" />
     <Compile Include="Assets\Sources\Map\Map.cs" />
     <Compile Include="Assets\Sources\Map\Well.cs" />
@@ -100,7 +103,7 @@
     <Compile Include="Assets\Sources\MatchSystem\MatchManager.cs" />
     <Compile Include="Assets\Sources\Messaging\MessageContent\ClientMageSpellMessage.cs" />
     <Compile Include="Assets\Sources\Messaging\MessageContent\EntityPositionRotationUpdate.cs" />
-    <Compile Include="Assets\Sources\Messaging\MessageContent\MageCooldownsMessage.cs" />
+    <Compile Include="Assets\Sources\Messaging\MessageContent\MageUpdateMessage.cs" />
     <Compile Include="Assets\Sources\Messaging\MessageContent\UnitMovementChangeMessage.cs" />
     <Compile Include="Assets\Sources\Messaging\NetworkMessage.cs" />
     <Compile Include="Assets\Sources\Messaging\NetworkMessageReceiver.cs" />

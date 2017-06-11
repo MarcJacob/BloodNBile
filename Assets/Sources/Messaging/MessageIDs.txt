@@ -19,3 +19,13 @@
 	11 = Message envoyé au client quand une entité est détruite.
 	12 = Message envoyé aux clients : mise à jour des positions et rotations, et message au serveur pour lui donner la nouvelle position et rotation de l'entité contrôlée.
 	13 = Message envoyé au client quand un mage est crée.
+
+	----------------------------
+
+	<--- Sorts et humeurs --->
+
+	20 = Message reçu par le serveur quand le client souhaite lancer un sort.
+	21 = Message reçu par le client quand le serveur a accepté le lancement d'un sort. Lance le cooldown de ce sort côté client.
+	22 = 
+	23 = Message reçu régulièrement par le client pour garder les cooldowns en cours côté client et côté serveur en synch.
+	24 = Message reçu régulièrement par le client pour garder les humeurs en synchronisation entre le serveur et le client.

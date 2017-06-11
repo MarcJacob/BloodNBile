@@ -7,7 +7,7 @@ using System;
 public class Unit : DrawableEntity {
 
     public Faction Fac;
-    protected int HealthPoints = 100;
+    protected HumorLevels Humor;
 
 
     // Movement
@@ -28,39 +28,36 @@ public class Unit : DrawableEntity {
         return BaseSpeed;
     }
 
-    protected void AddToCell(CellsManager Cells)
+    public virtual bool IsDead() // A refaire mes choupinous
     {
-            int x = (int) Pos.z / Cells.SizeCellX;
-            int y = (int) Pos.x / Cells.SizeCellY;
-            Cells.cells[x, y].Add(this);
+        return false;
     }
 
-    public void RemoveFromCell(CellsManager Cells, int x, int y)
+    /**
+     * <summary> Permet de voir si cette unité se trouve sur une autre case que celle passé en paramètre. </summary>
+     */
+    public bool IsInCell(CellsManager Cells, Cell cell)
     {
-        Cells.cells[x, y].Remove(this);
+        int x = (int)Pos.x / Cells.SizeCellX;
+        int y = (int)Pos.z / Cells.SizeCellY;
+
+        if (x != cell.PositionX || y != cell.PositionY)
+        {
+            return true;
+        }
+        else
+            return false;
     }
 
-    protected int GetUnitPositionX(CellsManager Cells)
+    public void RemoveHumors(int type, int quantity)
     {
-        int x = (int)Pos.z / Cells.SizeCellX;
-        return x;
+        Humor.LoseHumor(type, quantity);
+        CheckDeath();
     }
 
-    protected int GetUnitPositionY(CellsManager Cells)
+    virtual protected void CheckDeath()
     {
-        int y = (int)Pos.x / Cells.SizeCellY;
-        return y;
-    }
-
-    public void AddHP(int healPoints)
-    {
-        this.HealthPoints += healPoints;
-    }
-
-    public void RemoveHP(int healPoints)
-    {
-        this.HealthPoints -= healPoints;
-        if (HealthPoints <= 0f && OnUnitDiedCallback != null)
+        if (Humor.Blood <= 0 && Humor.Phlegm <= 0 && Humor.BlackBile <= 0 && Humor.YellowBile <= 0)
         {
             Die();
         }
@@ -70,12 +67,9 @@ public class Unit : DrawableEntity {
     {
         base.Die();
         OnUnitDiedCallback(this);
+
     }
 
-    public int GetHealthPoints()
-    {
-        return HealthPoints;
-    }
 
     static Action<Unit> OnUnitDiedCallback;
     public static void RegisterOnUnitDiedCallback(Action<Unit> cb)
@@ -84,74 +78,12 @@ public class Unit : DrawableEntity {
     }
 
 
-    void Start () {
-		
-	}
-	
-	
-	public override void UpdateEntity () {
 
-        if (MovementVector != Vector3.zero || WilledMovementVector != Vector3.zero)
-        {
-            ProcessMovement();
-        }
+	public override void UpdateEntity ()
+    {
+        
 	}
 
-    void ProcessMovement()
-    {
-        Pos += (SerializableVector3)((Vector3)MovementVector + (Quaternion)Rot * (Vector3)WilledMovementVector * Time.deltaTime);
-    }
-
-    public SerializableVector3 WilledMovementVector { get; private set; } // Mouvement que l'unité applique sur elle même.
-    /// <summary>
-    /// Si l'unité est en capacité d'influencer son propre mouvement, fait avancer l'unité dans la direction indiquée.
-    /// Le mouvement ajouté au vecteur mouvement dépend de la vitesse de l'unité.
-    /// </summary>
-    /// <param name="dir"></param>
-    public void Move(Vector3 dir)
-    {
-        if (CanMove)
-        {
-            WilledMovementVector = dir;
-            if (OnUnitMovementVectorChanged != null)
-            {
-                OnUnitMovementVectorChanged(this);
-            }
-        }
-    }
-
-    public void PreventWilledMovement()
-    {
-        CanMove = false;
-        WilledMovementVector = Vector3.zero;
-        if (OnUnitMovementVectorChanged != null)
-        {
-            OnUnitMovementVectorChanged(this);
-        }
-    }
-
-    public void AllowMovement()
-    {
-        CanMove = true;
-    }
-
-    public void ApplyMovement(Vector3 mov)
-    {
-        MovementVector += (SerializableVector3)mov;
-        if (OnUnitMovementVectorChanged != null)
-        {
-            OnUnitMovementVectorChanged(this);
-        }
-    }
-
-    public void SetMovement(Vector3 mov)
-    {
-        MovementVector = mov;
-        if (OnUnitMovementVectorChanged != null)
-        {
-            OnUnitMovementVectorChanged(this);
-        }
-    }
 
     public override void SetRot(Quaternion quat)
     {

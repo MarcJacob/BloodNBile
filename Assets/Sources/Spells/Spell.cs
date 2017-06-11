@@ -14,8 +14,9 @@ public class Spell {
     public bool IsReloading { get; protected set; }
     public Effect SpellEffect { get; protected set; }
     private static List<Spell> SpellsList = new List<Spell>();
+    public String Name { get; protected set; }
 
-    public Spell(int humor, int cost, int cooldown)
+    public Spell(int humor, int cost, int cooldown, string name)
     {
         Humor = humor;
         Cost = cost;
@@ -23,6 +24,7 @@ public class Spell {
         IsReloading = false;
         ID = LastID;
         LastID++;
+        Name = name;
         SpellsList.Add(this);
     }
 
@@ -46,13 +48,13 @@ public class Spell {
     public virtual void Cast(Mage caster)
     {
         IsReloading = true;
-        Debugger.LogMessage("Je me lance !");
+        Debugger.LogMessage(Name + " se lance !");
     }
 
     public void HasReloaded()
     {
         IsReloading = false;
-        Debugger.LogMessage("Wow je suis prêt mtn");
+        Debugger.LogMessage(Name + " est rechargé !");
     }
 
     public static Spell GetSpellFromID(int id)
@@ -67,6 +69,17 @@ public class Spell {
 
     public static void LoadSpells()
     {
-        ConvertSpell.LoadConvertSpells();
+        ConvertSpell BloodToPhlegm = new ConvertSpell(0, 20, 5, "Blood to Phlegm", 1 );
+        ConvertSpell BloodToBlack = new ConvertSpell(0, 20, 5, "Blood to Blackile", 2);
+        ConvertSpell BloodToYellow = new ConvertSpell(0, 20, 5, "Blood to Yellile", 3);
+        ConvertSpell PhlegmToBlood = new ConvertSpell(1, 20, 5, "Phlegm to Blood", 0);
+        ConvertSpell PhlegmToBlack = new ConvertSpell(1, 20, 5, "Phlegm to Blackile", 2);
+        ConvertSpell PhlegmToYellow = new ConvertSpell(1, 20, 5, "Phlegm to Yellile", 3);
+        ConvertSpell BlackToBlood = new ConvertSpell(2, 20, 5, "Blackile to Blood", 0);
+        ConvertSpell BlackToPhlegm = new ConvertSpell(2, 20, 5, "Blackile to Phlegm", 1);
+        ConvertSpell BlackToYellow = new ConvertSpell(2, 20, 5, "Blackile to Yellile", 3);
+        ConvertSpell YellowToBlood = new ConvertSpell(3, 20, 5, "Yellile to Blood", 0);
+        ConvertSpell YellowToPhlegm = new ConvertSpell(3, 20, 5, "Yellile to Phlegm", 1);
+        ConvertSpell YellowToBlack = new ConvertSpell(3, 20, 5, "Yellile to Blackile", 2);
     }
 }

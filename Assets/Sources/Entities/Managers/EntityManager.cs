@@ -92,15 +92,37 @@ public class EntityManager {
     void OnUnitCreated(Unit unit)
     {
         Match.SendMessageToPlayers(10, unit, false, true);
+        if (OnUnitCreatedCallback != null)
+        {
+            OnUnitCreatedCallback(unit);
+        }
+    }
+
+    Action<Unit> OnUnitCreatedCallback;
+    public void RegisterOnUnitCreatedCallback(Action<Unit> cb)
+    {
+        OnUnitCreatedCallback += cb;
     }
 
     void OnUnitDeath(Unit unit)
     {
-        if (Units.Contains(unit))
-        {
-            Debugger.LogMessage(unit.Name + " est morte.");
-            Match.SendMessageToPlayers(11, unit, false, true);
-            Units.Remove(unit);
-        }
+        if (unit.MatchID == Match.ID)
+            if (Units.Contains(unit))
+            {
+                Debugger.LogMessage(unit.Name + " est morte.");
+                Match.SendMessageToPlayers(11, unit, false, true);
+                Units.Remove(unit);
+
+                if (OnUnitDeathCallback != null)
+                {
+                    OnUnitDeathCallback(unit);
+                }
+            }
+    }
+
+    Action<Unit> OnUnitDeathCallback;
+    public void RegisterOnUnitDeathCallback(Action<Unit> cb)
+    {
+        OnUnitDeathCallback += cb;
     }
 }
