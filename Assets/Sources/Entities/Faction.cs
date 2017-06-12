@@ -17,7 +17,6 @@ public class Faction {
 
     public bool equals(Faction faction)
     {
-        if (this.FactionName == faction.FactionName) return true;
-        else return false;
+        return FactionName == faction.FactionName;
     }
 }

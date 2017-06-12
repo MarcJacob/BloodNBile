@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
+[Serializable]
 public class Humorling : Unit {
 
     private Unit Target = null;
@@ -13,14 +15,27 @@ public class Humorling : Unit {
     private float TimerTargetDuration = 2f;
     private float TimerAttack = 2f;
     private float TimerAttackDuration = 2f;
-    public int MoveSpeed = 2;
-    public int AttackRange = 1;
+    public int AttackRange = 5;
    
     
 
-    public Humorling(BnBMatch Match, int ID, Vector3 pos, Quaternion rot, string name, int mesh, float size, int type) : base(Match, ID, pos, rot, name, mesh, size, new Faction("Test", 0))
+    public Humorling(BnBMatch Match, int ID, Vector3 pos, Quaternion rot, string name, int mesh, float size, int type, Faction fac) : base(Match, ID, pos, rot, name, mesh, size, fac, 4, new HumorLevels(0, 0, 0, 0))
     {
         Type = type; // 0 = Blood, 1 = Phlegm, 2 = BlackBile, 3 = YellowBile
+        Humors.GainHumor(type, 100);
+        Match.CellsModule.RegisterActionCallbackAddingUnit((unit, cell) => { if (unit.Equals(this) || unit.Equals(Target))
+            {
+                SearchTarget(Match.CellsModule);
+            }
+            else
+            {
+                Cell currentCell = Match.CellsModule.GetCurrentCell(this);
+                if ((new Vector2(currentCell.PositionX, currentCell.PositionY) - new Vector2(cell.PositionX, cell.PositionY)).sqrMagnitude > Range*Range)
+                {
+                    CompareTarget(unit);
+                }
+            }
+        });
     }
 
     public bool Equals (Humorling h)
@@ -29,15 +44,13 @@ public class Humorling : Unit {
         else return false;
     }
 
+
     private void SearchTarget(CellsManager Cells)
     {
-        int i = 0;
-        int j = 0;
-        int k = -1;
 
         foreach(Unit u in Cells.GetCurrentCell(this).UnitList)
         {
-            if (DistanceTarget * DistanceTarget < Vector3.SqrMagnitude(Pos + u.Pos) && !(Fac.equals(u.Fac)))
+            if (DistanceTarget * DistanceTarget > Vector3.SqrMagnitude(Pos + u.Pos) && !(Fac.equals(u.Fac)))
             {
                 Target = u;
                 DistanceTarget = Vector3.Distance(Pos, u.Pos);
@@ -45,88 +58,96 @@ public class Humorling : Unit {
         }
 
         Cell currentCell = Cells.GetCurrentCell(this);
-        while (Target == null && -k <= Range)
+
+        for (int currentRange = 1; currentRange <= Range; currentRange++)
         {
-            for (i = k;  i <= -k; i++)
+            for (int ligne = currentCell.PositionY - currentRange; ligne <= currentCell.PositionY + currentRange ; ligne++)
             {
-                for (j = k; j <= -k; j++)
+                for(int colonne = currentCell.PositionX - currentRange; colonne <= currentCell.PositionX + currentRange; colonne++)
                 {
-                    if(currentCell.PositionX + i >= 0 && currentCell.PositionY + j >= 0 && currentCell.PositionX + i <= Cells.NbCellsX && currentCell.PositionY + j <= Cells.NbCellsY)
+                    if (ligne == currentCell.PositionY - currentRange || ligne == currentCell.PositionY + currentRange || currentRange == 1)
                     {
-                        foreach (Unit u in Cells.cells[currentCell.PositionX + i, currentCell.PositionY + j].UnitList)
-                        {
-                            if (DistanceTarget * DistanceTarget < Vector3.SqrMagnitude(Pos + u.Pos) && !(Fac.equals(u.Fac)))
-                            {
-                                Target = u;
-                                DistanceTarget = Vector3.Distance(Pos, u.Pos);
-                            }
-                         }
+                        if (ligne >= 0 && colonne >= 0 && ligne < Cells.NbCellsY && colonne < Cells.NbCellsX)
+                            ScanCell(Cells.cells[ligne, colonne]);
+                    }
+                    else if (colonne == currentCell.PositionX - currentRange || colonne == currentCell.PositionX + currentRange)
+                    {
+                        if (ligne >= 0 && colonne >= 0 && ligne < Cells.NbCellsY && colonne < Cells.NbCellsX)
+                            ScanCell(Cells.cells[ligne, colonne]);
                     }
                 }
             }
-            k--;
         }
     }
 
-    private void CompareTarget(CellsManager Cells)
+    private void ScanCell(Cell c)
     {
-        Cell currentCell = Cells.GetCurrentCell(this);
-        for (int i = -Range; i <= Range; i++)
+        foreach(Unit u in c.UnitList)
         {
-            for (int j = -Range; j <= Range; j++)
+            if (!Fac.Equals(u.Fac) && DistanceTarget > (Pos - u.Pos).sqrMagnitude)
             {
-                if (currentCell.PositionX + i >= 0 && currentCell.PositionY + j >= 0 && currentCell.PositionX + i <= Cells.NbCellsX && currentCell.PositionY + j <= Cells.NbCellsY)
-                {
-                    foreach (Humorling h in Cells.cells[i, j].UnitList)
-                    {
-                        if (h.DistanceTarget * h.DistanceTarget < Vector3.SqrMagnitude(Pos + h.Pos) && !(Fac.equals(h.Fac))) h.Target = this;
-                    }
-                }
+                DistanceTarget = (Pos - u.Pos).sqrMagnitude;
+                Target = u;
             }
         }
+    }
+
+    private void CompareTarget(Unit potentialTarget)
+    {
+        if (!Fac.Equals(potentialTarget.Fac) && DistanceTarget > (potentialTarget.Pos - Pos).sqrMagnitude)
+        {
+            Target = potentialTarget;
+            DistanceTarget = (potentialTarget.Pos - Pos).sqrMagnitude;
+        }
+
     }
 
     private void MoveToTarget()
     {
-            if (Pos.z > Target.Pos.z)
-            {
-                SetPos(new Vector3(Pos.x, Pos.y, ((Pos.x - Target.Pos.x) / Mathf.Abs(Pos.x - Target.Pos.x)) * MoveSpeed * Time.deltaTime));
-            }
-            if (Pos.x > Target.Pos.x)
-            {
-                SetPos(new Vector3((((Pos.x - Target.Pos.x) / Mathf.Abs(Pos.x - Target.Pos.x)) * MoveSpeed * Time.deltaTime), Pos.y, Pos.z));
-            }
+        SetPos((Vector3)Pos + (Target.Pos - Pos).normalized * GetSpeed() * Time.deltaTime);
+
     }
 
     private void Attack(Unit target) 
     {
-        Target.RemoveHumors(Type, Damage);
+        if (target != null)
+        {
+            Debugger.LogMessage("Attacking !");
+            target.RemoveHumors(Type, Damage);
+        }
     }
-	
-	void Update (CellsManager cellsManager) {
+
+    public void AI (CellsManager cellsManager) {
 		
         if (Target == null &&  TimerTarget <= 0)
         {
             SearchTarget(cellsManager);
             TimerTarget = TimerTargetDuration;
         }
-        else
+        if (Target != null && Alive == true)
         {
-            if (AttackRange < DistanceTarget)
+            if (Target.Alive == false || DistanceTarget > 30)
             {
-                MoveToTarget();
+                Target = null;
+                DistanceTarget = Mathf.Infinity;
             }
-            else if (TimerAttack <= 0)
+            else
             {
-                Attack(Target);
-                if (Target.IsDead())
+                DistanceTarget = Vector3.Distance(Pos, Target.Pos);
+                if (AttackRange < DistanceTarget)
                 {
-                    Target = null;
+                    MoveToTarget();
+
                 }
-                TimerAttack = TimerAttackDuration;
+                else if (TimerAttack <= 0)
+                {
+                    Attack(Target);
+                    TimerAttack = TimerAttackDuration;
+
+                }
             }
         }
-
+        TimerAttack -= Time.deltaTime;
         TimerTarget -= Time.deltaTime;
 	}
 

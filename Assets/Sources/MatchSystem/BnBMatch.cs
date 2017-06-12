@@ -22,10 +22,12 @@ public class BnBMatch
 
     // Propriétés / modules du jeu.
 
-    EntityManager EntityModule; // Gestion des entités, notamment des unités.
-    MagesManager MagesModule; // Gestion des mages
-    WellsManager WellsModule; // Gestion des puits
-    CellsManager CellsModule;
+    public EntityManager EntityModule { get; private set; } // Gestion des entités, notamment des unités.
+    public MagesManager MagesModule { get; private set; } // Gestion des mages
+    public WellsManager WellsModule { get; private set; } // Gestion des puits
+    public CellsManager CellsModule { get; private set; }
+    public HumorlingsManager HumorlingsModule { get; private set; }
+
     int MapID;
     bool[] PlayersReady;
     int[] PlayerEntityIDs;
@@ -175,6 +177,17 @@ public class BnBMatch
         MagesModule = new MagesManager(EntityModule);
         WellsModule = new WellsManager(EntityModule);
         CellsModule = new CellsManager(this, 500, 500, 25, 25);
+        HumorlingsModule = new HumorlingsManager(EntityModule);
+
+
+        // Handlers
+        NetworkListener.AddHandler(12, MagesModule.OnClientEntityUpdate);
+        NetworkListener.AddHandler(20, MagesModule.OnClientMageCasting);
+
+        //Callbacks
+        EntityModule.RegisterOnUnitCreatedCallback(CellsModule.OnUnitCreated);
+        EntityModule.RegisterOnUnitDeathCallback(CellsModule.OnUnitDestroyed);
+
         // Création des entités joueur & quelques humorlings
         int id = 0;
         foreach (ServerClientInfo info in Players)
@@ -188,13 +201,6 @@ public class BnBMatch
 
         }
 
-        // Handlers
-        NetworkListener.AddHandler(12, MagesModule.OnClientEntityUpdate);
-        NetworkListener.AddHandler(20, MagesModule.OnClientMageCasting);
-
-        //Callbacks
-        EntityModule.RegisterOnUnitCreatedCallback(CellsModule.OnUnitCreated);
-        EntityModule.RegisterOnUnitDeathCallback(CellsModule.OnUnitDestroyed);
     }
 
     bool FirstFrame = true;
@@ -208,13 +214,9 @@ public class BnBMatch
         }
 
         EntityModule.UpdateEntities();
-        
         MagesModule.UpdateMages();
-
-        foreach(Mage m in MagesModule.Mages)
-        {
-            Debugger.LogMessage("Mage " + m.Name + " is in cell " + CellsModule.GetCurrentCell(m));
-        }
+        HumorlingsModule.RunAIs();
+        CellsModule.Update();
     }
 
 

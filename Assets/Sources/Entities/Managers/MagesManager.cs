@@ -17,8 +17,7 @@ public class MagesManager
     public int CreateMage(Vector3 pos, string name, Faction fac)
     {
         Mage newMage = new Mage(EntityModule.Match, EntityModule.GetAllEntities().Length, pos, Quaternion.identity, name, fac, new HumorLevels(100, 100, 100, 100));
-        EntityModule.Entities.Add(newMage);
-        EntityModule.Units.Add(newMage);
+        EntityModule.OnUnitCreated(newMage, false);
         Mages.Add(newMage);
         OnMageCreated(newMage);
         return newMage.ID;
@@ -52,7 +51,7 @@ public class MagesManager
         isCastable = spell.IsCastable(mage);
         if(isCastable && mage.Humors != null)
         {
-            spell.Cast(mage);
+            spell.Cast(EntityModule.Match, mage);
             mage.IsCasting = true;
             mage.LoseHumor(spell.Humor, spell.Cost);
             mage.IsCasting = false;
@@ -91,8 +90,6 @@ public class MagesManager
                 cds[i] = cdsInt;
                 humorLevels[i] = m.Humors;
             }
-
-            Debugger.LogMessage("Updating mages");
             EntityModule.Match.SendMessageToPlayers(23, new MageUpdateMessage(IDs, cds, humorLevels), true, true);
             cd_MageUpdatesToClient = 0f;
         }

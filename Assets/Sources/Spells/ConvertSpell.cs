@@ -20,9 +20,9 @@ public class ConvertSpell : Spell
         SpellEffect = new ConvertEffect();
     }
 
-    public override void Cast(Mage caster)
+    public override void Cast(BnBMatch match, Mage caster)
     {
-        base.Cast(caster);
+        base.Cast(match, caster);
         SpellEffect.Activate(caster, ArrivalHumor, Cost);
     }
 }

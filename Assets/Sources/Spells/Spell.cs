@@ -11,17 +11,15 @@ public class Spell {
     public int Humor { get; protected set; }
     public int Cost { get; protected set; }
     public float Cooldown { get; protected set; }
-    public bool IsReloading { get; protected set; }
     public Effect SpellEffect { get; protected set; }
     private static List<Spell> SpellsList = new List<Spell>();
     public String Name { get; protected set; }
 
-    public Spell(int humor, int cost, int cooldown, string name)
+    public Spell(int humor, int cost, float cooldown, string name)
     {
         Humor = humor;
         Cost = cost;
         Cooldown = cooldown;
-        IsReloading = false;
         ID = LastID;
         LastID++;
         Name = name;
@@ -31,7 +29,7 @@ public class Spell {
     public bool IsCastable(Mage mage)
     {
         bool isCastable = true;
-        if (IsReloading) isCastable = false;
+        if (mage.ReloadingSpells.ContainsKey(this) && mage.ReloadingSpells[this] >= 0)isCastable = false;
         else
         {
             switch (Humor)
@@ -45,16 +43,9 @@ public class Spell {
         return isCastable;
     }
 
-    public virtual void Cast(Mage caster)
+    public virtual void Cast(BnBMatch match, Mage caster)
     {
-        IsReloading = true;
         Debugger.LogMessage(Name + " se lance !");
-    }
-
-    public void HasReloaded()
-    {
-        IsReloading = false;
-        Debugger.LogMessage(Name + " est rechargé !");
     }
 
     public static Spell GetSpellFromID(int id)
@@ -69,6 +60,7 @@ public class Spell {
 
     public static void LoadSpells()
     {
+        SummonSpell SummonBlood = new SummonSpell(0, 50, 15, "Summon blood minions");
         ConvertSpell BloodToPhlegm = new ConvertSpell(0, 20, 5, "Blood to Phlegm", 1 );
         ConvertSpell BloodToBlack = new ConvertSpell(0, 20, 5, "Blood to Blackile", 2);
         ConvertSpell BloodToYellow = new ConvertSpell(0, 20, 5, "Blood to Yellile", 3);

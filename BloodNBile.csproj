@@ -90,6 +90,7 @@
     <Compile Include="Assets\Sources\Entities\Humorling.cs" />
     <Compile Include="Assets\Sources\Entities\Mage.cs" />
     <Compile Include="Assets\Sources\Entities\Managers\EntityManager.cs" />
+    <Compile Include="Assets\Sources\Entities\Managers\HumorlingManager.cs" />
     <Compile Include="Assets\Sources\Entities\Managers\MagesManager.cs" />
     <Compile Include="Assets\Sources\Entities\Managers\WellsManager.cs" />
     <Compile Include="Assets\Sources\Entities\Unit.cs" />
@@ -119,9 +120,11 @@
     <Compile Include="Assets\Sources\Renderer\EntityRenderer.cs" />
     <Compile Include="Assets\Sources\Renderer\Model.cs" />
     <Compile Include="Assets\Sources\Renderer\PositionUpdateVector3.cs" />
+    <Compile Include="Assets\Sources\Renderer\UnitRender.cs" />
     <Compile Include="Assets\Sources\Spells\AbsorptionSpell.cs" />
     <Compile Include="Assets\Sources\Spells\ConvertSpell.cs" />
     <Compile Include="Assets\Sources\Spells\Spell.cs" />
+    <Compile Include="Assets\Sources\Spells\SummonSpell.cs" />
     <Compile Include="Assets\Sources\UI\ActionBar.cs" />
     <Compile Include="Assets\Sources\UI\ClientUIManager.cs" />
     <Compile Include="Assets\Sources\UI\Slot.cs" />

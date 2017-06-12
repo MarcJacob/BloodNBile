@@ -7,7 +7,7 @@ using System;
 public class Unit : DrawableEntity {
 
     public Faction Fac;
-    protected HumorLevels Humor;
+    public HumorLevels Humors;
 
 
     // Movement
@@ -16,21 +16,17 @@ public class Unit : DrawableEntity {
     public bool CanMove { get; private set; } // L'unité peut-elle influencer son propre mouvement ? Est faux par exemple quand l'unité est entrain de tomber
                          // ou est affectée par un phénomène physique.
 
-    public Unit(BnBMatch Match, int ID, Vector3 pos, Quaternion rot, string name, int mesh, float size, Faction fac, float speed = 5f) : base(Match, ID, pos, rot, name, mesh, size)
+    public Unit(BnBMatch Match, int ID, Vector3 pos, Quaternion rot, string name, int mesh, float size, Faction fac, float speed, HumorLevels humors) : base(Match, ID, pos, rot, name, mesh, size)
     {
         BaseSpeed = speed;
         Fac = fac;
         CanMove = true;
+        Humors = humors;
     }
 
     public float GetSpeed()
     {
         return BaseSpeed;
-    }
-
-    public virtual bool IsDead() // A refaire mes choupinous
-    {
-        return false;
     }
 
     /**
@@ -43,21 +39,21 @@ public class Unit : DrawableEntity {
 
         if (x != cell.PositionX || y != cell.PositionY)
         {
-            return true;
+            return false;
         }
         else
-            return false;
+            return true;
     }
 
     public void RemoveHumors(int type, int quantity)
     {
-        Humor.LoseHumor(type, quantity);
+        Humors.LoseHumor(type, quantity);
         CheckDeath();
     }
 
     virtual protected void CheckDeath()
     {
-        if (Humor.Blood <= 0 && Humor.Phlegm <= 0 && Humor.BlackBile <= 0 && Humor.YellowBile <= 0)
+        if (Humors.Blood <= 0 && Humors.Phlegm <= 0 && Humors.BlackBile <= 0 && Humors.YellowBile <= 0)
         {
             Die();
         }

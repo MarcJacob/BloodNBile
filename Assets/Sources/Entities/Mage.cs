@@ -6,14 +6,12 @@ using UnityEngine;
 [Serializable]
 public class Mage : Unit, IHumorEntity {
 
-    public HumorLevels Humors;
     public float LOP { get; private set; }
     public bool IsCasting;
     public Dictionary<Spell, float> ReloadingSpells;
 
-    public Mage(BnBMatch Match, int ID, Vector3 pos, Quaternion rot, string name, Faction fac, HumorLevels humors) : base(Match, ID, pos, rot, name, -1, 8, fac)
+    public Mage(BnBMatch Match, int ID, Vector3 pos, Quaternion rot, string name, Faction fac, HumorLevels humors) : base(Match, ID, pos, rot, name, -1, 8, fac, 5, humors)
     {
-        Humors = humors;
         IsCasting = false;
         ReloadingSpells = new Dictionary<Spell, float>();
         LOP = (humors.Blood + humors.Phlegm + humors.BlackBile + humors.YellowBile) / 4;
@@ -55,7 +53,6 @@ public class Mage : Unit, IHumorEntity {
             ReloadingSpells[s[i]] -= Time.deltaTime;
             if (ReloadingSpells[s[i]] <= 0)
             {
-                s[i].HasReloaded();
                 ReloadingSpells.Remove(s[i]);
                 Debugger.LogMessage(Humors.Blood + " et " + Humors.Phlegm + " et " + Humors.BlackBile + " et " + Humors.YellowBile);
             }

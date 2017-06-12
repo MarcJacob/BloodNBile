@@ -54,7 +54,6 @@ public class EntityManager {
 
         if (currentEntityPositionUpdateCooldown >= EntityPositionsUpdateCooldown)
         {
-            Debugger.LogMessage("Envoi de la position de toutes les entités aux clients.");
             List<EntityPositionRotationUpdate> updateList = new List<EntityPositionRotationUpdate>();
             foreach(Entity e in Entities)
             {
@@ -77,20 +76,20 @@ public class EntityManager {
         return ent;
     }
 
-    public Unit CreateUnit(Vector3 pos, Quaternion rot, string name, int mesh, float size, Faction fac, float speed) // Surcharge pour les entités de type Unit.
+    public Unit CreateUnit(Vector3 pos, Quaternion rot, string name, int mesh, float size, Faction fac, float speed, HumorLevels humors) // Surcharge pour les entités de type Unit.
     {
         Debugger.LogMessage("Création d'une unité : " + name);
-        Unit newUnit = new Unit(Match, Entities.Count, pos, rot, name, mesh, size, fac, speed);
-        Units.Add(newUnit);
-        Entities.Add(newUnit);
-
+        Unit newUnit = new Unit(Match, Entities.Count, pos, rot, name, mesh, size, fac, speed, humors);
 
         OnUnitCreated(newUnit);
         return newUnit;
     }
 
-    void OnUnitCreated(Unit unit)
+    public void OnUnitCreated(Unit unit, bool sendNetworkMessage = true)
     {
+        Units.Add(unit);
+        Entities.Add(unit);
+        if (sendNetworkMessage)
         Match.SendMessageToPlayers(10, unit, false, true);
         if (OnUnitCreatedCallback != null)
         {
@@ -110,7 +109,7 @@ public class EntityManager {
             if (Units.Contains(unit))
             {
                 Debugger.LogMessage(unit.Name + " est morte.");
-                Match.SendMessageToPlayers(11, unit, false, true);
+                Match.SendMessageToPlayers(11, unit.ID, false, false);
                 Units.Remove(unit);
 
                 if (OnUnitDeathCallback != null)

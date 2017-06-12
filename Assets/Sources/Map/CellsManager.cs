@@ -20,6 +20,7 @@ public class CellsManager
         if (!cell.UnitList.Contains(unit))
         {
             cell.UnitList.Add(unit);
+            if (CallbackAddingUnit != null)
             CallbackAddingUnit(unit, cell);
         }
     }
@@ -29,7 +30,8 @@ public class CellsManager
         if (cell.UnitList.Contains(unit))
         {
             cell.UnitList.Remove(unit);
-            CallbackRemovingUnit(unit, cell);
+            if (CallbackRemovingUnit != null)
+                CallbackRemovingUnit(unit, cell);
         }
     }
 
@@ -95,21 +97,24 @@ public class CellsManager
 
     public void Update()
     {
-        foreach(Cell c in cells)
+        for (int i = 0; i < cells.GetLength(0); i++)
         {
-            foreach(Unit u in c.UnitList)
+            for (int a = 0; a < cells.GetLength(1); a++)
             {
-                if (!u.IsInCell(this, c))
+                Cell c = cells[i, a];
+                int j = 0;
+                while (j < c.UnitList.Count)
                 {
-                    RemoveFromCell(u, c);
-                    AddToCell(u, GetCurrentCell(u));
-                    Debugger.LogMessage("Unit " + u.Name + " going from " + c + " to " + GetCurrentCell(u));
+                    Unit u = c.UnitList[j];
+                    if (!u.IsInCell(this, c))
+                    {
+                        RemoveFromCell(u, c);
+                        AddToCell(u, GetCurrentCell(u));
+                        Debugger.LogMessage("Unit " + u.Name + " going from " + c + " to " + GetCurrentCell(u));
+                        
+                    }
+                    j++;
                 }
-            }
-
-            if (c.UnitList.Count > 0)
-            {
-                Debugger.LogMessage(c + " has " + c.UnitList.Count + " units.");
             }
         }
     }
