@@ -7,7 +7,7 @@ using System;
 public class Spell {
 
     public int ID { get; protected set; }
-    private static int LastID = 0;
+    private static int LastID = 0; 
     public int Humor { get; protected set; }
     public int Cost { get; protected set; }
     public float Cooldown { get; protected set; }
@@ -29,7 +29,7 @@ public class Spell {
     public bool IsCastable(Mage mage)
     {
         bool isCastable = true;
-        if (mage.ReloadingSpells.ContainsKey(this) && mage.ReloadingSpells[this] >= 0)isCastable = false;
+        if (mage.ReloadingSpells.ContainsKey(this) && mage.ReloadingSpells[this] >= 0)	isCastable = false;
         else
         {
             switch (Humor)

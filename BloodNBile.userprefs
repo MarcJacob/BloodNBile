@@ -1,0 +1,27 @@
+﻿<Properties StartupItem="Assembly-CSharp.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Sources\Spells\Spell.cs">
+    <Files>
+      <File FileName="Assets\Sources\Map\Cell.cs" Line="1" Column="1" />
+      <File FileName="Assets\Sources\Humors\HumorLevels.cs" Line="1" Column="1" />
+      <File FileName="Assets\Sources\Spells\Spell.cs" Line="77" Column="1" />
+      <File FileName="Assets\Sources\PlayerControl\EntityControl.cs" Line="1" Column="1" />
+      <File FileName="Assets\Sources\Effects\Effect.cs" Line="1" Column="1" />
+      <File FileName="Assets\Sources\Effects\ConvertEffect.cs" Line="1" Column="1" />
+      <File FileName="Assets\Sources\Effects\MissileEffect.cs" Line="1" Column="1" />
+      <File FileName="Assets\Sources\Spells\SummonSpell.cs" Line="14" Column="28" />
+      <File FileName="Assets\Sources\Entities\Mage.cs" Line="7" Column="30" />
+      <File FileName="Assets\Sources\Entities\DrawableEntity.cs" Line="1" Column="1" />
+      <File FileName="Assets\Sources\Renderer\EntityRenderer.cs" Line="29" Column="115" />
+      <File FileName="Assets\Sources\Renderer\UnitRender.cs" Line="23" Column="110" />
+      <File FileName="Assets\Sources\Entities\Unit.cs" Line="1" Column="1" />
+      <File FileName="Assets\Sources\Renderer\PositionUpdateVector3.cs" Line="8" Column="9" />
+      <File FileName="Assets\Sources\Renderer\Model.cs" Line="15" Column="14" />
+      <File FileName="Assets\Sources\UI\ActionBar.cs" Line="1" Column="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

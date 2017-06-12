@@ -25,8 +25,8 @@ public class EntityRenderer : MonoBehaviour {
         Debugger.LogMessage("Unit added !");
         if (!Units.Contains(unit))
         {
-            Units.Add(unit);
-            RenderedUnits.Add(new UnitRender(unit.Pos, unit.Rot, unit)); 
+            Units.Add(unit);//ajout à la liste serveur 
+            RenderedUnits.Add(new UnitRender(unit.Pos, unit.Rot, unit)); //ajout à la liste client du UnitRender correspondant
         }
     }
 
@@ -39,6 +39,7 @@ public class EntityRenderer : MonoBehaviour {
             Debugger.LogMessage("Suppression d'une unité..");
             Units.Remove(unit);
             List<UnitRender> unitRenderClean = new List<UnitRender>();
+
             for (int i = 0; i < RenderedUnits.Count; i++)
             {
                 if (RenderedUnits[i].RenderedUnit == unit)

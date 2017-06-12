@@ -18,6 +18,8 @@ class PositionUpdateVector3
         Forced = forced;
     }
 
+	//méthodes implicites de conversion pour rendre Vector3 et PositionUpdateVector3 interchangeables
+
     public static implicit operator Vector3(PositionUpdateVector3 pv)
     {
         return new Vector3(pv.x, pv.y, pv.z);
