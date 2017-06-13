@@ -16,6 +16,7 @@ public class EntityControl : MonoBehaviour
         EntityLink = GetComponent<LinkTo>();
         EntityLink.TrackLocation = false;
         EntityLink.TrackRotation = false;
+        EntityLink.TrackDeath = false;
         ControlledActionBar = new ActionBar(EntityLink.LinkedEntity, UIManager);
     }
 

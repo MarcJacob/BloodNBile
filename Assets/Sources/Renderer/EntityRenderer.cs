@@ -37,20 +37,37 @@ public class EntityRenderer : MonoBehaviour {
         if (Units.Contains(unit))
         {
             Debugger.LogMessage("Suppression d'une unité..");
+            unit.Alive = false;
             Units.Remove(unit);
-            List<UnitRender> unitRenderClean = new List<UnitRender>();
-            for (int i = 0; i < RenderedUnits.Count; i++)
+            bool found = false;
+            int i = 0;
+            while(!found && i < RenderedUnits.Count)
             {
                 if (RenderedUnits[i].RenderedUnit == unit)
-                    unitRenderClean.Add(RenderedUnits[i]);
-            }
-            foreach(UnitRender r in unitRenderClean)
-            {
-                RenderedUnits.Remove(r);
+                {
+                    RenderedUnits.RemoveAt(i);
+                    found = true;
+                }
+                else
+                {
+                    i++;
+                }
             }
             if (OnUnitRemovedCallback != null)
                 OnUnitRemovedCallback(unit);
         }
+    }
+
+    public void Reset()
+    {
+        Units = new List<Unit>();
+        Mages = new List<Mage>();
+        foreach(GameObject go in MageGOs.Values)
+        {
+            Destroy(go);
+        }
+        MageGOs = new Dictionary<int, GameObject>();
+        RenderedUnits = new List<UnitRender>();
     }
 
     public void OnMageCreated(NetworkMessageReceiver message)
@@ -131,12 +148,15 @@ public class EntityRenderer : MonoBehaviour {
         {
             foreach(UnitRender render in RenderedUnits)
             {
-                render.Process();
-                if (render.RenderedUnit.MeshID >= 0)
+                if (render.RenderedUnit.Alive == true)
                 {
-                    CurrentlyRendered = render.RenderedUnit;
-                    CurrentUnitRender = render;
-                    RenderMesh();
+                    render.Process();
+                    if (render.RenderedUnit.MeshID >= 0)
+                    {
+                        CurrentlyRendered = render.RenderedUnit;
+                        CurrentUnitRender = render;
+                        RenderMesh();
+                    }
                 }
             }
         }

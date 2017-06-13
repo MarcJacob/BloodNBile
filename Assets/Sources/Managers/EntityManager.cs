@@ -108,14 +108,13 @@ public class EntityManager {
         if (unit.MatchID == Match.ID)
             if (Units.Contains(unit))
             {
-                Debugger.LogMessage(unit.Name + " est morte.");
-                Match.SendMessageToPlayers(11, unit.ID, false, false);
-                Units.Remove(unit);
-
                 if (OnUnitDeathCallback != null)
                 {
                     OnUnitDeathCallback(unit);
                 }
+                Debugger.LogMessage(unit.Name + " est morte.");
+                Match.SendMessageToPlayers(11, unit.ID, false, false);
+                Units.Remove(unit);
             }
     }
 

@@ -5,7 +5,7 @@ using UnityEngine;
 public class HumorlingsManager
 {
     public List<Humorling> Humorlings;
-    EntityManager EntityModule; // EntityManager associé à ce MagesManager.
+    public EntityManager EntityModule { get; private set; } // EntityManager associé à ce MagesManager.
 
     public HumorlingsManager(EntityManager module)
     {
@@ -14,9 +14,9 @@ public class HumorlingsManager
     }
 
 
-    public int CreateHumorling(Vector3 pos, Faction fac)
+    public int CreateHumorling(MobType type, Vector3 pos, Faction fac)
     {
-        Humorling newHumorling = new Humorling(EntityModule.Match, EntityModule.GetAllEntities().Length, pos, Quaternion.identity, "Humorling",  0, 1, 0, fac);
+        Humorling newHumorling = new Humorling(EntityModule.Match, EntityModule.GetAllEntities().Length, pos, Quaternion.identity, "Humorling",  0, 1, type, fac);
         EntityModule.OnUnitCreated(newHumorling);
         Humorlings.Add(newHumorling);
         return newHumorling.ID;

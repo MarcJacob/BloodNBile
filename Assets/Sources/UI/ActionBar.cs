@@ -24,6 +24,8 @@ public class ActionBar {
 
         CurrentSlot = Slots[(KeyCode)49];
         ActionBarMage = mage;
+
+        UIManager.SetText("Spell", CurrentSlot.SlotSpell.Name);
     }
 
     public void ChangeSlot(Slot slot)

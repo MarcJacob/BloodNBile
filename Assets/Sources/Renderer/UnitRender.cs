@@ -19,7 +19,10 @@ public class UnitRender
     static float smoothSpeed = 4f;
     public void Process()
     {
-        CurrentPos = Vector3.Lerp(CurrentPos, RenderedUnit.Pos, Time.deltaTime * smoothSpeed);
+        if ((CurrentPos - (Vector3)RenderedUnit.Pos).magnitude < 5)
+            CurrentPos = Vector3.Lerp(CurrentPos, RenderedUnit.Pos, Time.deltaTime * smoothSpeed);
+        else
+            CurrentPos = RenderedUnit.Pos;
         CurrentRot = Quaternion.Lerp(CurrentRot, RenderedUnit.Rot, Time.deltaTime * smoothSpeed * 2);
     }
 }

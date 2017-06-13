@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
-public class Mage : Unit, IHumorEntity {
+public class Mage : Unit {
 
     public float LOP { get; private set; }
     public bool IsCasting;
@@ -18,26 +18,10 @@ public class Mage : Unit, IHumorEntity {
     }
 
     /// <summary>
-    /// Add a certain quantity of a humor.
-    /// </summary>
-    /// <param name="humor">ID number of the humor : 0-Blood, 1-Phlegm, 2-Black Bile, 3-Yellow Bile</param>
-    /// <param name="quantity"></param>
-    public void GainHumor(int humor, int quantity)
-    {
-        Humors.GainHumor(humor, quantity);
-        UpdateLOP();
-    }
-
-    /// <summary>
     /// Remove a certain quantity of a humor.
     /// </summary>
     /// <param name="humor">ID number of the humor : 0-Blood, 1-Phlegm, 2-Black Bile, 3-Yellow Bile</param>
     /// <param name="quantity"></param>
-    public void LoseHumor(int humor, int quantity)
-    {
-        Humors.LoseHumor(humor, quantity);
-        UpdateLOP();
-    }
 
     public void UpdateCooldowns()
     {
@@ -61,6 +45,58 @@ public class Mage : Unit, IHumorEntity {
 
     public void UpdateLOP()
     {
-        LOP = (Humors.Blood + Humors.Phlegm + Humors.BlackBile + Humors.YellowBile) / 4;
+        LOP = Humors.Blood + Humors.Phlegm + Humors.BlackBile + Humors.YellowBile;
     }
+
+
+    const float HardUnbalanceCap = 0.6f;
+    const float SoftUnbalanceCap = 0.4f;
+    protected override void OnDamageTaken()
+    {
+        UpdateLOP();
+        // Check les déséquilibres : Si l'une des humeurs arrivent à 60% du LOP ou 2 des humeurs chacunes à 40% du LOP alors le Mage meurt.
+
+        if ((float)Humors.Blood / (float)LOP > HardUnbalanceCap)
+        {
+            Die();
+        }
+        else if ((float)Humors.Phlegm / (float)LOP > HardUnbalanceCap)
+        {
+            Die();
+        }
+        else if ((float)Humors.YellowBile / (float)LOP > HardUnbalanceCap)
+        {
+            Die();
+        }
+        else if ((float)Humors.BlackBile/ (float)LOP > HardUnbalanceCap)
+        {
+            Die();
+        }
+        else // check si il y a Soft Unbalance
+        {
+            int n = 0;
+            if ((float)Humors.Blood / (float)LOP > SoftUnbalanceCap)
+            {
+                n++;
+            }
+            if ((float)Humors.Phlegm / (float)LOP > SoftUnbalanceCap)
+            {
+                n++;
+            }
+            if ((float)Humors.YellowBile / (float)LOP > SoftUnbalanceCap)
+            {
+                n++;
+            }
+            if ((float)Humors.BlackBile / (float)LOP > SoftUnbalanceCap)
+            {
+                n++;
+            }
+
+            if (n >= 2)
+            {
+                Die();
+            }
+        }
+    }
+
 }

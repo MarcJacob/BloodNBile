@@ -20,7 +20,10 @@ public class EffectsManager
     public void OnEffectCreated(Effect newEffect)
     {
         if (newEffect.MatchID == MatchID)
+        {
+            Debugger.LogMessage("Effet crée sur le match " + MatchID);
             StartedEffects.Add(newEffect);
+        }
     }
 
     public void UpdateEffects()

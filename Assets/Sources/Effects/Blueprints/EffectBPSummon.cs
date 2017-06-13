@@ -20,8 +20,8 @@ public class EffectBPSummon : EffectBlueprint
 
 public enum MobType
 {
-    BLOOD_HUMORLING,
-    PHLEGM_HUMORLING,
-    YELLOWBILE_HUMORLING,
-    BLACKBILE_HUMORLING
+    BLOOD_HUMORLING = 0,
+    PHLEGM_HUMORLING = 1,
+    YELLOWBILE_HUMORLING = 3,
+    BLACKBILE_HUMORLING = 2
 }

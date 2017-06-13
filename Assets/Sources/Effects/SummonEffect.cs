@@ -21,20 +21,22 @@ public class SummonEffect : Effect
     Mage Caster;
     HumorlingsManager HumorlingsModule;
 
-    const int NB = 4;
+    const int NB = 2;
 
     Faction RogueFaction;
 
     public override void Activate()
     {
+        Debugger.LogMessage("Invocation de humorlings dans le match " + MatchID);
         for (int i = 0; i < NB; i++)
         {
             SerializableVector3 pos = new SerializableVector3(Caster.Pos.x + Random.Range(-5f, 5f), Caster.Pos.y, Caster.Pos.z + Random.Range(-5f, 5f));
             if (Friendly)
-                HumorlingsModule.CreateHumorling(pos, Caster.Fac);
+                HumorlingsModule.CreateHumorling(Mob, pos, Caster.Fac);
             else
-                HumorlingsModule.CreateHumorling(pos, RogueFaction);
+                HumorlingsModule.CreateHumorling(Mob, pos, RogueFaction);
         }
+        Destroy();
     }
 
     public override void Update()

@@ -11,8 +11,24 @@ public class MagesManager
     {
         EntityModule = module;
         Mages = new List<Mage>();
+        EntityModule.RegisterOnUnitDeathCallback(OnUnitDeath);
     }
 
+    void OnUnitDeath(Unit unit)
+    {
+        Mage DeadMage = null;
+        foreach(Mage m in Mages)
+        {
+            if (m.ID == unit.ID)
+            {
+                DeadMage = m;
+                OnMageDied(m);
+                return;
+            }
+        }
+        if (DeadMage != null)
+            Mages.Remove(DeadMage);
+    }
 
     public int CreateMage(Vector3 pos, string name, Faction fac)
     {
@@ -45,19 +61,25 @@ public class MagesManager
 
     public void OnClientMageCasting(NetworkMessageReceiver message)
     {
-        bool isCastable;
-        Spell spell = Spell.GetSpellFromID(((ClientMageSpellMessage) message.ReceivedMessage.Content).SpellID);
-        Mage mage = (Mage) EntityModule.GetUnitFromID(((ClientMageSpellMessage)message.ReceivedMessage.Content).MageID);
-        isCastable = spell.IsCastable(mage);
-        if(isCastable && mage.Humors != null)
+        if (EntityModule.Match.IsInMatch(message.ConnectionID))
         {
-            spell.Cast(EntityModule.Match, mage);
-            mage.IsCasting = true;
-            mage.LoseHumor(spell.Humor, spell.Cost);
-            mage.IsCasting = false;
-            mage.ReloadingSpells.Add(spell, spell.Cooldown);
-            Debug.Log("Les humeurs selon le server : " + mage.Humors);
-            EntityModule.Match.SendMessageToPlayers(21, new ClientMageSpellMessage(mage.ID, spell.ID));
+            bool isCastable;
+            Spell spell = Spell.GetSpellFromID(((ClientMageSpellMessage)message.ReceivedMessage.Content).SpellID);
+            Mage mage = (Mage)EntityModule.GetUnitFromID(((ClientMageSpellMessage)message.ReceivedMessage.Content).MageID);
+            if (mage != null)
+            {
+                isCastable = spell.IsCastable(mage);
+                if (isCastable && mage.Humors != null)
+                {
+                    spell.Cast(EntityModule.Match, mage);
+                    mage.IsCasting = true;
+                    mage.ChangeHumor(spell.Humor, -spell.Cost);
+                    mage.IsCasting = false;
+                    mage.ReloadingSpells.Add(spell, spell.Cooldown);
+                    Debug.Log("Les humeurs selon le server : " + mage.Humors);
+                    EntityModule.Match.SendMessageToPlayers(21, new ClientMageSpellMessage(mage.ID, spell.ID));
+                }
+            }
         }
     }
 
@@ -98,5 +120,11 @@ public class MagesManager
         {
             cd_MageUpdatesToClient += Time.deltaTime;
         }
+    }
+
+    Action<Mage> OnMageDied;
+    public void RegisterOnMageDiedCallback(Action<Mage> cb)
+    {
+        OnMageDied += cb;
     }
 }

@@ -15,6 +15,7 @@ public class BnBMatch
         Starting,
         Starting_FAILED, // Quand l'un des joueurs n'a pas été prêt à temps.
         Ongoing,
+        Ending,
         Ended
     }
 
@@ -148,16 +149,23 @@ public class BnBMatch
 
     void PlayerDisconnectedHandler(int coID)
     {
-        for (int i = 0; i < Players.Length; i++)
+        if (State == MatchState.Starting)
         {
-            if (coID == Players[i].GetConnectionID())
+            for (int i = 0; i < Players.Length; i++)
             {
+                if (coID == Players[i].GetConnectionID())
+                {
 
-                State = MatchState.Starting_FAILED;
-                SendMessageToPlayers(3, false);
-                Debugger.LogMessage("Arrêt du match !");
-                return;
+                    State = MatchState.Starting_FAILED;
+                    SendMessageToPlayers(3, false);
+                    Debugger.LogMessage("Arrêt du match !");
+                    return;
+                }
             }
+        }
+        else
+        {
+            State = MatchState.Ending;
         }
     }
 
@@ -177,10 +185,11 @@ public class BnBMatch
         EntityModule = new EntityManager(this);
         MagesModule = new MagesManager(EntityModule);
         WellsModule = new WellsManager(EntityModule);
-        CellsModule = new CellsManager(this, 500, 500, 25, 25);
+        CellsModule = new CellsManager(this, 500, 500, 50, 50);
         HumorlingsModule = new HumorlingsManager(EntityModule);
         EffectsModule = new EffectsManager(ID);
 
+        MagesModule.RegisterOnMageDiedCallback(OnMageDied);
 
         // Handlers
         NetworkListener.AddHandler(12, MagesModule.OnClientEntityUpdate);
@@ -207,12 +216,22 @@ public class BnBMatch
 
     bool FirstFrame = true;
     // A chaque image pendant que le match est en cours.
+    float EndingTimer = 10f;
     public void Update()
     {
         if (FirstFrame)
         {
             FirstUpdate();
             FirstFrame = false;
+        }
+        else if (State == MatchState.Ending)
+        {
+            Debugger.LogMessage("Ending match...");
+            EndingTimer -= Time.deltaTime;
+            if (EndingTimer <= 0)
+            {
+                Stop();
+            }
         }
 
         EntityModule.UpdateEntities();
@@ -222,5 +241,10 @@ public class BnBMatch
         EffectsModule.UpdateEffects();
     }
 
+    void OnMageDied(Mage m)
+    {
+        if (MagesModule.Mages.Count == 1)
+            State = MatchState.Ending;
+    }
 
 }

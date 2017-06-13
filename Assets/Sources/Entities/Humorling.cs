@@ -19,10 +19,10 @@ public class Humorling : Unit {
    
     
 
-    public Humorling(BnBMatch Match, int ID, Vector3 pos, Quaternion rot, string name, int mesh, float size, int type, Faction fac) : base(Match, ID, pos, rot, name, mesh, size, fac, 4, new HumorLevels(0, 0, 0, 0))
+    public Humorling(BnBMatch Match, int ID, Vector3 pos, Quaternion rot, string name, int mesh, float size, MobType type, Faction fac) : base(Match, ID, pos, rot, name, mesh, size, fac, 4, new HumorLevels(0, 0, 0, 0))
     {
-        Type = type; // 0 = Blood, 1 = Phlegm, 2 = BlackBile, 3 = YellowBile
-        Humors.GainHumor(type, 100);
+        Type = (int)type ;
+        Humors.ChangeHumor((int)type, 100);
         Match.CellsModule.RegisterActionCallbackAddingUnit((unit, cell) => { if (unit.Equals(this) || unit.Equals(Target))
             {
                 SearchTarget(Match.CellsModule);
@@ -30,7 +30,7 @@ public class Humorling : Unit {
             else
             {
                 Cell currentCell = Match.CellsModule.GetCurrentCell(this);
-                if ((new Vector2(currentCell.PositionX, currentCell.PositionY) - new Vector2(cell.PositionX, cell.PositionY)).sqrMagnitude > Range*Range)
+                if (new Vector2(currentCell.PositionX - cell.PositionX, currentCell.PositionY - cell.PositionY).sqrMagnitude < Range*Range)
                 {
                     CompareTarget(unit);
                 }
@@ -48,18 +48,10 @@ public class Humorling : Unit {
     private void SearchTarget(CellsManager Cells)
     {
 
-        foreach(Unit u in Cells.GetCurrentCell(this).UnitList)
-        {
-            if (DistanceTarget * DistanceTarget > Vector3.SqrMagnitude(Pos + u.Pos) && !(Fac.equals(u.Fac)))
-            {
-                Target = u;
-                DistanceTarget = Vector3.Distance(Pos, u.Pos);
-            }
-        }
-
         Cell currentCell = Cells.GetCurrentCell(this);
+        ScanCell(currentCell);
 
-        for (int currentRange = 1; currentRange <= Range; currentRange++)
+        for (int currentRange = 1; currentRange <= Range && Target == null; currentRange++)
         {
             for (int ligne = currentCell.PositionY - currentRange; ligne <= currentCell.PositionY + currentRange ; ligne++)
             {
@@ -94,7 +86,8 @@ public class Humorling : Unit {
 
     private void CompareTarget(Unit potentialTarget)
     {
-        if (!Fac.Equals(potentialTarget.Fac) && DistanceTarget > (potentialTarget.Pos - Pos).sqrMagnitude)
+        Debugger.LogMessage("Comparing targets");
+        if (!Fac.Equals(potentialTarget.Fac) && (Target == null || DistanceTarget > (potentialTarget.Pos - Pos).sqrMagnitude))
         {
             Target = potentialTarget;
             DistanceTarget = (potentialTarget.Pos - Pos).sqrMagnitude;
@@ -105,20 +98,27 @@ public class Humorling : Unit {
     private void MoveToTarget()
     {
         SetPos((Vector3)Pos + (Target.Pos - Pos).normalized * GetSpeed() * Time.deltaTime);
-
+        SetRot(Quaternion.LookRotation(Target.Pos - Pos));
     }
 
     private void Attack(Unit target) 
     {
         if (target != null)
         {
-            Debugger.LogMessage("Attacking !");
-            target.RemoveHumors(Type, Damage);
+            Debugger.LogMessage("Humorling " + Name + " " + ID + " is attacking " + target.Name + " " + target.ID + " for " + Damage + "damage.");
+            target.ChangeHumor(Type, -Damage);
         }
     }
 
+    bool TookDamage = false; // Cet Humorling a-t-il prit des dégats depuis sa dernière exécution de AI ?
+
     public void AI (CellsManager cellsManager) {
 		
+        if (TookDamage)
+        {
+            SearchTarget(cellsManager);
+            TookDamage = false;
+        }
         if (Target == null &&  TimerTarget <= 0)
         {
             SearchTarget(cellsManager);
@@ -126,14 +126,16 @@ public class Humorling : Unit {
         }
         if (Target != null && Alive == true)
         {
-            if (Target.Alive == false || DistanceTarget > 30)
+            DistanceTarget = Vector3.Distance(Pos, Target.Pos);
+            if (Target.Alive == false || DistanceTarget > cellsManager.SizeCellX * Range)
             {
                 Target = null;
                 DistanceTarget = Mathf.Infinity;
+                SearchTarget(cellsManager);
             }
             else
             {
-                DistanceTarget = Vector3.Distance(Pos, Target.Pos);
+
                 if (AttackRange < DistanceTarget)
                 {
                     MoveToTarget();
@@ -151,6 +153,15 @@ public class Humorling : Unit {
         TimerTarget -= Time.deltaTime;
 	}
 
+    public override void ChangeHumor(int type, int quantity)
+    {
+        if (type == Type || quantity < 0)
+        Humors.ChangeHumor(Type, quantity);
+        OnDamageTaken();
+    }
 
-
+    protected override void OnDamageTaken()
+    {
+        base.OnDamageTaken();
+    }
 }

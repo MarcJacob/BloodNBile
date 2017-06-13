@@ -86,10 +86,16 @@ public class BnBClient : MonoBehaviour
         ControlledMageIDReceived = false;
         UIManager.SwitchToUI("MainMenuUI");
         UIManager.BindButtonToFunction("StartMatchSearchButton", StartMatchSearch);
+        Camera.main.transform.parent = null;
+        Camera.main.transform.position = new Vector3(0, 1, -10);
+        Camera.main.transform.rotation = Quaternion.identity;
+
+        EntityRender.Reset();
     }
 
     private void Start()
     {
+
         NetworkInfo = new NetworkSocketInfo(1);
         UIManager = GetComponent<ClientUIManager>();
         EntityRender = gameObject.AddComponent<EntityRenderer>();
@@ -115,7 +121,9 @@ public class BnBClient : MonoBehaviour
         //
         Spell.LoadSpells();
 
-        Reset();
+        UIManager.SwitchToUI("MainMenuUI");
+        UIManager.BindButtonToFunction("StartMatchSearchButton", StartMatchSearch);
+
     }
 
     void PlayerReady()
@@ -217,6 +225,11 @@ public class BnBClient : MonoBehaviour
                 GameObject mageGO = EntityRender.MageGOs[ControlledMageID];
                 mageGO.AddComponent<EntityControl>().Initialize(NetworkInfo, UIManager);
             }
+        }
+
+        if (ControlledMage != null && ControlledMage.Alive == false)
+        {
+            Reset();
         }
     }
 

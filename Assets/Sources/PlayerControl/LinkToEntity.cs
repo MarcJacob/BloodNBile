@@ -13,6 +13,7 @@ public class LinkTo : MonoBehaviour {
     public Mage LinkedEntity;
     public bool TrackRotation = true;
     public bool TrackLocation = true;
+    public bool TrackDeath = true;
     public void LinkEntity(Mage e)
     {
         LinkedEntity = e;
@@ -32,7 +33,11 @@ public class LinkTo : MonoBehaviour {
         if (e.Equals(LinkedEntity))
         {
             Debugger.LogMessage("Mort de l'entité " + e.Name);
-            Destroy(gameObject);
+            if (TrackDeath)
+            {
+                Debugger.LogMessage("Destruction du gameobject " + gameObject.name);
+                Destroy(gameObject);
+            }
         }
     }
 

@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public interface IHumorEntity {
-   
-    void GainHumor(int humor, int quantity);
 
-    void LoseHumor(int humor, int quantity);
+    void ChangeHumor(int type, int quantity);
 }

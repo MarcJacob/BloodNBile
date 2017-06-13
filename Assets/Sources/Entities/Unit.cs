@@ -4,7 +4,8 @@ using UnityEngine;
 using System;
 
 [Serializable]
-public class Unit : DrawableEntity {
+public class Unit : DrawableEntity, IHumorEntity
+{
 
     public Faction Fac;
     public HumorLevels Humors;
@@ -45,13 +46,13 @@ public class Unit : DrawableEntity {
             return true;
     }
 
-    public void RemoveHumors(int type, int quantity)
+    public virtual void ChangeHumor(int type, int quantity)
     {
-        Humors.LoseHumor(type, quantity);
-        CheckDeath();
+        Humors.ChangeHumor(type, quantity);
+        OnDamageTaken();
     }
 
-    virtual protected void CheckDeath()
+    virtual protected void OnDamageTaken()
     {
         if (Humors.Blood <= 0 && Humors.Phlegm <= 0 && Humors.BlackBile <= 0 && Humors.YellowBile <= 0)
         {

@@ -77,19 +77,21 @@ public class Spell {
 
     public static void LoadSpells()
     {
-        Spell SummonBlood = new Spell(0, 50, 15, "Summon blood minions (unfriendly)", new EffectBPSummon(MobType.BLOOD_HUMORLING, false));
-        Spell SummonBloodUF = new Spell(0, 50, 15, "Summon blood minions", new EffectBPSummon(MobType.BLOOD_HUMORLING, true));
-        Spell BloodToPhlegm = new Spell(0, 20, 5, "Blood to Phlegm", new EffectBPChangeHumor(0, 15, 0, 0));
-        Spell BloodToBlack = new Spell(0, 20, 5, "Blood to Blackile", new EffectBPChangeHumor(0, 0, 0, 15));
-        Spell BloodToYellow = new Spell(0, 20, 5, "Blood to Yellile", new EffectBPChangeHumor(0, 0, 15, 0));
-        Spell PhlegmToBlood = new Spell(1, 20, 5, "Phlegm to Blood", new EffectBPChangeHumor(15, 0, 0, 0));
-        Spell PhlegmToBlack = new Spell(1, 20, 5, "Phlegm to Blackile", new EffectBPChangeHumor(0, 0, 0, 15));
-        Spell PhlegmToYellow = new Spell(1, 20, 5, "Phlegm to Yellile", new EffectBPChangeHumor(0, 0, 15, 0));
-        Spell BlackToBlood = new Spell(2, 20, 5, "Blackile to Blood", new EffectBPChangeHumor(15, 0, 0, 0));
-        Spell BlackToPhlegm = new Spell(2, 20, 5, "Blackile to Phlegm", new EffectBPChangeHumor(0, 15, 0, 0));
-        Spell BlackToYellow = new Spell(2, 20, 5, "Blackile to Yellile", new EffectBPChangeHumor(0, 0, 15, 0));
-        Spell YellowToBlood = new Spell(3, 20, 5, "Yellile to Blood", new EffectBPChangeHumor(15, 0, 0, 0));
-        Spell YellowToPhlegm = new Spell(3, 20, 5, "Yellile to Phlegm", new EffectBPChangeHumor(0, 15, 0, 0));
-        Spell YellowToBlack = new Spell(3, 20, 5, "Yellile to Blackile", new EffectBPChangeHumor(0, 0, 0, 15));
+        new Spell(0, 50, 15, "Summon Blood Minions", new EffectBPSummon(MobType.BLOOD_HUMORLING, true));
+        new Spell(1, 50, 15, "Summon Phlegm Minions", new EffectBPSummon(MobType.PHLEGM_HUMORLING, true));
+        new Spell(3, 50, 15, "Summon Yellile Minions", new EffectBPSummon(MobType.YELLOWBILE_HUMORLING, true));
+        new Spell(2, 50, 15, "Summon Blackile Minions", new EffectBPSummon(MobType.BLACKBILE_HUMORLING, true));
+        new Spell(0, 20, 5, "Blood to Phlegm", new EffectBPChangeHumor(0, 15, 0, 0));
+        new Spell(0, 20, 5, "Blood to Blackile", new EffectBPChangeHumor(0, 0, 15, 0));
+        new Spell(0, 20, 5, "Blood to Yellile", new EffectBPChangeHumor(0, 0, 0, 15));
+        new Spell(1, 20, 5, "Phlegm to Blood", new EffectBPChangeHumor(15, 0, 0, 0));
+        new Spell(1, 20, 5, "Phlegm to Blackile", new EffectBPChangeHumor(0, 0, 15, 0));
+        new Spell(1, 20, 5, "Phlegm to Yellile", new EffectBPChangeHumor(0, 0, 0, 15));
+        new Spell(2, 20, 5, "Blackile to Blood", new EffectBPChangeHumor(15, 0, 0, 0));
+        new Spell(2, 20, 5, "Blackile to Phlegm", new EffectBPChangeHumor(0, 15, 0, 0));
+        new Spell(2, 20, 5, "Blackile to Yellile", new EffectBPChangeHumor(0, 0, 0, 15));
+        new Spell(3, 20, 5, "Yellile to Blood", new EffectBPChangeHumor(15, 0, 0, 0));
+        new Spell(3, 20, 5, "Yellile to Phlegm", new EffectBPChangeHumor(0, 15, 0, 0));
+        new Spell(3, 20, 5, "Yellile to Blackile", new EffectBPChangeHumor(0, 0, 15, 0));
     }
 }

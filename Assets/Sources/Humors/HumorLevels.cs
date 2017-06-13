@@ -21,11 +21,11 @@ public class HumorLevels {
 
 
     /// <summary>
-    /// Add a certain quantity of a humor.
+    /// Change la quantité d'une humeur choisie.
     /// </summary>
     /// <param name="humor">ID number of the humor : 0-Blood, 1-Phlegm, 2-Black Bile, 3-Yellow Bile</param>
     /// <param name="quantity"></param>
-    public void GainHumor(int humor, int quantity)
+    public void ChangeHumor(int humor, int quantity)
     {
         switch(humor)
         {
@@ -35,28 +35,16 @@ public class HumorLevels {
             case 3: YellowBile += quantity; break;
 
         }
-    }
 
-    /// <summary>
-    /// Remove a certain quantity of a humor.
-    /// </summary>
-    /// <param name="humor">ID number of the humor : 0-Blood, 1-Phlegm, 2-Black Bile, 3-Yellow Bile</param>
-    /// <param name="quantity"></param>
-    public void LoseHumor(int humor, int quantity)
-    {
-        switch (humor)
-        {
-            case 0: Blood -= quantity; break;
-            case 1: Phlegm -= quantity; break;
-            case 2: BlackBile -= quantity; break;
-            case 3: YellowBile -= quantity; break;
-
-        }
+        if (Blood < 0) Blood = 0;
+        if (Phlegm < 0) Phlegm = 0;
+        if (YellowBile < 0) YellowBile = 0;
+        if (BlackBile < 0) BlackBile = 0;
     }
 
     static public HumorLevels operator +(HumorLevels hl1, HumorLevels hl2)
     {
-        return new HumorLevels(hl1.Blood + hl2.Blood, hl1.Phlegm + hl2.Phlegm, hl1.YellowBile + hl2.YellowBile, hl1.BlackBile + hl2.BlackBile);
+        return new HumorLevels(hl1.Blood + hl2.Blood, hl1.Phlegm + hl2.Phlegm, hl1.BlackBile + hl2.BlackBile, hl1.YellowBile + hl2.YellowBile);
     }
 
     public override string ToString()
@@ -67,8 +55,8 @@ public class HumorLevels {
 
 public enum Humor
 {
-    BLOOD,
-    PHLEGM,
-    BLACKBILE,
-    YELLOWBILE
+    BLOOD = 0,
+    PHLEGM = 1,
+    BLACKBILE = 2,
+    YELLOWBILE = 3
 }

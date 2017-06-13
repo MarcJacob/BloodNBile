@@ -47,7 +47,7 @@ public class MatchManager
         if (match.Initialize(0))
         {
             Matches.Add(match);
-            Debugger.LogMessage("Match created !");
+            Debugger.LogMessage("Match created ! ID = " + match.ID);
             foreach (ServerClientInfo info in validClients)
                 RemoveClientFromQueue(info);
         }
@@ -70,6 +70,9 @@ public class MatchManager
                 case (BnBMatch.MatchState.Ongoing):
                     match.Update();
                     break;
+                case (BnBMatch.MatchState.Ending):
+                    match.Update();
+                    break;
                 case (BnBMatch.MatchState.Ended):
                     RemoveMatch(match);
                     break;
@@ -89,7 +92,7 @@ public class MatchManager
     }
 
 
-    int PlayersPerMatch = 1;
+    int PlayersPerMatch = 2;
     public void MatchMaking()
     {
         if (ClientsInQueue.Count >= PlayersPerMatch)
