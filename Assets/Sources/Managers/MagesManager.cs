@@ -68,6 +68,7 @@ public class MagesManager
         // Mise à jour des cooldowns
         foreach (Mage m in Mages)
         {
+            m.UpdateLOP();
             if(m.ReloadingSpells.Count != 0)
                 m.UpdateCooldowns();
         }

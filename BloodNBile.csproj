@@ -81,21 +81,26 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Sources\Debug\Debugger.cs" />
-    <Compile Include="Assets\Sources\Effects\ConvertEffect.cs" />
+    <Compile Include="Assets\Sources\Effects\Blueprints\EffectBlueprint.cs" />
+    <Compile Include="Assets\Sources\Effects\Blueprints\EffectBPConversion.cs" />
+    <Compile Include="Assets\Sources\Effects\Blueprints\EffectBPSummon.cs" />
+    <Compile Include="Assets\Sources\Effects\HumorChangeEffect.cs" />
     <Compile Include="Assets\Sources\Effects\Effect.cs" />
-    <Compile Include="Assets\Sources\Effects\MissileEffect.cs" />
+    <Compile Include="Assets\Sources\Effects\SummonEffect.cs" />
     <Compile Include="Assets\Sources\Entities\DrawableEntity.cs" />
     <Compile Include="Assets\Sources\Entities\Entity.cs" />
     <Compile Include="Assets\Sources\Entities\Faction.cs" />
     <Compile Include="Assets\Sources\Entities\Humorling.cs" />
     <Compile Include="Assets\Sources\Entities\Mage.cs" />
-    <Compile Include="Assets\Sources\Entities\Managers\EntityManager.cs" />
-    <Compile Include="Assets\Sources\Entities\Managers\HumorlingManager.cs" />
-    <Compile Include="Assets\Sources\Entities\Managers\MagesManager.cs" />
-    <Compile Include="Assets\Sources\Entities\Managers\WellsManager.cs" />
+    <Compile Include="Assets\Sources\Entities\Projectile.cs" />
     <Compile Include="Assets\Sources\Entities\Unit.cs" />
     <Compile Include="Assets\Sources\Humors\HumorLevels.cs" />
     <Compile Include="Assets\Sources\Humors\IHumorEntity.cs" />
+    <Compile Include="Assets\Sources\Managers\EffectsManager.cs" />
+    <Compile Include="Assets\Sources\Managers\EntityManager.cs" />
+    <Compile Include="Assets\Sources\Managers\HumorlingManager.cs" />
+    <Compile Include="Assets\Sources\Managers\MagesManager.cs" />
+    <Compile Include="Assets\Sources\Managers\WellsManager.cs" />
     <Compile Include="Assets\Sources\Map\Cell.cs" />
     <Compile Include="Assets\Sources\Map\CellsManager.cs" />
     <Compile Include="Assets\Sources\Map\Map.cs" />
@@ -121,10 +126,7 @@
     <Compile Include="Assets\Sources\Renderer\Model.cs" />
     <Compile Include="Assets\Sources\Renderer\PositionUpdateVector3.cs" />
     <Compile Include="Assets\Sources\Renderer\UnitRender.cs" />
-    <Compile Include="Assets\Sources\Spells\AbsorptionSpell.cs" />
-    <Compile Include="Assets\Sources\Spells\ConvertSpell.cs" />
     <Compile Include="Assets\Sources\Spells\Spell.cs" />
-    <Compile Include="Assets\Sources\Spells\SummonSpell.cs" />
     <Compile Include="Assets\Sources\UI\ActionBar.cs" />
     <Compile Include="Assets\Sources\UI\ClientUIManager.cs" />
     <Compile Include="Assets\Sources\UI\Slot.cs" />

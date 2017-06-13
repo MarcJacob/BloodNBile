@@ -59,7 +59,7 @@ public class Mage : Unit, IHumorEntity {
         }
     }
 
-    private void UpdateLOP()
+    public void UpdateLOP()
     {
         LOP = (Humors.Blood + Humors.Phlegm + Humors.BlackBile + Humors.YellowBile) / 4;
     }

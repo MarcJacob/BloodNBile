@@ -11,11 +11,11 @@ public class Spell {
     public int Humor { get; protected set; }
     public int Cost { get; protected set; }
     public float Cooldown { get; protected set; }
-    public Effect SpellEffect { get; protected set; }
+    public EffectBlueprint[] SpellEffectBlueprints { get; protected set; }
     private static List<Spell> SpellsList = new List<Spell>();
     public String Name { get; protected set; }
 
-    public Spell(int humor, int cost, float cooldown, string name)
+    public Spell(int humor, int cost, float cooldown, string name, EffectBlueprint[] effects)
     {
         Humor = humor;
         Cost = cost;
@@ -24,6 +24,19 @@ public class Spell {
         LastID++;
         Name = name;
         SpellsList.Add(this);
+        SpellEffectBlueprints = effects;
+    }
+
+    public Spell(int humor, int cost, float cooldown, string name, EffectBlueprint effect)
+    {
+        Humor = humor;
+        Cost = cost;
+        Cooldown = cooldown;
+        ID = LastID;
+        LastID++;
+        Name = name;
+        SpellsList.Add(this);
+        SpellEffectBlueprints = new EffectBlueprint[] { effect };
     }
 
     public bool IsCastable(Mage mage)
@@ -46,6 +59,10 @@ public class Spell {
     public virtual void Cast(BnBMatch match, Mage caster)
     {
         Debugger.LogMessage(Name + " se lance !");
+        foreach(EffectBlueprint ebp in SpellEffectBlueprints)
+        {
+            ebp.Instantiate(caster, match);
+        }
     }
 
     public static Spell GetSpellFromID(int id)
@@ -60,18 +77,19 @@ public class Spell {
 
     public static void LoadSpells()
     {
-        SummonSpell SummonBlood = new SummonSpell(0, 50, 15, "Summon blood minions");
-        ConvertSpell BloodToPhlegm = new ConvertSpell(0, 20, 5, "Blood to Phlegm", 1 );
-        ConvertSpell BloodToBlack = new ConvertSpell(0, 20, 5, "Blood to Blackile", 2);
-        ConvertSpell BloodToYellow = new ConvertSpell(0, 20, 5, "Blood to Yellile", 3);
-        ConvertSpell PhlegmToBlood = new ConvertSpell(1, 20, 5, "Phlegm to Blood", 0);
-        ConvertSpell PhlegmToBlack = new ConvertSpell(1, 20, 5, "Phlegm to Blackile", 2);
-        ConvertSpell PhlegmToYellow = new ConvertSpell(1, 20, 5, "Phlegm to Yellile", 3);
-        ConvertSpell BlackToBlood = new ConvertSpell(2, 20, 5, "Blackile to Blood", 0);
-        ConvertSpell BlackToPhlegm = new ConvertSpell(2, 20, 5, "Blackile to Phlegm", 1);
-        ConvertSpell BlackToYellow = new ConvertSpell(2, 20, 5, "Blackile to Yellile", 3);
-        ConvertSpell YellowToBlood = new ConvertSpell(3, 20, 5, "Yellile to Blood", 0);
-        ConvertSpell YellowToPhlegm = new ConvertSpell(3, 20, 5, "Yellile to Phlegm", 1);
-        ConvertSpell YellowToBlack = new ConvertSpell(3, 20, 5, "Yellile to Blackile", 2);
+        Spell SummonBlood = new Spell(0, 50, 15, "Summon blood minions (unfriendly)", new EffectBPSummon(MobType.BLOOD_HUMORLING, false));
+        Spell SummonBloodUF = new Spell(0, 50, 15, "Summon blood minions", new EffectBPSummon(MobType.BLOOD_HUMORLING, true));
+        Spell BloodToPhlegm = new Spell(0, 20, 5, "Blood to Phlegm", new EffectBPChangeHumor(0, 15, 0, 0));
+        Spell BloodToBlack = new Spell(0, 20, 5, "Blood to Blackile", new EffectBPChangeHumor(0, 0, 0, 15));
+        Spell BloodToYellow = new Spell(0, 20, 5, "Blood to Yellile", new EffectBPChangeHumor(0, 0, 15, 0));
+        Spell PhlegmToBlood = new Spell(1, 20, 5, "Phlegm to Blood", new EffectBPChangeHumor(15, 0, 0, 0));
+        Spell PhlegmToBlack = new Spell(1, 20, 5, "Phlegm to Blackile", new EffectBPChangeHumor(0, 0, 0, 15));
+        Spell PhlegmToYellow = new Spell(1, 20, 5, "Phlegm to Yellile", new EffectBPChangeHumor(0, 0, 15, 0));
+        Spell BlackToBlood = new Spell(2, 20, 5, "Blackile to Blood", new EffectBPChangeHumor(15, 0, 0, 0));
+        Spell BlackToPhlegm = new Spell(2, 20, 5, "Blackile to Phlegm", new EffectBPChangeHumor(0, 15, 0, 0));
+        Spell BlackToYellow = new Spell(2, 20, 5, "Blackile to Yellile", new EffectBPChangeHumor(0, 0, 15, 0));
+        Spell YellowToBlood = new Spell(3, 20, 5, "Yellile to Blood", new EffectBPChangeHumor(15, 0, 0, 0));
+        Spell YellowToPhlegm = new Spell(3, 20, 5, "Yellile to Phlegm", new EffectBPChangeHumor(0, 15, 0, 0));
+        Spell YellowToBlack = new Spell(3, 20, 5, "Yellile to Blackile", new EffectBPChangeHumor(0, 0, 0, 15));
     }
 }

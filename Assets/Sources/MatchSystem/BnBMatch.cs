@@ -27,6 +27,7 @@ public class BnBMatch
     public WellsManager WellsModule { get; private set; } // Gestion des puits
     public CellsManager CellsModule { get; private set; }
     public HumorlingsManager HumorlingsModule { get; private set; }
+    public EffectsManager EffectsModule { get; private set; }
 
     int MapID;
     bool[] PlayersReady;
@@ -178,6 +179,7 @@ public class BnBMatch
         WellsModule = new WellsManager(EntityModule);
         CellsModule = new CellsManager(this, 500, 500, 25, 25);
         HumorlingsModule = new HumorlingsManager(EntityModule);
+        EffectsModule = new EffectsManager(ID);
 
 
         // Handlers
@@ -217,6 +219,7 @@ public class BnBMatch
         MagesModule.UpdateMages();
         HumorlingsModule.RunAIs();
         CellsModule.Update();
+        EffectsModule.UpdateEffects();
     }
 
 

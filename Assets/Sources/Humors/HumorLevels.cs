@@ -54,8 +54,21 @@ public class HumorLevels {
         }
     }
 
+    static public HumorLevels operator +(HumorLevels hl1, HumorLevels hl2)
+    {
+        return new HumorLevels(hl1.Blood + hl2.Blood, hl1.Phlegm + hl2.Phlegm, hl1.YellowBile + hl2.YellowBile, hl1.BlackBile + hl2.BlackBile);
+    }
+
     public override string ToString()
     {
         return "Blood : " + Blood + " Phlegm : " + Phlegm + " Black : " + BlackBile + " Yellow : " + YellowBile;
     }
+}
+
+public enum Humor
+{
+    BLOOD,
+    PHLEGM,
+    BLACKBILE,
+    YELLOWBILE
 }

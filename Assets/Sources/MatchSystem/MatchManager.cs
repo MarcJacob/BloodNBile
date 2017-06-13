@@ -89,7 +89,7 @@ public class MatchManager
     }
 
 
-    int PlayersPerMatch = 2;
+    int PlayersPerMatch = 1;
     public void MatchMaking()
     {
         if (ClientsInQueue.Count >= PlayersPerMatch)
