@@ -51,7 +51,6 @@ public class EntityControl : MonoBehaviour
             {
                 new NetworkMessage(12, new EntityPositionRotationUpdate(EntityLink.LinkedEntity.ID, transform.position, transform.rotation)).Send(NetworkInfo, NetworkInfo.ConnectionIDs[0], NetworkInfo.UnreliableChannelID);
                 cd_ClientEntityUpdateToServer = 0f;
-                Debugger.LogMessage("Envoie de la nouvelle position et nouvelle rotation au serveur !");
             }
             else
             {
@@ -108,8 +107,6 @@ public class EntityControl : MonoBehaviour
         {
             DirectionVector.x += 1f;
         }
-
-        //Debugger.LogMessage(DirectionVector);
     }
 
     void CheckSlotKeys()

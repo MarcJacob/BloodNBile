@@ -110,7 +110,7 @@ public class CellsManager
                     {
                         RemoveFromCell(u, c);
                         AddToCell(u, GetCurrentCell(u));
-                        Debugger.LogMessage("Unit " + u.Name + " going from " + c + " to " + GetCurrentCell(u));
+                        Debugger.LogMessage("Unit " + u.Name + " va de " + c + " à " + GetCurrentCell(u));
                         
                     }
                     j++;

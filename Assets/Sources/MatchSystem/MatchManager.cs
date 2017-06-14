@@ -47,7 +47,7 @@ public class MatchManager
         if (match.Initialize(0))
         {
             Matches.Add(match);
-            Debugger.LogMessage("Match created ! ID = " + match.ID);
+            Debugger.LogMessage("Match crée ! ID = " + match.ID);
             foreach (ServerClientInfo info in validClients)
                 RemoveClientFromQueue(info);
         }
@@ -92,7 +92,7 @@ public class MatchManager
     }
 
 
-    int PlayersPerMatch = 2;
+    int PlayersPerMatch = 1;
     public void MatchMaking()
     {
         if (ClientsInQueue.Count >= PlayersPerMatch)

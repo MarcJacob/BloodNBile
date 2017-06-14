@@ -19,6 +19,14 @@ public class MagesManager
         Mage DeadMage = null;
         foreach(Mage m in Mages)
         {
+            if (unit.killer != null && m.Fac == unit.killer.Fac)
+            {
+                m.ChangeHumor(0, unit.Bounty.Blood);
+                m.ChangeHumor(1, unit.Bounty.Phlegm);
+                m.ChangeHumor(2, unit.Bounty.BlackBile);
+                m.ChangeHumor(3, unit.Bounty.YellowBile);
+            }
+
             if (m.ID == unit.ID)
             {
                 DeadMage = m;
@@ -32,7 +40,7 @@ public class MagesManager
 
     public int CreateMage(Vector3 pos, string name, Faction fac)
     {
-        Mage newMage = new Mage(EntityModule.Match, EntityModule.GetAllEntities().Length, pos, Quaternion.identity, name, fac, new HumorLevels(100, 100, 100, 100));
+        Mage newMage = new Mage(EntityModule.Match.ID, EntityModule.GetAllEntities().Length, pos, Quaternion.identity, name, fac, new HumorLevels(100, 100, 100, 100));
         EntityModule.OnUnitCreated(newMage, false);
         Mages.Add(newMage);
         OnMageCreated(newMage);
@@ -75,7 +83,7 @@ public class MagesManager
                     mage.IsCasting = true;
                     mage.ChangeHumor(spell.Humor, -spell.Cost);
                     mage.IsCasting = false;
-                    mage.ReloadingSpells.Add(spell, spell.Cooldown);
+                    mage.ReloadingSpells.Add(spell.ID, spell.Cooldown);
                     Debug.Log("Les humeurs selon le server : " + mage.Humors);
                     EntityModule.Match.SendMessageToPlayers(21, new ClientMageSpellMessage(mage.ID, spell.ID));
                 }
@@ -97,23 +105,11 @@ public class MagesManager
 
         if (1 / MageUpdatesToClientPerSecond < cd_MageUpdatesToClient)
         {
-            int[] IDs = new int[Mages.Count];
-            Dictionary<int, float>[] cds = new Dictionary<int, float>[Mages.Count];
-            HumorLevels[] humorLevels = new HumorLevels[Mages.Count];
-
-            for(int i = 0; i < Mages.Count; i++)
+            foreach (Mage m in Mages)
             {
-                Mage m = Mages[i];
-                IDs[i] = m.ID;
-                Dictionary<int, float> cdsInt = new Dictionary<int, float>();
-                foreach(Spell sp in m.ReloadingSpells.Keys)
-                {
-                    cdsInt.Add(sp.ID, m.ReloadingSpells[sp]);
-                }
-                cds[i] = cdsInt;
-                humorLevels[i] = m.Humors;
+                Debugger.LogMessage("MAJ Mage ID " + m.ID);
+                EntityModule.Match.SendMessageToPlayers(23, new MageUpdateMessage(m.ID, m.ReloadingSpells, m.Humors), true, true);
             }
-            EntityModule.Match.SendMessageToPlayers(23, new MageUpdateMessage(IDs, cds, humorLevels), true, true);
             cd_MageUpdatesToClient = 0f;
         }
         else

@@ -19,7 +19,7 @@ public class DrawableEntity : Entity {
     /// <param name="name"></param>
     /// <param name="mesh"> Identifiant du Mesh utilisé par les clients. Mettre à -1 pour ne pas afficher. </param>
     /// <param name="size"></param>
-    public DrawableEntity(BnBMatch Match, int ID, Vector3 pos, Quaternion rot, string name, int mesh, float size) : base(Match, ID, pos, rot, name)
+    public DrawableEntity(int matchID, int ID, Vector3 pos, Quaternion rot, string name, int mesh, float size) : base(matchID, ID, pos, rot, name)
     {
         MeshID = mesh;
         Size = size;

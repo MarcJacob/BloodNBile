@@ -10,18 +10,18 @@ public class Humorling : Unit {
     private int Damage = 20;
     private int Range = 5;
     private int Type; // 0 = Blood, 1 = Phlegm, 2 = BlackBile, 3 = YellowBile
-    private float DistanceTarget = Mathf.Infinity;
+    private float DistanceTarget = 0;
     private float TimerTarget = 2f;
-    private float TimerTargetDuration = 2f;
+    private const float TimerTargetDuration = 2f;
     private float TimerAttack = 2f;
-    private float TimerAttackDuration = 2f;
-    public int AttackRange = 5;
-   
-    
+    private const float TimerAttackDuration = 2f;
+    public const int AttackRange = 5;
 
-    public Humorling(BnBMatch Match, int ID, Vector3 pos, Quaternion rot, string name, int mesh, float size, MobType type, Faction fac) : base(Match, ID, pos, rot, name, mesh, size, fac, 4, new HumorLevels(0, 0, 0, 0))
+    public static int HumorlingCount = 0;
+
+    public Humorling(BnBMatch Match, int ID, Vector3 pos, Quaternion rot, string name, int mesh, float size, MobType type, Faction fac) : base(Match.ID, ID, pos, rot, name, mesh, size, fac, 4, new HumorLevels(0, 0, 0, 0))
     {
-        Type = (int)type ;
+        Type = (int)type;
         Humors.ChangeHumor((int)type, 100);
         Match.CellsModule.RegisterActionCallbackAddingUnit((unit, cell) => { if (unit.Equals(this) || unit.Equals(Target))
             {
@@ -30,12 +30,31 @@ public class Humorling : Unit {
             else
             {
                 Cell currentCell = Match.CellsModule.GetCurrentCell(this);
-                if (new Vector2(currentCell.PositionX - cell.PositionX, currentCell.PositionY - cell.PositionY).sqrMagnitude < Range*Range)
+                if (new Vector2(currentCell.PositionX - cell.PositionX, currentCell.PositionY - cell.PositionY).sqrMagnitude < Range * Range)
                 {
                     CompareTarget(unit);
                 }
             }
         });
+
+        switch (type)
+        {
+            case (MobType.BLOOD_HUMORLING):
+                Bounty = new HumorLevels(100, 0, 0, 0);
+                break;
+            case (MobType.PHLEGM_HUMORLING):
+                Bounty = new HumorLevels(0, 100, 0, 0);
+                break;
+            case (MobType.BLACKBILE_HUMORLING):
+                Bounty = new HumorLevels(0, 0, 100, 0);
+                break;
+            case (MobType.YELLOWBILE_HUMORLING):
+                Bounty = new HumorLevels(0, 0, 0, 100);
+                break;
+        }
+
+        SearchTarget(Match.CellsModule);
+        HumorlingCount++;
     }
 
     public bool Equals (Humorling h)
@@ -49,7 +68,6 @@ public class Humorling : Unit {
     {
 
         Cell currentCell = Cells.GetCurrentCell(this);
-        ScanCell(currentCell);
 
         for (int currentRange = 1; currentRange <= Range && Target == null; currentRange++)
         {
@@ -76,7 +94,7 @@ public class Humorling : Unit {
     {
         foreach(Unit u in c.UnitList)
         {
-            if (!Fac.Equals(u.Fac) && DistanceTarget > (Pos - u.Pos).sqrMagnitude)
+            if (!Fac.Equals(u.Fac) && (Target == null || DistanceTarget > (Pos - u.Pos).sqrMagnitude))
             {
                 DistanceTarget = (Pos - u.Pos).sqrMagnitude;
                 Target = u;
@@ -86,7 +104,6 @@ public class Humorling : Unit {
 
     private void CompareTarget(Unit potentialTarget)
     {
-        Debugger.LogMessage("Comparing targets");
         if (!Fac.Equals(potentialTarget.Fac) && (Target == null || DistanceTarget > (potentialTarget.Pos - Pos).sqrMagnitude))
         {
             Target = potentialTarget;
@@ -97,8 +114,8 @@ public class Humorling : Unit {
 
     private void MoveToTarget()
     {
-        SetPos((Vector3)Pos + (Target.Pos - Pos).normalized * GetSpeed() * Time.deltaTime);
-        SetRot(Quaternion.LookRotation(Target.Pos - Pos));
+        SetPos((Vector3)Pos + (Target.Pos - Pos).normalized * GetSpeed() * Time.deltaTime * HumorlingCount);
+
     }
 
     private void Attack(Unit target) 
@@ -106,7 +123,7 @@ public class Humorling : Unit {
         if (target != null)
         {
             Debugger.LogMessage("Humorling " + Name + " " + ID + " is attacking " + target.Name + " " + target.ID + " for " + Damage + "damage.");
-            target.ChangeHumor(Type, -Damage);
+            target.ChangeHumor(Type, -Damage, this);
         }
     }
 
@@ -126,11 +143,12 @@ public class Humorling : Unit {
         }
         if (Target != null && Alive == true)
         {
+            SetRot(Quaternion.LookRotation(Target.Pos - Pos));
             DistanceTarget = Vector3.Distance(Pos, Target.Pos);
             if (Target.Alive == false || DistanceTarget > cellsManager.SizeCellX * Range)
             {
                 Target = null;
-                DistanceTarget = Mathf.Infinity;
+                DistanceTarget = 0;
                 SearchTarget(cellsManager);
             }
             else
@@ -149,8 +167,8 @@ public class Humorling : Unit {
                 }
             }
         }
-        TimerAttack -= Time.deltaTime;
-        TimerTarget -= Time.deltaTime;
+        TimerAttack -= Time.deltaTime * HumorlingCount;
+        TimerTarget -= Time.deltaTime * HumorlingCount;
 	}
 
     public override void ChangeHumor(int type, int quantity)
@@ -163,5 +181,12 @@ public class Humorling : Unit {
     protected override void OnDamageTaken()
     {
         base.OnDamageTaken();
+        TookDamage = true;
+    }
+
+    public override void Die()
+    {
+        base.Die();
+        HumorlingCount--;
     }
 }

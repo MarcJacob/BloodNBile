@@ -29,6 +29,7 @@ public class BnBMatch
     public CellsManager CellsModule { get; private set; }
     public HumorlingsManager HumorlingsModule { get; private set; }
     public EffectsManager EffectsModule { get; private set; }
+    public HumorLevels HumorBank { get; private set; }
 
     int MapID;
     bool[] PlayersReady;
@@ -41,6 +42,7 @@ public class BnBMatch
         NetworkInfo = networkInfo;
         Players = clients;
         PlayersReady = new bool[Players.Length];
+        HumorBank = new HumorLevels(500, 500, 500, 500);
     }
 
     public MatchState GetState()
@@ -185,7 +187,7 @@ public class BnBMatch
         EntityModule = new EntityManager(this);
         MagesModule = new MagesManager(EntityModule);
         WellsModule = new WellsManager(EntityModule);
-        CellsModule = new CellsManager(this, 500, 500, 50, 50);
+        CellsModule = new CellsManager(this, 500, 500, 20, 20);
         HumorlingsModule = new HumorlingsManager(EntityModule);
         EffectsModule = new EffectsManager(ID);
 
@@ -226,7 +228,6 @@ public class BnBMatch
         }
         else if (State == MatchState.Ending)
         {
-            Debugger.LogMessage("Ending match...");
             EndingTimer -= Time.deltaTime;
             if (EndingTimer <= 0)
             {
@@ -237,8 +238,11 @@ public class BnBMatch
         EntityModule.UpdateEntities();
         MagesModule.UpdateMages();
         HumorlingsModule.RunAIs();
+
         CellsModule.Update();
         EffectsModule.UpdateEffects();
+
+        HumorlingsModule.SpawnCreeps(CellsModule, HumorBank);
     }
 
     void OnMageDied(Mage m)
@@ -247,4 +251,5 @@ public class BnBMatch
             State = MatchState.Ending;
     }
 
+    public const float MapHumorsGainProportion = 0.2f;
 }

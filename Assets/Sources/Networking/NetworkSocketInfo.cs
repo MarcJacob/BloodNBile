@@ -31,6 +31,9 @@ public class NetworkSocketInfo
         if (NetworkTransport.IsStarted == false)
             NetworkTransport.Init();
         ConnectionConfig cc = new ConnectionConfig();
+        cc.MaxSentMessageQueueSize = 200;
+        cc.MaxCombinedReliableMessageSize = 200;
+        cc.PacketSize = 1470;
         ReliableChannelID = cc.AddChannel(QosType.Reliable);
         UnreliableChannelID = cc.AddChannel(QosType.Unreliable);
         FragmentedChannelID = cc.AddChannel(QosType.ReliableFragmented);
@@ -46,6 +49,9 @@ public class NetworkSocketInfo
         if (NetworkTransport.IsStarted == false)
             NetworkTransport.Init();
         ConnectionConfig cc = new ConnectionConfig();
+            cc.MaxSentMessageQueueSize = 200;
+            cc.MaxCombinedReliableMessageSize = 200;
+            cc.PacketSize = 1470;
         ReliableChannelID = cc.AddChannel(QosType.Reliable);
         UnreliableChannelID = cc.AddChannel(QosType.Unreliable);
         FragmentedChannelID = cc.AddChannel(QosType.ReliableFragmented);

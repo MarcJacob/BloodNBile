@@ -14,7 +14,7 @@ public class Well : Entity
     /// <param name="ID"> Identifiant de ce puit. </param>
     /// <param name="pos"> Position de ce puit sur la map. </param>
     /// <param name="humors"> Détermine ce qu'il va rapporter chaque seconde au(x) joueur(s) en contrôle. </param>
-    public Well(BnBMatch Match, int ID, Vector3 pos, HumorLevels humors) : base(Match, ID, pos, Quaternion.identity, "Well")
+    public Well(BnBMatch Match, int ID, Vector3 pos, HumorLevels humors) : base(Match.ID, ID, pos, Quaternion.identity, "Well")
     {
         Humors = humors;
         ControllingFaction = null;

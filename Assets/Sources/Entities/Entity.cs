@@ -12,13 +12,13 @@ public class Entity  {
     public string Name { get; protected set; }
     public int MatchID { get; private set; } // Match dans lequel cette entité se trouve.
 
-    public Entity(BnBMatch Match, int ID, Vector3 pos, Quaternion rot, string name)
+    public Entity(int matchID, int ID, Vector3 pos, Quaternion rot, string name)
     {
         this.ID = ID;
         Pos = pos;
         Rot = rot;
         Name = name;
-        MatchID = Match.ID;
+        MatchID = matchID;
     }
 
     public override bool Equals(object u)

@@ -21,12 +21,16 @@ public class EntityRenderer : MonoBehaviour {
 
     public void AddUnit(NetworkMessageReceiver message)
     {
-        Unit unit = (Unit)message.ReceivedMessage.Content;
-        Debugger.LogMessage("Unit added !");
-        if (!Units.Contains(unit))
+        UnitsCreationMessage units = (UnitsCreationMessage)message.ReceivedMessage.Content;
+        Debugger.LogMessage("Units added !");
+        for(int i = 0; i < units.IDs.Length; i++)
         {
-            Units.Add(unit);
-            RenderedUnits.Add(new UnitRender(unit.Pos, unit.Rot, unit)); 
+            Unit newUnit = new Unit(units.MatchID, units.IDs[i], units.Positions[i], units.Rotations[i], units.Names[i], units.MeshIDs[i], units.Sizes[i], units.Factions[i], units.Speeds[i], units.Humors[i]);
+            if (!Units.Contains(newUnit))
+            {
+                Units.Add(newUnit);
+                RenderedUnits.Add(new UnitRender(newUnit.Pos, newUnit.Rot, newUnit));
+            }
         }
     }
 
@@ -172,7 +176,7 @@ public class EntityRenderer : MonoBehaviour {
         if (LODLevel >= Model.GetModels()[CurrentlyRendered.MeshID].ModelMeshs.Length) return; // Si il n'y a pas assez de niveaux de détails pour une telle distance alors on n'affiche pas l'entité.
         Graphics.DrawMesh(Model.GetModels()[CurrentlyRendered.MeshID].ModelMeshs[DetermineLOD()], CurrentUnitRender.CurrentPos, CurrentUnitRender.CurrentRot, Model.GetModels()[CurrentlyRendered.MeshID].ModelMaterial, 0);
     }
-    public int DistPerLOD = 50*50; // Distance séparant chaque changement de LOD. La distance maximale d'affichage est donc nombre de LOD * DistPerLOD.
+    public int DistPerLOD = 10000; // Distance séparant chaque changement de LOD. La distance maximale d'affichage est donc nombre de LOD * DistPerLOD.
     private int DetermineLOD()
     {
         float dist = ((Vector3)CurrentlyRendered.Pos - Cam.transform.position).sqrMagnitude;

@@ -60,7 +60,6 @@ public class NetworkMessage
         {
             Debugger.LogMessage("Erreur lors de l'envoie d'un message ! Type : " + (NetworkError)error);
         }
-        else
             nbSent += 1;
     }
 }

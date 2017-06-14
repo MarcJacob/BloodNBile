@@ -110,6 +110,7 @@
     <Compile Include="Assets\Sources\Messaging\MessageContent\ClientMageSpellMessage.cs" />
     <Compile Include="Assets\Sources\Messaging\MessageContent\EntityPositionRotationUpdate.cs" />
     <Compile Include="Assets\Sources\Messaging\MessageContent\MageUpdateMessage.cs" />
+    <Compile Include="Assets\Sources\Messaging\MessageContent\UnitsCreationMessage.cs" />
     <Compile Include="Assets\Sources\Messaging\MessageContent\UnitMovementChangeMessage.cs" />
     <Compile Include="Assets\Sources\Messaging\NetworkMessage.cs" />
     <Compile Include="Assets\Sources\Messaging\NetworkMessageReceiver.cs" />

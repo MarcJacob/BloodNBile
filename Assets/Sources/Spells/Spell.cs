@@ -42,7 +42,7 @@ public class Spell {
     public bool IsCastable(Mage mage)
     {
         bool isCastable = true;
-        if (mage.ReloadingSpells.ContainsKey(this) && mage.ReloadingSpells[this] >= 0)isCastable = false;
+        if (mage.ReloadingSpells.ContainsKey(ID) && mage.ReloadingSpells[ID] >= 0)isCastable = false;
         else
         {
             switch (Humor)

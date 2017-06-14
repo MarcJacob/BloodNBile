@@ -8,12 +8,12 @@ public class Mage : Unit {
 
     public float LOP { get; private set; }
     public bool IsCasting;
-    public Dictionary<Spell, float> ReloadingSpells;
+    public Dictionary<int, float> ReloadingSpells;
 
-    public Mage(BnBMatch Match, int ID, Vector3 pos, Quaternion rot, string name, Faction fac, HumorLevels humors) : base(Match, ID, pos, rot, name, -1, 8, fac, 5, humors)
+    public Mage(int matchID, int ID, Vector3 pos, Quaternion rot, string name, Faction fac, HumorLevels humors) : base(matchID, ID, pos, rot, name, -1, 8, fac, 5, humors)
     {
         IsCasting = false;
-        ReloadingSpells = new Dictionary<Spell, float>();
+        ReloadingSpells = new Dictionary<int, float>();
         LOP = (humors.Blood + humors.Phlegm + humors.BlackBile + humors.YellowBile) / 4;
     }
 
@@ -27,18 +27,18 @@ public class Mage : Unit {
     {
         Spell[] s = new Spell[ReloadingSpells.Count];
         int i = 0;
-        foreach(Spell spell in ReloadingSpells.Keys)
+        foreach(int spellID in ReloadingSpells.Keys)
         {
+            Spell spell = Spell.GetSpellFromID(spellID);
             s[i] = spell;
             i++;
         }
         for (i = 0; i < s.Length; i++)
         {
-            ReloadingSpells[s[i]] -= Time.deltaTime;
-            if (ReloadingSpells[s[i]] <= 0)
+            ReloadingSpells[s[i].ID] -= Time.deltaTime;
+            if (ReloadingSpells[s[i].ID] <= 0)
             {
-                ReloadingSpells.Remove(s[i]);
-                Debugger.LogMessage(Humors.Blood + " et " + Humors.Phlegm + " et " + Humors.BlackBile + " et " + Humors.YellowBile);
+                ReloadingSpells.Remove(s[i].ID);
             }
         }
     }

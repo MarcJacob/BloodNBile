@@ -31,7 +31,6 @@ public class EffectsManager
         while (StartedEffects.Count != 0)
         {
             StartedEffects[0].Activate();
-            Debugger.LogMessage("Application d'effet");
             if (StartedEffects[0].Alive) // Si l'effet est encore en vie alors on part du principe qu'il est sensé durer.
             {
                 OngoingEffects.Add(StartedEffects[0]);

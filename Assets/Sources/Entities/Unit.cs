@@ -17,7 +17,7 @@ public class Unit : DrawableEntity, IHumorEntity
     public bool CanMove { get; private set; } // L'unité peut-elle influencer son propre mouvement ? Est faux par exemple quand l'unité est entrain de tomber
                          // ou est affectée par un phénomène physique.
 
-    public Unit(BnBMatch Match, int ID, Vector3 pos, Quaternion rot, string name, int mesh, float size, Faction fac, float speed, HumorLevels humors) : base(Match, ID, pos, rot, name, mesh, size)
+    public Unit(int matchID, int ID, Vector3 pos, Quaternion rot, string name, int mesh, float size, Faction fac, float speed, HumorLevels humors) : base(matchID, ID, pos, rot, name, mesh, size)
     {
         BaseSpeed = speed;
         Fac = fac;
@@ -52,6 +52,12 @@ public class Unit : DrawableEntity, IHumorEntity
         OnDamageTaken();
     }
 
+    public virtual void ChangeHumor(int type, int quantity, Unit source)
+    {
+        Humors.ChangeHumor(type, quantity);
+        OnDamageTaken(source);
+    }
+
     virtual protected void OnDamageTaken()
     {
         if (Humors.Blood <= 0 && Humors.Phlegm <= 0 && Humors.BlackBile <= 0 && Humors.YellowBile <= 0)
@@ -60,6 +66,17 @@ public class Unit : DrawableEntity, IHumorEntity
         }
     }
 
+    virtual protected void OnDamageTaken(Unit unit)
+    {
+        if (Humors.Blood <= 0 && Humors.Phlegm <= 0 && Humors.BlackBile <= 0 && Humors.YellowBile <= 0)
+        {
+            killer = unit;
+            Die();
+        }
+    }
+
+    public Unit killer { get; private set; }
+    public HumorLevels Bounty = new HumorLevels(100, 100, 100, 100);
     public override void Die()
     {
         base.Die();

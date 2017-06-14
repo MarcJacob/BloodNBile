@@ -8,6 +8,7 @@ public class EntityManager {
 
     public List<Entity> Entities = new List<Entity>(); // Ensemble des entités
     public List<Unit> Units = new List<Unit>(); // Ensemble des unités. NOTE : Entities contient Units.
+    public List<Unit> SpawnedUnits = new List<Unit>();
     WeakReference MatchWeakRef; // Le match auquel cet EntityManager est lié.
     public BnBMatch Match { get { return ((BnBMatch)(MatchWeakRef.Target)); } }
     public Entity[] GetAllEntities()
@@ -38,6 +39,35 @@ public class EntityManager {
     float currentEntityPositionUpdateCooldown = 0f;
     public void UpdateEntities()
     {
+        if (SpawnedUnits.Count > 0)
+        {
+            int count = SpawnedUnits.Count;
+            int[] IDs = new int[count];
+            int[] MeshIDs = new int[count];
+            SerializableVector3[] positions = new SerializableVector3[count];
+            SerializableQuaternion[] rotations = new SerializableQuaternion[count];
+            HumorLevels[] humors = new HumorLevels[count];
+            string[] names = new string[count];
+            float[] sizes = new float[count];
+            Faction[] factions = new Faction[count];
+            float[] speeds = new float[count];
+            Unit[] spawns = SpawnedUnits.ToArray();
+            for (int i = 0; i < count; i++)
+            {
+                Unit u = spawns[i];
+                IDs[i] = u.ID;
+                MeshIDs[i] = u.MeshID;
+                positions[i] = u.Pos;
+                rotations[i] = u.Rot;
+                humors[i] = u.Humors;
+                names[i] = u.Name;
+                sizes[i] = u.Size;
+                factions[i] = u.Fac;
+                speeds[i] = u.GetSpeed();
+            }
+            Match.SendMessageToPlayers(10, new UnitsCreationMessage(Match.ID, IDs, positions, rotations, MeshIDs, humors, names, sizes, factions, speeds), false, true);
+            SpawnedUnits = new List<Unit>();
+        }
         List<Entity> DeadEntities = new List<Entity>();
         foreach(Entity e in Entities)
         {
@@ -71,7 +101,7 @@ public class EntityManager {
     public Entity CreateEntity(Vector3 pos, Quaternion rot, string name)
     {
         Debugger.LogMessage("Création d'une entité : " + name);
-        Entity ent = new Entity(Match, Entities.Count, pos, rot, name);
+        Entity ent = new Entity(Match.ID, Entities.Count, pos, rot, name);
         Entities.Add(ent);
         return ent;
     }
@@ -79,7 +109,7 @@ public class EntityManager {
     public Unit CreateUnit(Vector3 pos, Quaternion rot, string name, int mesh, float size, Faction fac, float speed, HumorLevels humors) // Surcharge pour les entités de type Unit.
     {
         Debugger.LogMessage("Création d'une unité : " + name);
-        Unit newUnit = new Unit(Match, Entities.Count, pos, rot, name, mesh, size, fac, speed, humors);
+        Unit newUnit = new Unit(Match.ID, Entities.Count, pos, rot, name, mesh, size, fac, speed, humors);
 
         OnUnitCreated(newUnit);
         return newUnit;
@@ -89,8 +119,8 @@ public class EntityManager {
     {
         Units.Add(unit);
         Entities.Add(unit);
-        if (sendNetworkMessage)
-        Match.SendMessageToPlayers(10, unit, false, true);
+        SpawnedUnits.Add(unit);
+
         if (OnUnitCreatedCallback != null)
         {
             OnUnitCreatedCallback(unit);
@@ -108,6 +138,10 @@ public class EntityManager {
         if (unit.MatchID == Match.ID)
             if (Units.Contains(unit))
             {
+                Match.HumorBank.ChangeHumor(0, (int)((float)unit.Humors.Blood * BnBMatch.MapHumorsGainProportion));
+                Match.HumorBank.ChangeHumor(1, (int)((float)unit.Humors.Phlegm * BnBMatch.MapHumorsGainProportion));
+                Match.HumorBank.ChangeHumor(2, (int)((float)unit.Humors.YellowBile * BnBMatch.MapHumorsGainProportion));
+                Match.HumorBank.ChangeHumor(3, (int)((float)unit.Humors.BlackBile * BnBMatch.MapHumorsGainProportion));
                 if (OnUnitDeathCallback != null)
                 {
                     OnUnitDeathCallback(unit);

@@ -171,44 +171,36 @@ public class BnBClient : MonoBehaviour
         if(ControlledMageID == ((ClientMageSpellMessage) message.ReceivedMessage.Content).MageID)
         {
             Spell spell = Spell.GetSpellFromID(((ClientMageSpellMessage)message.ReceivedMessage.Content).SpellID);
-            ControlledMage.ReloadingSpells.Add(spell, spell.Cooldown);
+            if (!ControlledMage.ReloadingSpells.ContainsKey(spell.ID))
+            ControlledMage.ReloadingSpells.Add(spell.ID, spell.Cooldown);
         }
     }
 
     public void OnMageUpdate(NetworkMessageReceiver message)
     {
-        Debugger.LogMessage("Updating mage");
-        for (int i = 0; i < ((MageUpdateMessage)message.ReceivedMessage.Content).IDs.Length; i++)
-        {
-            int ID = ((MageUpdateMessage)message.ReceivedMessage.Content).IDs[i];
-            EntityRender.GetMageFromID(ID).Humors = ((MageUpdateMessage)message.ReceivedMessage.Content).Humors[i];
+        MageUpdateMessage content = ((MageUpdateMessage)message.ReceivedMessage.Content);
+            int ID = content.ID;
+            EntityRender.GetMageFromID(ID).Humors = content.Humors;
             if (ControlledMageID == ID)
             {
-
+                
                 float AcceptedGap = 0.05f;
-                Dictionary<int, float>[] cooldowns = ((MageUpdateMessage)message.ReceivedMessage.Content).Cooldowns;
-                Dictionary<Spell, float> cds = new Dictionary<Spell, float>();
-                foreach(int id in cooldowns[i].Keys)
-                {
-                    cds.Add(Spell.GetSpellFromID(id), cooldowns[i][id]);
-                }
-                if (cds.Keys != ControlledMage.ReloadingSpells.Keys)
-                    ControlledMage.ReloadingSpells = cds;
-                else
-                {
-                    foreach (Spell spell in cds.Keys)
-                    {
-                        if (Mathf.Abs(cds[spell] - ControlledMage.ReloadingSpells[spell]) > AcceptedGap)
-                            ControlledMage.ReloadingSpells[spell] = cds[spell];
-                    }
-                }
-
-                UIManager.SetText("Humors", "Humors : " + ControlledMage.Humors.Blood + " - " + ControlledMage.Humors.Phlegm
-                    + " - " + ControlledMage.Humors.YellowBile + " - " + ControlledMage.Humors.BlackBile);
+            Dictionary<int, float> cds = new Dictionary<int, float>();
+            for(int i = 0; i < content.SpellIDs.Length; i++)
+            {
+                Debugger.LogMessage(content.SpellIDs[i]);
+                if (!cds.ContainsKey(content.SpellIDs[i]))
+                cds.Add(content.SpellIDs[i], content.Cooldowns[i]);
             }
-        }
+            foreach(int spell in cds.Keys)
+                if (ControlledMage.ReloadingSpells.ContainsKey(spell) && Mathf.Abs(cds[spell] - ControlledMage.ReloadingSpells[spell]) > AcceptedGap)
+                    ControlledMage.ReloadingSpells[spell] = cds[spell];
 
+            UIManager.SetText("Humors", "Humors : " + ControlledMage.Humors.Blood + " - " + ControlledMage.Humors.Phlegm
+                + " - " + ControlledMage.Humors.YellowBile + " - " + ControlledMage.Humors.BlackBile);
+        }
     }
+
 
 
 
