@@ -90,6 +90,11 @@ public class BnBClient : MonoBehaviour
         Camera.main.transform.position = new Vector3(0, 1, -10);
         Camera.main.transform.rotation = Quaternion.identity;
 
+
+        // Cursor souris
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+
         EntityRender.Reset();
     }
 
@@ -114,6 +119,8 @@ public class BnBClient : MonoBehaviour
         NetworkListener.AddHandler(13, EntityRender.OnMageCreated);
         NetworkListener.AddHandler(21, OnSpellCasted);
         NetworkListener.AddHandler(23, OnMageUpdate);
+        NetworkListener.AddHandler(22, EntityRender.OnProjectilesCreated);
+        NetworkListener.AddHandler(25, EntityRender.OnProjectileDestroyed);
         //
 
         // Chargement des maps
@@ -149,7 +156,10 @@ public class BnBClient : MonoBehaviour
         CurrentMap = Map.GetMapFromID((int)(message.ReceivedMessage.Content as object[])[0]);
         // Instanciation de la map
         CurrentMap.InstantiateMap();
-        
+
+        // Cursor souris
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     void MatchEndedHandler(NetworkMessageReceiver message)
@@ -198,6 +208,8 @@ public class BnBClient : MonoBehaviour
 
             UIManager.SetText("Humors", "Humors : " + ControlledMage.Humors.Blood + " - " + ControlledMage.Humors.Phlegm
                 + " - " + ControlledMage.Humors.YellowBile + " - " + ControlledMage.Humors.BlackBile);
+
+            UIManager.SetText("Ping", "Ping : " + NetworkInfo.GetCurrentPing(0));
         }
     }
 
@@ -230,5 +242,6 @@ public class BnBClient : MonoBehaviour
     {
         Reset();
     }
+
 
 }

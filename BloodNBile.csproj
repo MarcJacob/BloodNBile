@@ -83,6 +83,8 @@
     <Compile Include="Assets\Sources\Debug\Debugger.cs" />
     <Compile Include="Assets\Sources\Effects\Blueprints\EffectBlueprint.cs" />
     <Compile Include="Assets\Sources\Effects\Blueprints\EffectBPConversion.cs" />
+    <Compile Include="Assets\Sources\Effects\Blueprints\EffectBPCreateProjectile.cs" />
+    <Compile Include="Assets\Sources\Effects\Blueprints\EffectBPProjectileHit.cs" />
     <Compile Include="Assets\Sources\Effects\Blueprints\EffectBPSummon.cs" />
     <Compile Include="Assets\Sources\Effects\HumorChangeEffect.cs" />
     <Compile Include="Assets\Sources\Effects\Effect.cs" />
@@ -105,11 +107,13 @@
     <Compile Include="Assets\Sources\Map\CellsManager.cs" />
     <Compile Include="Assets\Sources\Map\Map.cs" />
     <Compile Include="Assets\Sources\Map\Well.cs" />
+    <Compile Include="Assets\Sources\Map\WellPlacement.cs" />
     <Compile Include="Assets\Sources\MatchSystem\BnBMatch.cs" />
     <Compile Include="Assets\Sources\MatchSystem\MatchManager.cs" />
     <Compile Include="Assets\Sources\Messaging\MessageContent\ClientMageSpellMessage.cs" />
     <Compile Include="Assets\Sources\Messaging\MessageContent\EntityPositionRotationUpdate.cs" />
     <Compile Include="Assets\Sources\Messaging\MessageContent\MageUpdateMessage.cs" />
+    <Compile Include="Assets\Sources\Messaging\MessageContent\ProjectilesCreationMessage.cs" />
     <Compile Include="Assets\Sources\Messaging\MessageContent\UnitsCreationMessage.cs" />
     <Compile Include="Assets\Sources\Messaging\MessageContent\UnitMovementChangeMessage.cs" />
     <Compile Include="Assets\Sources\Messaging\NetworkMessage.cs" />

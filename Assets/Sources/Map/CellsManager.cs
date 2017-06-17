@@ -95,6 +95,18 @@ public class CellsManager
         }
     }
 
+    public Cell GetCellAtCoordinates(float x, float y)
+    {
+        if (x < 0 || x >= SizeMapX || y < 0 || y >= SizeMapY)
+        {
+            return null;
+        }
+        else
+        {
+            return cells[(int)x/SizeCellX, (int)y/SizeCellY];
+        }
+    }
+
     public void Update()
     {
         for (int i = 0; i < cells.GetLength(0); i++)

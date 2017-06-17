@@ -124,4 +124,14 @@ public class EntityControl : MonoBehaviour
             message.Send(NetworkInfo, NetworkInfo.ConnectionIDs[0]);
         }
     }
+
+
+    private void OnApplicationFocus(bool focus)
+    {
+        if (!focus)
+        {
+            DirectionVector = Vector3.zero;
+        }
+    }
+
 }

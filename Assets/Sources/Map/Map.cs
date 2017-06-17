@@ -8,12 +8,26 @@ public class Map {
     int ID;
     bool Loaded = false;
 
+    WellPlacement[] Wells;
 
+    public WellPlacement[] GetWellPlacements()
+    {
+        return Wells;
+    }
+
+    public Map(int ID, string name, WellPlacement[] wells)
+    {
+        this.ID = ID;
+        Name = name;
+
+        Wells = wells;
+    }
 
     public Map(string name)
     {
         Name = name;
         ID = Maps.Length;
+        Wells = new WellPlacement[0];
     }
 
     public void InstantiateMap()
@@ -43,10 +57,11 @@ public class Map {
     public static Map[] Maps { get; private set; }
     public static void InitializeMaps()
     {
-        Maps = new Map[0];
         Maps = new Map[]
         {
-            new Map("PrototypeArena"),
+            new Map(0, "PrototypeArena", new WellPlacement[] {
+                new WellPlacement(new Vector3(0, 0, 0), new HumorLevels(50, 50, 50, 50))
+            }),
         };
     }
 

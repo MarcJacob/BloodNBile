@@ -9,6 +9,8 @@ public class EntityManager {
     public List<Entity> Entities = new List<Entity>(); // Ensemble des entités
     public List<Unit> Units = new List<Unit>(); // Ensemble des unités. NOTE : Entities contient Units.
     public List<Unit> SpawnedUnits = new List<Unit>();
+    public List<Projectile> Projectiles = new List<Projectile>();
+    public List<Projectile> SpawnedProjectiles = new List<Projectile>();
     WeakReference MatchWeakRef; // Le match auquel cet EntityManager est lié.
     public BnBMatch Match { get { return ((BnBMatch)(MatchWeakRef.Target)); } }
     public Entity[] GetAllEntities()
@@ -20,7 +22,35 @@ public class EntityManager {
     {
         MatchWeakRef = new WeakReference(match);
         Unit.RegisterOnUnitDiedCallback(OnUnitDeath);
+        Projectile.RegisterOnProjectHitTarget(OnProjectileHitTarget);
+        Projectile.RegisterOnProjectileDestroyedCallback(OnProjectileDestroyed);
     }
+
+
+    public int GetNextID()
+    {
+        int i = 0;
+        while (IDTaken(i))
+        {
+            i++;
+        }
+
+        return i;
+    }
+
+    public bool IDTaken(int ID)
+    {
+        foreach(Entity e in Entities)
+        {
+            if (e.ID == ID)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 
     public Unit GetUnitFromID(int ID)
     {
@@ -39,6 +69,8 @@ public class EntityManager {
     float currentEntityPositionUpdateCooldown = 0f;
     public void UpdateEntities()
     {
+
+
         if (SpawnedUnits.Count > 0)
         {
             int count = SpawnedUnits.Count;
@@ -72,7 +104,7 @@ public class EntityManager {
         foreach(Entity e in Entities)
         {
             if (e.Alive)
-                e.UpdateEntity();
+                e.UpdateEntity(Time.deltaTime);
             else
                 DeadEntities.Add(e);
         }
@@ -96,12 +128,62 @@ public class EntityManager {
         {
             currentEntityPositionUpdateCooldown += Time.deltaTime;
         }
+
+        // PROJECTILES
+
+        if (SpawnedProjectiles.Count > 0)
+        {
+            int count = SpawnedProjectiles.Count;
+            int[] IDs = new int[count];
+            int[] MeshIDs = new int[count];
+            SerializableVector3[] StartPositions = new SerializableVector3[count];
+            SerializableVector3[] Directions = new SerializableVector3[count];
+            float[] Speeds = new float[count];
+            float[] Sizes = new float[count];
+
+            for(int i = 0; i < count; i++)
+            {
+                Projectile p = SpawnedProjectiles[i];
+                IDs[i] = p.ID;
+                MeshIDs[i] = p.MeshID;
+                StartPositions[i] = p.Pos;
+                Directions[i] = p.Direction;
+                Speeds[i] = p.Speed;
+                Sizes[i] = p.Size;
+            }
+
+            Match.SendMessageToPlayers(22, new ProjectilesCreationMessage(IDs, MeshIDs, StartPositions, Directions, Speeds, Sizes), false, false);
+            foreach (Projectile p in SpawnedProjectiles)
+            {
+                Projectiles.Add(p);
+            }
+
+            SpawnedProjectiles = new List<Projectile>();
+        }
+
+        if (Projectiles.Count > 0)
+        {
+            List<Projectile> destroyedProjectiles = new List<Projectile>();
+            foreach (Projectile P in Projectiles)
+            {
+                P.CheckCollision(Match.CellsModule); // L'update est déjà faite autre-part;
+                if (P.Alive == false)
+                {
+                    destroyedProjectiles.Add(P);
+                }
+            }
+
+            foreach(Projectile P in destroyedProjectiles)
+            {
+                Projectiles.Remove(P);
+            }
+        }
     }
 
     public Entity CreateEntity(Vector3 pos, Quaternion rot, string name)
     {
         Debugger.LogMessage("Création d'une entité : " + name);
-        Entity ent = new Entity(Match.ID, Entities.Count, pos, rot, name);
+        Entity ent = new Entity(Match.ID, GetNextID(), pos, rot, name);
         Entities.Add(ent);
         return ent;
     }
@@ -109,13 +191,13 @@ public class EntityManager {
     public Unit CreateUnit(Vector3 pos, Quaternion rot, string name, int mesh, float size, Faction fac, float speed, HumorLevels humors) // Surcharge pour les entités de type Unit.
     {
         Debugger.LogMessage("Création d'une unité : " + name);
-        Unit newUnit = new Unit(Match.ID, Entities.Count, pos, rot, name, mesh, size, fac, speed, humors);
+        Unit newUnit = new Unit(Match.ID, GetNextID(), pos, rot, name, mesh, size, fac, speed, humors);
 
         OnUnitCreated(newUnit);
         return newUnit;
     }
 
-    public void OnUnitCreated(Unit unit, bool sendNetworkMessage = true)
+    public void OnUnitCreated(Unit unit)
     {
         Units.Add(unit);
         Entities.Add(unit);
@@ -156,5 +238,25 @@ public class EntityManager {
     public void RegisterOnUnitDeathCallback(Action<Unit> cb)
     {
         OnUnitDeathCallback += cb;
+    }
+
+
+    // PROJECTILES
+
+    public void CreateProjectile(Unit caster, Vector3 direction, EffectBPProjectileHit effectBP, float size = 1, float speed = 3)
+    {
+        Projectile newProjectile = new Projectile(Match.ID, GetNextID(), caster, direction, size, speed, effectBP);
+        Entities.Add(newProjectile);
+        SpawnedProjectiles.Add(newProjectile);
+    }
+
+    void OnProjectileHitTarget(Projectile p, Unit u)
+    {
+        p.OnCollisionEffect.Instantiate(GetUnitFromID(p.SourceEntityID), Match);
+    }
+
+    void OnProjectileDestroyed(Projectile p)
+    {
+        Match.SendMessageToPlayers(25, p.ID, false, false);
     }
 }

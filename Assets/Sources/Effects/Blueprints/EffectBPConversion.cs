@@ -10,7 +10,7 @@ public class EffectBPChangeHumor : EffectBlueprint
         ChangedHumors = new HumorLevels(blood, phlegm, yellile, blackile);
     }
 
-    public override void Instantiate(Mage caster, BnBMatch world)
+    public override void Instantiate(Unit caster, BnBMatch world)
     {
         new HumorChangeEffect(world.ID, caster, ChangedHumors);
     }

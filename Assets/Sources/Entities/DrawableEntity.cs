@@ -25,7 +25,7 @@ public class DrawableEntity : Entity {
         Size = size;
     }
 
-    public override void UpdateEntity()
+    public override void UpdateEntity(float deltaTime)
     {
 
     }

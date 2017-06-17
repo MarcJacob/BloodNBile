@@ -81,6 +81,7 @@ public class Spell {
         new Spell(1, 50, 15, "Summon Phlegm Minions", new EffectBPSummon(MobType.PHLEGM_HUMORLING, true));
         new Spell(3, 50, 15, "Summon Yellile Minions", new EffectBPSummon(MobType.YELLOWBILE_HUMORLING, true));
         new Spell(2, 50, 15, "Summon Blackile Minions", new EffectBPSummon(MobType.BLACKBILE_HUMORLING, true));
+        new Spell(0, 50, 2, "Blood missile", new EffectBPCreateProjectile(0.5f, 30, new EffectBPProjectileHit(new HumorLevels(0, 10, 10, 10))));
         new Spell(0, 20, 5, "Blood to Phlegm", new EffectBPChangeHumor(0, 15, 0, 0));
         new Spell(0, 20, 5, "Blood to Blackile", new EffectBPChangeHumor(0, 0, 15, 0));
         new Spell(0, 20, 5, "Blood to Yellile", new EffectBPChangeHumor(0, 0, 0, 15));

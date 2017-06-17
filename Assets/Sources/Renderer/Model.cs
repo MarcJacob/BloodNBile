@@ -37,7 +37,21 @@ public class Model  {
             // Tous les objets "Models" sont crées ici.
             CreateModel(0, "Model_Test","Tex_Test", new string[0]),
             CreateModel(1, "Model_Test2", "Tex_Test", new string[0]),
+            CreateModel(1001, "Model_BloodProjectile", "Tex_BloodProjectile", new string[0])
         };
+    }
+
+    public static Model GetModelByID(int ID)
+    {
+        foreach(Model m in Models)
+        {
+            if (m.ID == ID)
+            {
+                return m;
+            }
+        }
+
+        return null;
     }
 
     /// <summary>

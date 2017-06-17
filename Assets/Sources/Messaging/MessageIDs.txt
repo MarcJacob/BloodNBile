@@ -26,6 +26,7 @@
 
 	20 = Message reçu par le serveur quand le client souhaite lancer un sort.
 	21 = Message reçu par le client quand le serveur a accepté le lancement d'un sort. Lance le cooldown de ce sort côté client.
-	22 = 
+	22 = Message reçu par le client quand un projectile a été instancié côté serveur.
 	23 = Message reçu régulièrement par le client pour garder les cooldowns en cours côté client et côté serveur en synch.
 	24 = Message reçu régulièrement par le client pour garder les humeurs en synchronisation entre le serveur et le client.
+	25 = Message reçu par le client quand un projectile a été détruit côté serveur.

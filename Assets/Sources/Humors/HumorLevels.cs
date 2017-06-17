@@ -51,6 +51,11 @@ public class HumorLevels {
     {
         return "Blood : " + Blood + " Phlegm : " + Phlegm + " Black : " + BlackBile + " Yellow : " + YellowBile;
     }
+
+    static public HumorLevels operator -(HumorLevels humors)
+    {
+        return new HumorLevels(-humors.Blood, -humors.Phlegm, -humors.BlackBile, -humors.YellowBile);
+    }
 }
 
 public enum Humor

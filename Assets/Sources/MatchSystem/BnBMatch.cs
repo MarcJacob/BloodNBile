@@ -42,7 +42,7 @@ public class BnBMatch
         NetworkInfo = networkInfo;
         Players = clients;
         PlayersReady = new bool[Players.Length];
-        HumorBank = new HumorLevels(500, 500, 500, 500);
+        HumorBank = new HumorLevels(0,0,0,0);
     }
 
     public MatchState GetState()
@@ -167,6 +167,16 @@ public class BnBMatch
         }
         else
         {
+            for (int i = 0; i < Players.Length; i++)
+            {
+                List<ServerClientInfo> players = new List<ServerClientInfo>();
+                if (coID != Players[i].GetConnectionID())
+                {
+                    players.Add(Players[i]);
+                }
+
+                Players = players.ToArray();
+            }
             State = MatchState.Ending;
         }
     }
@@ -185,9 +195,10 @@ public class BnBMatch
     {
         Debugger.LogMessage("FirstUpdate()");
         EntityModule = new EntityManager(this);
-        MagesModule = new MagesManager(EntityModule);
-        WellsModule = new WellsManager(EntityModule);
         CellsModule = new CellsManager(this, 500, 500, 20, 20);
+        MagesModule = new MagesManager(EntityModule);
+        WellsModule = new WellsManager(EntityModule, Map.GetMapFromID(MapID));
+
         HumorlingsModule = new HumorlingsManager(EntityModule);
         EffectsModule = new EffectsManager(ID);
 
@@ -241,6 +252,8 @@ public class BnBMatch
 
         CellsModule.Update();
         EffectsModule.UpdateEffects();
+
+        WellsModule.Update();
 
         HumorlingsModule.SpawnCreeps(CellsModule, HumorBank);
     }

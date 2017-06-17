@@ -98,4 +98,10 @@ public class NetworkSocketInfo
             return true;
         }
     }
+
+    public int GetCurrentPing(int coID)
+    {
+        byte err;
+        return NetworkTransport.GetCurrentRTT(HostID, ConnectionIDs[coID], out err);
+    }
 }

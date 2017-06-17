@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class SummonEffect : Effect
 {
-    public SummonEffect(Mage caster, BnBMatch world, MobType mob, bool friendly) : base(world.ID)
+    public SummonEffect(Unit caster, BnBMatch world, MobType mob, bool friendly) : base(world.ID)
     {
         Mob = mob;
         Friendly = friendly;
@@ -18,7 +18,7 @@ public class SummonEffect : Effect
 
     MobType Mob;
     bool Friendly;
-    Mage Caster;
+    Unit Caster;
     HumorlingsManager HumorlingsModule;
 
     const int NB = 2;

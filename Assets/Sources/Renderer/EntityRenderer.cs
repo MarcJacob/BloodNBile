@@ -10,6 +10,7 @@ public class EntityRenderer : MonoBehaviour {
 
     List<Unit> Units = new List<Unit>(); // Ensemble des unités que le Renderer "connait". Est mit à jour par le serveur.
     List<Mage> Mages = new List<Mage>(); // Ensemble des mages que le Renderer "connait".
+    List<Projectile> Projectiles = new List<Projectile>();
     public Dictionary<int, GameObject> MageGOs = new Dictionary<int, GameObject>(); // Permet de relier l'affichage des mages sous forme de GOs à leur entité.
     public List<UnitRender> RenderedUnits = new List<UnitRender>();
 
@@ -29,37 +30,42 @@ public class EntityRenderer : MonoBehaviour {
             if (!Units.Contains(newUnit))
             {
                 Units.Add(newUnit);
-                RenderedUnits.Add(new UnitRender(newUnit.Pos, newUnit.Rot, newUnit));
+               // RenderedUnits.Add(new UnitRender(newUnit.Pos, newUnit.Rot, newUnit));
             }
         }
     }
 
     public void RemoveUnit(NetworkMessageReceiver message)
     {
-
         Unit unit = GetUnitFromID((int)message.ReceivedMessage.Content);
         if (Units.Contains(unit))
         {
-            Debugger.LogMessage("Suppression d'une unité..");
+            Debugger.LogMessage("Nombre d'unités :" + Units.Count);
             unit.Alive = false;
             Units.Remove(unit);
-            bool found = false;
             int i = 0;
-            while(!found && i < RenderedUnits.Count)
+            Debugger.LogMessage(RenderedUnits.Count);
+            while(i < RenderedUnits.Count)
             {
-                if (RenderedUnits[i].RenderedUnit == unit)
+                if (RenderedUnits[i].RenderedUnit.Alive == false)
                 {
+                    Debugger.LogMessage("Unit render supprimé !");
                     RenderedUnits.RemoveAt(i);
-                    found = true;
                 }
                 else
                 {
                     i++;
                 }
             }
+            Debugger.LogMessage("Nombre d'unités :" + Units.Count);
             if (OnUnitRemovedCallback != null)
                 OnUnitRemovedCallback(unit);
         }
+        else
+        {
+            Debug.LogError("Unit does not exist !");
+        }
+
     }
 
     public void Reset()
@@ -117,6 +123,18 @@ public class EntityRenderer : MonoBehaviour {
         return null;
     }
 
+    public Projectile GetProjectileFromID(int ID)
+    {
+        foreach(Projectile p in Projectiles)
+        {
+            if (p.ID == ID)
+            {
+                return p;
+            }
+        }
+        return null;
+    }
+
     Action<Unit, bool> OnUnitPositionUpdatedCallback;
     public void RegisterOnUnitPositionUpdatedCallback(Action<Unit, bool> cb)
     {
@@ -146,40 +164,90 @@ public class EntityRenderer : MonoBehaviour {
         }
     }
 
+    public void OnProjectilesCreated(NetworkMessageReceiver messageReceiver)
+    {
+        ProjectilesCreationMessage content = (ProjectilesCreationMessage)messageReceiver.ReceivedMessage.Content;
+        for(int i=0; i < content.IDs.Length; i++)
+        {
+            Projectile p = new Projectile(0, content.IDs[i], Mages[0], content.Directions[i], content.Sizes[i], content.Speeds[i], null);
+            p.SetPos(content.StartPositions[i]);
+            Projectiles.Add(p);
+        }
+    }
+
+    public void OnProjectileDestroyed(NetworkMessageReceiver messageReceiver)
+    {
+        int projectileID = (int)messageReceiver.ReceivedMessage.Content;
+        Projectile p = GetProjectileFromID(projectileID);
+
+        if (Projectiles.Contains(p))
+        {
+            Projectiles.Remove(p);
+        }
+    }
+
     void Update () {
         // Afficher les entités.
-        if (Units != null)
+        /*if (Units != null)
         {
             foreach(UnitRender render in RenderedUnits)
             {
-                if (render.RenderedUnit.Alive == true)
+                if (Units.Contains(render.RenderedUnit))
                 {
                     render.Process();
                     if (render.RenderedUnit.MeshID >= 0)
                     {
-                        CurrentlyRendered = render.RenderedUnit;
-                        CurrentUnitRender = render;
-                        RenderMesh();
+                        RenderMesh(render.RenderedUnit, render);
                     }
                 }
             }
+
+        }*/
+
+        if (Units != null)
+        {
+            foreach (Unit render in Units)
+            {
+                    if (render.MeshID >= 0 && render.Alive == true)
+                    {
+                        RenderMesh(render);
+                    }
+            }
+
         }
-	}
-
-    DrawableEntity CurrentlyRendered; // Entité dont l'affichage est actuellement calculée.
-    UnitRender CurrentUnitRender;
-
-    private void RenderMesh()
-    {
-        if (CurrentlyRendered == null) return; // S'il n'y a pas d'entité dans CurrentlyRenderer, alors on n'exécute pas le corps de cette méthode.
-        int LODLevel = DetermineLOD();
-        if (LODLevel >= Model.GetModels()[CurrentlyRendered.MeshID].ModelMeshs.Length) return; // Si il n'y a pas assez de niveaux de détails pour une telle distance alors on n'affiche pas l'entité.
-        Graphics.DrawMesh(Model.GetModels()[CurrentlyRendered.MeshID].ModelMeshs[DetermineLOD()], CurrentUnitRender.CurrentPos, CurrentUnitRender.CurrentRot, Model.GetModels()[CurrentlyRendered.MeshID].ModelMaterial, 0);
+        foreach (Projectile P in Projectiles)
+        {
+            P.UpdateEntity(Time.deltaTime); // Update client-side. Fait bouger le projectile vers sa destination.
+            RenderMesh(P);
+        }
     }
-    public int DistPerLOD = 10000; // Distance séparant chaque changement de LOD. La distance maximale d'affichage est donc nombre de LOD * DistPerLOD.
-    private int DetermineLOD()
+
+    private void RenderMesh(DrawableEntity entity, UnitRender renderer = null)
     {
-        float dist = ((Vector3)CurrentlyRendered.Pos - Cam.transform.position).sqrMagnitude;
+        Debugger.LogMessage("Rendering entity ID" + entity.ID);
+        /*if (entity == null) return; // S'il n'y a pas d'entité dans CurrentlyRenderer, alors on n'exécute pas le corps de cette méthode.
+        int LODLevel = DetermineLOD(entity);
+        if (renderer != null)
+        {
+            if (LODLevel >= Model.GetModelByID(entity.MeshID).ModelMeshs.Length) return; // Si il n'y a pas assez de niveaux de détails pour une telle distance alors on n'affiche pas l'entité.
+            Graphics.DrawMesh(Model.GetModelByID(entity.MeshID).ModelMeshs[LODLevel], renderer.CurrentPos, renderer.CurrentRot, Model.GetModelByID(entity.MeshID).ModelMaterial, 0);
+        }
+        else
+        {
+            if (LODLevel >= Model.GetModelByID(entity.MeshID).ModelMeshs.Length) return; // Si il n'y a pas assez de niveaux de détails pour une telle distance alors on n'affiche pas l'entité.
+            Graphics.DrawMesh(Model.GetModelByID(entity.MeshID).ModelMeshs[LODLevel], entity.Pos, entity.Rot, Model.GetModelByID(entity.MeshID).ModelMaterial, 0);
+        }*/
+
+        if (entity == null || entity.Alive == false) return; // S'il n'y a pas d'entité dans CurrentlyRenderer, alors on n'exécute pas le corps de cette méthode.
+        int LODLevel = DetermineLOD(entity);
+
+        if (LODLevel >= Model.GetModelByID(entity.MeshID).ModelMeshs.Length) return; // Si il n'y a pas assez de niveaux de détails pour une telle distance alors on n'affiche pas l'entité.
+        Graphics.DrawMesh(Model.GetModelByID(entity.MeshID).ModelMeshs[LODLevel], entity.Pos, entity.Rot, Model.GetModelByID(entity.MeshID).ModelMaterial, 0);
+    }
+    public int DistPerLOD = 40000; // Distance séparant chaque changement de LOD. La distance maximale d'affichage est donc nombre de LOD * DistPerLOD.
+    private int DetermineLOD(DrawableEntity entity)
+    {
+        float dist = ((Vector3)entity.Pos - Cam.transform.position).sqrMagnitude;
         int LODLevel = (int)dist / DistPerLOD;
         return LODLevel;
     }

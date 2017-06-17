@@ -9,6 +9,6 @@ using System.Collections.Generic;
  */
 public abstract class EffectBlueprint
 {
-    public abstract void Instantiate(Mage caster, BnBMatch world);
+    public abstract void Instantiate(Unit caster, BnBMatch world);
 
 }

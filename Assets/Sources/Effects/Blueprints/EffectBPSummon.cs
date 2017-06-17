@@ -12,7 +12,7 @@ public class EffectBPSummon : EffectBlueprint
     MobType Mob;
     bool Friendly;
 
-    public override void Instantiate(Mage caster, BnBMatch world)
+    public override void Instantiate(Unit caster, BnBMatch world)
     {
         new SummonEffect(caster, world, Mob, Friendly);
     }

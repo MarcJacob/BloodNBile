@@ -91,14 +91,6 @@ public class Unit : DrawableEntity, IHumorEntity
         OnUnitDiedCallback += cb;
     }
 
-
-
-	public override void UpdateEntity ()
-    {
-        
-	}
-
-
     public override void SetRot(Quaternion quat)
     {
         base.SetRot(quat);

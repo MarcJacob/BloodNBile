@@ -40,7 +40,7 @@ public class BnBMasterServer : MonoBehaviour
         NetworkListener.RegisterOnDisconnectionCallback(UnregisterConnectedClient);
         Matchmaker = new MatchManager(NetworkInfo);
         Spell.LoadSpells();
-
+        Map.InitializeMaps();
 
     }
 

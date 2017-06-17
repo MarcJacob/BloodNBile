@@ -5,19 +5,40 @@ using UnityEngine;
 
 public class HumorChangeEffect : Effect {
 
-    public HumorChangeEffect(int matchID, Mage caster, HumorLevels changedHumors) : base(matchID)
+    public HumorChangeEffect(int matchID, Unit target, HumorLevels changedHumors) : base(matchID)
     {
         ChangedHumors = changedHumors;
-        Caster = caster; 
+        Target = target; 
+    }
+
+    public HumorChangeEffect(int matchID, Unit target, HumorLevels changedHumors, Unit source) : base(matchID)
+    {
+        ChangedHumors = changedHumors;
+        Target = target;
+        Source = source;
     }
 
     HumorLevels ChangedHumors;
-    Mage Caster;
+    Unit Target;
+    Unit Source; // Optionel
 
     public override void Activate()
     {
-        Caster.Humors = Caster.Humors + ChangedHumors;
-        Destroy();
+        if (Source != null)
+        {
+            Target.ChangeHumor(0, ChangedHumors.Blood, Source);
+            Target.ChangeHumor(1, ChangedHumors.Phlegm, Source);
+            Target.ChangeHumor(2, ChangedHumors.YellowBile, Source);
+            Target.ChangeHumor(3, ChangedHumors.BlackBile, Source);
+        }
+        else
+        {
+            Target.ChangeHumor(0, ChangedHumors.Blood);
+            Target.ChangeHumor(1, ChangedHumors.Phlegm);
+            Target.ChangeHumor(2, ChangedHumors.YellowBile);
+            Target.ChangeHumor(3, ChangedHumors.BlackBile);
+        }
+            Destroy();
     }
 
     public override void Update()

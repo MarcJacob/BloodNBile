@@ -112,9 +112,9 @@ public class Humorling : Unit {
 
     }
 
-    private void MoveToTarget()
+    private void MoveToTarget(float deltaTime)
     {
-        SetPos((Vector3)Pos + (Target.Pos - Pos).normalized * GetSpeed() * Time.deltaTime * HumorlingCount);
+        SetPos((Vector3)Pos + (Target.Pos - Pos).normalized * GetSpeed() * deltaTime);
 
     }
 
@@ -129,7 +129,7 @@ public class Humorling : Unit {
 
     bool TookDamage = false; // Cet Humorling a-t-il prit des dégats depuis sa dernière exécution de AI ?
 
-    public void AI (CellsManager cellsManager) {
+    public void AI (CellsManager cellsManager, float deltaTime) {
 		
         if (TookDamage)
         {
@@ -156,7 +156,7 @@ public class Humorling : Unit {
 
                 if (AttackRange < DistanceTarget)
                 {
-                    MoveToTarget();
+                    MoveToTarget(deltaTime);
 
                 }
                 else if (TimerAttack <= 0)
@@ -167,8 +167,8 @@ public class Humorling : Unit {
                 }
             }
         }
-        TimerAttack -= Time.deltaTime * HumorlingCount;
-        TimerTarget -= Time.deltaTime * HumorlingCount;
+        TimerAttack -= deltaTime;
+        TimerTarget -= deltaTime;
 	}
 
     public override void ChangeHumor(int type, int quantity)
@@ -178,10 +178,13 @@ public class Humorling : Unit {
         OnDamageTaken();
     }
 
-    protected override void OnDamageTaken()
+    public override void ChangeHumor(int type, int quantity, Unit source)
     {
-        base.OnDamageTaken();
-        TookDamage = true;
+        if (type == Type || quantity < 0)
+            Humors.ChangeHumor(Type, quantity);
+
+        CompareTarget(source);
+        OnDamageTaken(source);
     }
 
     public override void Die()

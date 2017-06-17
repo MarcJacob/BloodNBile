@@ -23,6 +23,10 @@ public class Entity  {
 
     public override bool Equals(object u)
     {
+        if (u == null)
+        {
+            return false;
+        }
         Entity e = (Entity)u;
         if (e == null)
         {
@@ -38,7 +42,7 @@ public class Entity  {
         Alive = false;
     }
 
-    public virtual void UpdateEntity ()
+    public virtual void UpdateEntity (float deltaTime)
     {
 
     }

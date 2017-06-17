@@ -17,6 +17,7 @@ public class MagesManager
     void OnUnitDeath(Unit unit)
     {
         Mage DeadMage = null;
+        Debugger.LogMessage("Unit died. Bounty to mage :");
         foreach(Mage m in Mages)
         {
             if (unit.killer != null && m.Fac == unit.killer.Fac)
@@ -41,7 +42,7 @@ public class MagesManager
     public int CreateMage(Vector3 pos, string name, Faction fac)
     {
         Mage newMage = new Mage(EntityModule.Match.ID, EntityModule.GetAllEntities().Length, pos, Quaternion.identity, name, fac, new HumorLevels(100, 100, 100, 100));
-        EntityModule.OnUnitCreated(newMage, false);
+        EntityModule.OnUnitCreated(newMage);
         Mages.Add(newMage);
         OnMageCreated(newMage);
         return newMage.ID;

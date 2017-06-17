@@ -27,10 +27,11 @@ public class HumorlingsManager
     int currentHumorling = 0;
     public void RunAIs()
     {
+        /*
         int humorlingsThisFrame;
         for(humorlingsThisFrame = 0; humorlingsThisFrame < HumorlingPerFrame && humorlingsThisFrame + currentHumorling < Humorlings.Count; humorlingsThisFrame++)
         {
-            Humorlings[humorlingsThisFrame + currentHumorling].AI(EntityModule.Match.CellsModule);
+            Humorlings[humorlingsThisFrame + currentHumorling].AI(EntityModule.Match.CellsModule, Time.deltaTime * Humorlings.Count);
         }
 
         if (humorlingsThisFrame + currentHumorling >= Humorlings.Count)
@@ -39,6 +40,13 @@ public class HumorlingsManager
         }
         else
             currentHumorling = humorlingsThisFrame + currentHumorling;
+
+    */
+
+       foreach(Humorling h in Humorlings)
+        {
+            h.AI(EntityModule.Match.CellsModule,  Time.deltaTime);
+        }
     }
 
     Faction RogueFaction = new Faction("Rogue", 0);
@@ -50,6 +58,7 @@ public class HumorlingsManager
         while (bank.Blood > HumorlingCost || bank.Phlegm > HumorlingCost || bank.YellowBile > HumorlingCost || bank.BlackBile > HumorlingCost) {
             int a = 0;
             Vector3 clusterPos = new Vector3(Random.Range(0, cells.SizeMapX), 0, Random.Range(0, cells.SizeMapY));
+            Debugger.LogMessage("Spawn d'un cluster de humorlings en position " + clusterPos);
             while (a < HumorlingPerCluster)
             {
 
