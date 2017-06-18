@@ -30,7 +30,7 @@ public class EntityRenderer : MonoBehaviour {
             if (!Units.Contains(newUnit))
             {
                 Units.Add(newUnit);
-               // RenderedUnits.Add(new UnitRender(newUnit.Pos, newUnit.Rot, newUnit));
+                RenderedUnits.Add(new UnitRender(newUnit.Pos, newUnit.Rot, newUnit));
             }
         }
     }
@@ -188,7 +188,7 @@ public class EntityRenderer : MonoBehaviour {
 
     void Update () {
         // Afficher les entités.
-        /*if (Units != null)
+        if (Units != null)
         {
             foreach(UnitRender render in RenderedUnits)
             {
@@ -202,18 +202,6 @@ public class EntityRenderer : MonoBehaviour {
                 }
             }
 
-        }*/
-
-        if (Units != null)
-        {
-            foreach (Unit render in Units)
-            {
-                    if (render.MeshID >= 0 && render.Alive == true)
-                    {
-                        RenderMesh(render);
-                    }
-            }
-
         }
         foreach (Projectile P in Projectiles)
         {
@@ -224,8 +212,7 @@ public class EntityRenderer : MonoBehaviour {
 
     private void RenderMesh(DrawableEntity entity, UnitRender renderer = null)
     {
-        Debugger.LogMessage("Rendering entity ID" + entity.ID);
-        /*if (entity == null) return; // S'il n'y a pas d'entité dans CurrentlyRenderer, alors on n'exécute pas le corps de cette méthode.
+        if (entity == null) return; // S'il n'y a pas d'entité dans CurrentlyRenderer, alors on n'exécute pas le corps de cette méthode.
         int LODLevel = DetermineLOD(entity);
         if (renderer != null)
         {
@@ -236,13 +223,7 @@ public class EntityRenderer : MonoBehaviour {
         {
             if (LODLevel >= Model.GetModelByID(entity.MeshID).ModelMeshs.Length) return; // Si il n'y a pas assez de niveaux de détails pour une telle distance alors on n'affiche pas l'entité.
             Graphics.DrawMesh(Model.GetModelByID(entity.MeshID).ModelMeshs[LODLevel], entity.Pos, entity.Rot, Model.GetModelByID(entity.MeshID).ModelMaterial, 0);
-        }*/
-
-        if (entity == null || entity.Alive == false) return; // S'il n'y a pas d'entité dans CurrentlyRenderer, alors on n'exécute pas le corps de cette méthode.
-        int LODLevel = DetermineLOD(entity);
-
-        if (LODLevel >= Model.GetModelByID(entity.MeshID).ModelMeshs.Length) return; // Si il n'y a pas assez de niveaux de détails pour une telle distance alors on n'affiche pas l'entité.
-        Graphics.DrawMesh(Model.GetModelByID(entity.MeshID).ModelMeshs[LODLevel], entity.Pos, entity.Rot, Model.GetModelByID(entity.MeshID).ModelMaterial, 0);
+        }
     }
     public int DistPerLOD = 40000; // Distance séparant chaque changement de LOD. La distance maximale d'affichage est donc nombre de LOD * DistPerLOD.
     private int DetermineLOD(DrawableEntity entity)

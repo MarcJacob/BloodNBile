@@ -42,7 +42,7 @@ public class BnBMatch
         NetworkInfo = networkInfo;
         Players = clients;
         PlayersReady = new bool[Players.Length];
-        HumorBank = new HumorLevels(0,0,0,0);
+        HumorBank = new HumorLevels(1000,1000,1000,1000);
     }
 
     public MatchState GetState()
